@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>我的收藏</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			
+			#list {
+				padding-top: 3em;
+				overflow-x: hidden;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart>
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">我的收藏</div>
+					<div class="title-right">
+						<div id="toDel" class="c1 fs9 uhide">编辑</div>
+						<div id="wc" class="c1 fs9 uhide">完成</div>
+					</div>
+				</div>
+			</header>
+			<section id="list">
+				<div class="bc2 uhide">
+					<div class="ub pb5 pt3 pl2 pr8 ubb " id="plist">
+						<div class="ub-ac lck uhide" style="width: 10%;">
+							<div class="ub-img img28 tx-l ncheckbox uhide" ck="0"></div>
+						</div>
+						<div class="ub ub-ac ub-img img limg" style="width: 40%;"></div>
+						<div class="pl5" style="width: 60%;">
+							<div class="ub fb lh13 h26 pl4 pt3">
+								<div class="name fs9 textoverflow"></div>
+							</div>
+							<div class="ub fs8 pl4 lh16">
+								<div class="c4">&yen;</div>
+								<div class="c4 price"></div>
+								<div>&nbsp;&nbsp;运费：&yen;</div>
+								<div class="ship"></div>
+							</div>
+							<div class="ub fs8 pl4 lh16">
+								<div class="">月成交：</div>
+								<div class="buycount"></div>
+								<div>笔&nbsp;|&nbsp;评价：</div>
+								<div class="comments"></div>
+							</div>
+							<div class=" pl4 lh16 fs8 suppliername"></div>
+						</div>
+						<div class="uhide">
+							<div class="DRUGCODE"></div>
+							<div class="DRUGSUPPLIERCODE"></div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<div class="uhide ub mt35 mb10" id="noProduct">
+				<div class="ub-img noproduct ml35"></div>
+				<div class="ub-ac mt30 ml5">
+					<div class="fs10">很抱歉！</div>
+					<div class="fs8" id="aaa">您还未收藏任何商品。</div>
+				</div>
+			</div>
+			<div style="height:50px; width:100%"></div>
+			<!--删除-->
+			<div class="ub bc2 h35 lh35 mt10 ub-ac fs9 ubt uhide" id="stdel" style="position:fixed;bottom:0px;width:100%;z-index:97;">
+				<div class="ub ub-f1 ub-ac">
+					<div class="ub ub-ac" id='checkall'>
+						<div id="all" class="ub-img img28 ml5"></div>
+						<div class="ml10">全选</div>
+					</div>
+				</div>
+				<div class=" bc1 w60 h28 lh28 fs10 c1 uc-a4 tx-c mr10" id="del">删除</div>
+			</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	var userid = localStorage.getItem("userid");
+	var source = localStorage.getItem("yyySource");
+	var drugcode = "";
+	iP = {};
+	$(function() {
+		$("#back").click(function() {
+			window.location.href = "PersonalCenter.html";
+		});
+		//获取收藏商品列表
+		getStoreList(userid);
+		//编辑收藏商品
+		$("#toDel").click(function() {
+			$("#toDel").addClass("uhide");
+			$("#wc, #stdel").removeClass("uhide");
+			$(".lck").addClass("ub").removeClass("uhide");
+			$(".limg").css("width", "30%");
+		});
+		//点击完成
+		$("#wc").click(function() {
+			$("#wc, #stdel").addClass("uhide");
+			$("#toDel").removeClass("uhide");
+			$(".lck").addClass("uhide").removeClass("ub");
+			$(".limg").css("width", "40%");
+		});
+		//删除
+		$("#del").click(function() {
+			drugcode = "";
+			$(".ncheckbox").each(function(index, elem) {
+				var ck = $(elem).attr("ck");
+				if (ck == "1" && 　index != 0) {
+					drugcode += "" + $(".DRUGCODE", $(elem).parent().parent()).text() + "" + ','; //商品编码
+				}
+			});
+			drugcode = drugcode.substring(0, drugcode.length - 1);
+			if (drugcode) {
+				confirm("确定要取消收藏吗?", function() {
+					CancelProduct();
+				});
+			} else {
+				toast("您暂未选择任何商品！")
+			}
+		});
+	});
+	$("#checkall").click(function() {
+		var checkedall = $("#all").hasClass("img29");
+		if (checkedall) {
+			$(".ncheckbox:not(.uhide)").removeClass("img29").addClass("img28").attr("ck", "0");
+			checkedall = false;
+			$("#all").removeClass("img29").addClass("img28").attr("ck", "0");
+		} else {
+			$(".ncheckbox:not(.uhide)").removeClass("img28").addClass("img29").attr("ck", "1");
+			checkedall = true;
+			$("#all").removeClass("img28").addClass("img29").attr("ck", "1");
+		}
+	});
+
+	function InitCheckBox() {
+		$(".ncheckbox:not(.uhide):not(#checkall)").click(function() {
+			if ($(this).attr("ck") == 1) { //选中状态
+				checkedall = false;
+				$(this).removeClass("img29").addClass("img28").attr("ck", "0");
+				$("#all").removeClass("img29").addClass("img28").attr("ck", "0");
+			} else {
+				$(this).removeClass("img28").addClass("img29").attr("ck", "1");
+				var cbs = $("#list .ncheckbox:not(.uhide)");
+				var IsAll = true;
+				for (var i = 0; i < cbs.length; i++) {
+					var ck = $(cbs[i]).attr("ck");
+					if (ck == "0") {
+						IsAll = false;
+						break;
+					}
+				}
+				if (IsAll) {
+					$("#all").removeClass("img28").addClass("img29").attr("ck", "1");
+				} else {
+					$("#all").removeClass("img29").addClass("img28").attr("ck", "0");
+				}
+			}
+		});
+		checkedall = false;
+	}
+	//获取商品列表方法
+	function getStoreList(userid) {
+		Loading(); //显示加载中
+		var json = strEnc("[{\"userId\":\"" + userid + "\",\"source\":\"" + source + "\",\"yyyCode\":\"100029\"}]", "100001", "", "");
+		$.post(GLOBAL_URL, {
+			"json": json
+		}, function() {}).success(function(data) {
+			var productInfo = JSON.parse(data);
+			if (productInfo.success == "1") {
+				if (productInfo.data.length != 0) {
+					//$("#stdel").removeClass("uhide");
+					$("#toDel").removeClass("uhide");
+					iP.append(productInfo.data);
+					InitCheckBox();
+				} else {
+					$("#list").addClass("uhide");
+					$("#noProduct").removeClass("uhide");
+					$("#toDel").addClass("uhide");
+					$("#stdel").addClass("uhide");
+				}
+			} else if (productInfo.success == "-1") {
+				alert(productInfo.message)
+			} else {
+				$("#list").addClass("uhide");
+				$("#noProduct").removeClass("uhide");
+				$("#toDel").addClass("uhide");
+				$("#stdel").addClass("uhide");
+			}
+			noLoading();
+		}).error(function() {
+			noLoading();
+			alert("网络连接错误");
+			$("#noProduct").removeClass("uhide");
+			$("#aaa").text("网络连接不上,请检查网络");
+		});
+	}
+	//插入数据
+	iP.append = function(data) {
+		var elem, clone = $("#list>div:first");
+		clone.siblings().remove();
+		for (var i in data) {
+			elem = clone.clone().removeClass("uhide");
+			elem.find(".ncheckbox").removeClass("uhide");
+			elem.find(".name").text(data[i].NAME);
+			elem.find(".price").html(changeTwoDecimal_f(data[i].DRUG_PRICE));
+			elem.find(".ship").text(data[i].DRUG_SHIP);
+			elem.find(".buycount").text(data[i].BUY_COUNT);
+			elem.find(".comments").text(data[i].COMMENTS);
+			elem.find(".suppliername").text(data[i].DRUG_SUPPLIER_NAME);
+			elem.find(".DRUGCODE").text(data[i].DRUG_CODE);
+			elem.find(".DRUGSUPPLIERCODE").text(data[i].DRUG_SUPPLIER_CODE);
+			var url = data[i].DRUG_IMG_URL || defaultImg;
+			url = "<img src='" + url + "' height='100px' width='100px'/>";
+			elem.find(".img").html(url);
+			$("#list").append(elem);
+			//点击商品时 到商品详细页面
+			elem.on("click", function() {
+				var btn = $("#wc").hasClass("uhide");
+				if (!btn) {
+					return;
+				}
+				var DRUGCODE = $(this).find(".DRUGCODE").text(); //DRUGSUPPLIERCODE
+				var DRUGSUPPLIERCODE = $(this).find(".DRUGSUPPLIERCODE").text();
+				localStorage.setItem("DRUGCODE", DRUGCODE);
+				localStorage.setItem("DRUGSUPPLIERCODE", DRUGSUPPLIERCODE);
+				localStorage.setItem("pdBackPage", "myStore.html"); //从该页面到商品详情
+				window.location.href = "productDetail.html";
+			});
+		};
+	};
+	//取消收藏商品
+	function CancelProduct() {
+		var enResult = strEnc("[{\"yyyCode\":\"100038\",\"drugCode\":\"" + drugcode + "\",\"userId\":\"" + userid + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			beforeSend: function() {}, //添加loading信息
+			success: function(productInfo, textStatus) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == "1") {
+					//getStoreList(userid);
+					location.reload();
+				} else {}
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+			}
+		});
+	}
+</script>

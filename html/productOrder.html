@@ -1,0 +1,966 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>商品订单确认页面</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			#jisuan {
+				/*position: absolute;
+				top: 15px;
+				right: 0.3em;*/
+			}
+			#Address {
+				position: relative;
+			}
+			.pari {
+				position: absolute;
+				right: 16px;
+				top: 33px;
+			}
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			#content {
+				padding: 3em 0;
+			}
+			#page_error {
+				padding-top: 3em;
+				width: 100%;
+				top: 0;
+				left: 0;
+				width: 100%;
+				position: absolute;
+				border: 0;
+			}
+			.nowifi {
+				background: url(../images/wifi.png) no-repeat center center;
+				background-size: 168px 121px;
+				height: 160px;
+			}
+			#cpContainer,#cpcContent {
+				position: fixed;
+				left: 0;
+				bottom: 0;
+				width: 100%;
+			}
+			#cpContainer {
+				height: 100%;
+				z-index: 100;
+				display: none;
+			}
+			#cpcContent {
+				z-index: 101;
+				background-color: #FFF;
+			}
+			#cpcContent {
+				padding-bottom: 40px;
+			}
+			#cpcBg {
+				position: fixed;
+				width: 100%;
+				height: 100%;
+				background-color: #000000;
+				opacity: 0.8;
+				z-index: 1;
+			}
+			#coupon {
+				display: none;
+			}
+			#cpcCancel {
+				position: fixed;
+				left: 0;
+				bottom: 0;
+			}
+			.couponTitle {
+				font-weight: bold;
+			}
+			.cpList {
+				min-height: 200px;
+				max-height: 300px;
+				overflow-y: auto;
+				padding: 0px 10px;
+			}
+			.cpItem {
+				position: relative;
+				padding: 5px 0px;
+			}
+			.addressname{overflow: hidden;}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart>
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">确认订单</div>
+					<div class="title-right">
+					</div>
+				</div>
+			</header>
+			<div id="content" class="content" style='width:100%; overflow-x:hidden; overflow-y:auto'>
+				<!--配送方式-->
+				<div class="ub h30 lh30 fsp14 bc2 pl10 pr10 ubb">
+					<div class="fb fsp15 mr10 ">配送方式：</div>
+					<div class="ub ub-f3 ub-ac tx-l">
+						<div class="ub" onclick="choosePw(this)">
+							<div>
+								<input type="radio" name="unit" value="kd" onClick="checkType()" class="uhide" checked>
+								<div for="kd">
+									<div class="ub ub-ac">
+										<div class="ub ub-img img29 kd"></div>
+									</div>
+								</div>
+							</div>
+							<div class="mr5">快递</div>
+						</div>
+						<div onclick="choosePw(this)">
+							<div id="zttype" class="ub uhide">
+								<div>
+									<input type="radio" name="unit" value="zq" onClick="checkType()" class="uhide">
+									<div for="zq">
+										<div class="ub ub-ac">
+											<div class="ub ub-img img28 zq"></div>
+										</div>
+									</div>
+								</div>
+								<div>上门自取</div>
+							</div>
+						</div>
+					</div>
+					<div class="uhide" id="shippingID">-1</div>
+				</div>
+				<!--自提内容-->
+				<div class="bc2 ubb mt5 uhide mb3" id="zqContent">
+					<div class="fsp14 fb pl10 h18 lh18">请选择自提地址：</div>
+					<div class="ml10 mr6 fs7 ub ub-f1 mb5 uba4 c2 uc-a2 bc2 h25 lh25" need id="ztaddress" style="border:1px solid #e5e5e5;">
+						<div class="fs9 c2 ub-f1 ml5" show></div>
+						<div class="h25 lh25 bc9 ubl2 ub ub-ac w20">
+							<div class="img47 ub-img mr3 ml3" img></div>
+						</div>
+						<select class="fs9"></select>
+					</div>
+				</div>
+				<!--配送地址-->
+				<div class="ub bc2 h26 lh26 pl10 ub-ac ubt ubb uhide mt3" id="toAddress">
+					<div class="ub-f1 fsp14">请选择收货地址</div>
+					<div class=" mr8">
+						<div class="ub-img img26"></div>
+					</div>
+				</div>
+				<div class="bc2 pl10 lh20 pr5 ubt ubb fsp14 mt3" id="Address">
+					<div class="ub ub-ac pt5 pb5">
+						<div class="ub" style="width:50%">
+							<div class="ub-img img18 mtp5"></div>
+							<div class="h20 ml2 addressname ub-f1"></div>
+						</div>
+						<div class="ub">
+							<div class="ub-img img48 mtp5"></div>
+							<div class="tel ml3"></div>
+						</div>
+					</div>
+					<div class="pb5 ub">
+						<div class="address" style="width:90%"></div>
+						<div class="addressid uhide" style="width:90%"></div>
+					</div>
+					<div class="ub-img img26 pari"></div>
+				</div>
+				<!--发票信息-->
+				<div class="ub bc2 ubb pl10 fsp14 lh30 uhide" id="fp">
+					<div class="ub ub-ac fsp15" style="width: 30%;">发票信息</div>
+					<div style="width: 60%;" class="tx-r">
+						<div id="fptype"></div>
+						<div id="fptext">不需要发票信息</div>
+						<div id="fpcon"></div>
+					</div>
+					<div style="width: 10%; " class="ub ub-ac">
+						<div class="ub-img img26 ml5"></div>
+					</div>
+				</div>
+				<!--不支持发票-->
+				<div class="ub bc2 ubb pl10 fsp14 c11 pr10 lh30 uhide" id="nofp">
+					<div class="ub-f1">发票抬头</div>
+					<div>该药店不支持开发票</div>
+				</div>
+				<!--支付方式-->
+				<div class="bc2 mt5 pb5 uhide" id="payway">
+					<div class="h20 lh20 pl8 ubb">支付方式</div>
+					<div class="ub mt3 pl8">
+						<div class="w60 h18 lh18 tx-c button active" id="online" code="0">在线支付</div>
+						<!--<div class="ml10 w60 h18 lh18 tx-c button" id="fdfk" code="1">货到付款</div>-->
+					</div>
+				</div>
+				<!--商品列表-->
+				<div class="ub h20 lh20 ubb bc2 mt4 ubt ">
+					<div class="ub-f1 fsp15 ml10 suppliername"></div>
+				</div>
+				<div class="ub bc2 pr10 pt5 pb5 pl10" id="tolist">
+					<div id="list" class="ub ub-f1" style="position:relative;width: 100%;display: block;background-color: #fff;overflow-x: auto;white-space: nowrap;">
+						<div class=" uhide" style="position: relative;display: inline-block;padding: 5px;">
+							<div class="ub pt2 pb2 " style="border: 1px solid #EEEEEE; border-radius: 5px;">
+								<div class="ub-img img"></div>
+							</div>
+						</div>
+					</div>
+					<div class=" ub ub-ac ml5" id="drugCount">共几件</div>
+					<div class="ub ub-ac">
+						<div class=" ub-img img26 ml5"></div>
+					</div>
+				</div>
+				<!--使用优惠券-->
+				<div class="ub bc2 ubb ubt pl10 fsp14 lh30 uhide" id="coupon">
+					<div class="ub ub-ac fsp15" style="width: 30%;">店铺优惠</div>
+					<div style="width: 60%;" class="tx-r">
+						<div id="cpText">不使用优惠券</div>
+					</div>
+					<div style="width: 10%; " class="ub ub-ac">
+						<div class="ub-img img26 ml5"></div>
+					</div>
+				</div>
+				<!-- 优惠券列表 -->
+				<div id="cpContainer">
+					<div id="cpcBg"></div>
+					<div id="cpcContent">
+						<div class="couponTitle tx-c lh30">店铺优惠</div>
+						<ul class="cpList">
+							<li class="cpItem ub ubb" onclick="useCoupon(this)" price="0.00" couponid="">
+								<div class="cpiCtn fs9 lh18">不使用优惠券</div>
+								<div class="cpiFunc vAlign1 radio2 checked"></div>
+							</li>
+						</ul>
+						<div id="cpcCancel" class="button1">关闭</div>
+					</div>
+				</div>
+				<!--商品金额和运费-->
+				<div class="ubb ubt mt5 mb6 bc2 pl10 pr10 lh20 fs8">
+					<div class="ub">
+						<div class="ub-f1">商品金额：</div>
+						<div class="ub tx-r c4">
+							<div>&yen;</div>
+							<div id="shopMoney">0.00</div>
+						</div>
+					</div>
+					<div class="ub">
+						<div class="ub-f1">运费金额：</div>
+						<div class="ub tx-r c4">
+							<div>+&nbsp;</div>
+							<div>&yen;</div>
+							<div id="ship">0.00</div>
+						</div>
+					</div>
+					<div class="ub uhide" id="couponJs">
+						<div class="ub-f1">优惠券：</div>
+						<div class="ub tx-r c4">
+							<div>-&nbsp;</div>
+							<div>&yen;</div>
+							<div id="couponPrice">0.00</div>
+						</div>
+					</div>
+				</div>
+				<footer class="ub bc2 ub-ac h30 lh30 ubt" style="position:fixed;bottom:0px;width:100%;z-index:97;height: 48px;">
+					<div class="ub ub-f1">
+						<div class="c17 pl5">实付款：</div>
+						<div class="ub c4 fb">
+							<div>&yen;</div>
+							<div class="countMoney">0.00</div>
+						</div>
+					</div>
+					<div id="jisuan" style="width: 40%;" class="bc1 c1 tx-c">确认订单</div>
+				</footer>
+			</div>
+		</div>
+		<!--错误页面-->
+		<div id="page_error" class="ub ub-ver uhide">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left"></div>
+					<div class="title-mid">出错啦</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<div class="tx-c ub-ac mt10 error" id="error">
+				<div class="ub">
+					<div class="ub-f1 nowifi"></div>
+				</div>
+				<div class="mt10 c14">
+					<div style="font-size: 16px;">网络请求失败</div>
+					<div class="mt5" style="color: #AAAAAA;font-size: 14px;">请检查您的网络</div>
+				</div>
+				<div class="ub">
+					<div class="ub-f1"></div>
+					<div class="ub-f1 bc1 w30 h29 lh29 fs10 mt10 c1 uc-a4 tx-c" id="reload">重新加载</div>
+					<div class="ub-f1"></div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/huiDaoJsBridge.js"></script>
+		<script src="../js/para.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<!--<script src="../js/budtrinity-0.1.3.min.js"></script>-->
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	//优惠券
+	var orderCoponId = localStorage.getItem("orderCoponId"),
+		orderCoponPrice = localStorage.getItem("orderCoponPrice");
+	var tj = true; //判断订单是否可以提交
+	iP = {};
+	iP2 = {};
+	//获取用户信息
+	var userid = localStorage.getItem("userid");
+	var source = localStorage.getItem("yyySource");
+	var token = localStorage.getItem("token");
+	//配送方式
+	var ty = request("ty");
+	if (ty) {
+		localStorage.setItem("TY", ty);
+	}
+	//付款方式
+	var paym = request("payMethod");
+	if (paym) {
+		if (paym == 0) //在线支付
+		{
+			$("#online").addClass("button active");
+			$("#fdfk").removeClass("button active").addClass("button");
+		} else if (paym == 1) //货到付款
+		{
+			$("#fdfk").addClass("button active");
+			$("#online").removeClass("button active").addClass("button");
+		}
+	}
+	//判断是否是从立即购买页面过来
+	var isDelCart = localStorage.getItem("isDelCart");
+	var ISADDRLOADED = true; //收货地址是否加载完成
+	var isPresc = "0"; //是否为处方订单，1是，0否
+	//页面加载
+	$(function() {
+		//根据团体颜色改变背景颜色
+	var insurecolor = localStorage.getItem("showColor");
+	$(".title").css("background-color",insurecolor);
+	
+		
+		
+		Loading();
+		localStorage.removeItem("isDelCart");
+		localStorage.removeItem("drugship");
+		isDelCart == "0" ? isDelCart = "0" : isDelCart = "1";
+		//编辑收获地址
+		$(".bianji").click(function() {
+			$("#address").removeClass("disabled");
+		});
+		$("#back").click(function() {
+			localStorage.removeItem("orderCoponId");
+			localStorage.removeItem("orderCoponPrice");
+			localStorage.setItem("fpDetail", null);
+			var frompresc = localStorage.getItem("frompresc");
+			var sourcefrom = request("sourcefrom");
+			if (sourcefrom == "yfy") {
+				openYfyPage('toPopUpView');
+			} else if (frompresc) {
+				var prescNo = localStorage.getItem("perscNo");
+				localStorage.removeItem("frompresc");
+				window.location.href = "prescDetail.html";
+			} else {
+				window.location.href = "index1.html";
+			}
+		});
+		//获取购物车提取的订单
+		getOrder();
+		//订单试算
+		orderPrice();
+		//获取药店是否有自提
+		getZT(localStorage.getItem("DRUGSUPPLIERCODE"));
+		//获取当前订单可用优惠券列表
+//		getUseableCoupon();
+		//选择自提日期
+		$("#checkDate").click(function() {
+			document.getElementById("mydate").focus();
+		});
+		//选择收货地址
+		$("#toAddress,#Address").click(function() {
+			localStorage.setItem("CHOOSEADDR", "productOrder");
+			if (isDelCart) {
+				localStorage.setItem("isDelCart", isDelCart);
+			}
+			var payMethod = $(".button.active").attr("code"); //付款方式
+			var uri = "personalAddress.html?payMethod="+payMethod;
+			window.location.href = uri;
+		});
+		$("#fp").click(function() {
+			localStorage.setItem("ADDRESSID", request("addressid"));
+			localStorage.setItem("fptext", $("#fptext").text());
+			if (isDelCart) {
+				localStorage.setItem("isDelCart", isDelCart);
+			}
+			var ty = $("[name=unit]:checked").val();
+			var payMethod = $(".button.active").attr("code"); //付款方式
+			window.location.href = "productFP.html?ty=" + ty + "&payMethod=" + payMethod;
+		});
+		//查看订单中商品详情
+		$("#tolist").click(function() {
+			localStorage.setItem("ADDRESSID", request("addressid"));
+			localStorage.setItem("fptext", $("#fptext").text());
+			if (isDelCart) {
+				localStorage.setItem("isDelCart", isDelCart);
+			}
+			var ty = $("[name=unit]:checked").val();
+			var payMethod = $(".button.active").attr("code"); //付款方式
+			window.location.href = "orderprodetail.html?ty=" + ty + "&payMethod=" + payMethod;
+		});
+		//获取发票信息
+		if (localStorage.getItem("fpDetail") != "null" && localStorage.getItem("fpDetail") != "" && localStorage.getItem("fpDetail") != null && localStorage.getItem("fpDetail") != undefined) {
+			var fpDetail = localStorage.getItem("fpDetail").replace('"', '');
+			fpDetail = "{" + fpDetail.replace(/'/g, '"') + "}";
+			var obj = JSON.parse(fpDetail);
+			if (obj.isInvoice == 1) //需要发票
+			{
+				$("#fp").removeClass("lh30").addClass("lh18");
+				var invoiceType;
+				if (obj.invoiceInfo[0].invoiceType == 0) {
+					invoiceType = "个人";
+				} else if (obj.invoiceInfo[0].invoiceType == 1) {
+					invoiceType = "单位";
+				}
+				$("#fptype").text(invoiceType);
+				$("#fpcon").text(obj.invoiceInfo[0].invoiceContent)
+				var title = obj.invoiceInfo[0].invoiceTitle;
+				if (title.length > 10) {
+					title = title.substr(0, 10) + "...";
+				}
+				$("#fptext").text(title);
+			} else {
+				$("#fp").addClass(" h30 lh30");
+			}
+		}
+		$("#ztaddress").on("change", iP2.chooseSelect);
+		//提交订单计算
+		$("#jisuan").click(function() {
+			//移除优惠券信息
+			localStorage.removeItem("orderCoponId");
+			localStorage.removeItem("orderCoponPrice");
+			var shippingID = $("#shippingID").html();
+			var memberCouponID = $(".cpList .checked").parent().attr("couponid");
+			var fpDetail;
+			if (localStorage.getItem("fpDetail") != "null" && localStorage.getItem("fpDetail") != "" && localStorage.getItem("fpDetail") != null) {
+				fpDetail = localStorage.getItem("fpDetail").replace('\'', "\"");
+			} else {
+				fpDetail = "'isInvoice':'0','invoiceInfo':[]";
+			}
+			var prescInfo = ""; //处方信息
+			if (localStorage.getItem("prescNo")) {
+				prescInfo = "{'prescID':'" + localStorage.getItem("prescNo") + "'}";
+				isPresc = "1"; //是处方订单
+			}
+			if (shippingID == 0) {
+				var addressid = $("#ztaddress").attr("need");
+				var payMethod = $(".button.active").attr("code");
+				if (userid != "" && userid != "null" && userid != null && userid != "undefined") {
+					var dataCart = "";
+					if (localStorage.getItem("prescNo")) {
+						dataCart = "{\"userID\":\"" + userid + "\",\"memberCouponID\":\"" + memberCouponID + "\",\"isPresc\":\"" + isPresc + "\",\"payMethod\":\"" + payMethod + "\",\"source\":\"" + source + "\",\"paySource\":\"wdpay\",\"addressId\":\"" + addressid + "\",\"yyyCode\":\"100012\",\"shippingID\":\"" + shippingID + "\",\"pharmacyCode\":\"" + pharmacyCode + "\",\"isDelCart\":\"" + isDelCart + "\",\"u\":\"" + userid + "\",\"t\":\"" + token + "\",\"goodsData\":" + goodsData + ",\"prescInfo\":" + prescInfo + "," + fpDetail + "}"; //shippingID配送方式
+					} else {
+						dataCart = "{\"userID\":\"" + userid + "\",\"memberCouponID\":\"" + memberCouponID + "\",\"isPresc\":\"" + isPresc + "\",\"payMethod\":\"" + payMethod + "\",\"source\":\"" + source + "\",\"paySource\":\"wdpay\",\"addressId\":\"" + addressid + "\",\"yyyCode\":\"100012\",\"shippingID\":\"" + shippingID + "\",\"pharmacyCode\":\"" + pharmacyCode + "\",\"isDelCart\":\"" + isDelCart + "\",\"u\":\"" + userid + "\",\"t\":\"" + token + "\",\"goodsData\":" + goodsData + ",\"prescInfo\":" + prescInfo + "," + fpDetail + "}"; //shippingID配送方式
+					}
+					dataCart = dataCart.replace(/'/g, '"');
+					if (!tj) {
+						return;
+					} else {
+						tj = false;
+						tijiao(dataCart);
+					}
+				} else {
+					alert("请升级市民云最新版本,享医药商城优惠活动");
+				}
+			} else if (shippingID == "-1") {
+				var shipAddress = $(".address").html();
+				var shipPhone = $(".tel").html();
+				var shipName = $(".addressname").html();
+				var addressId = $(".addressid").html();
+				var payMethod = $(".button.active").attr("code");
+				if (addressId != "") {
+					if (userid != "" && userid != "null" && userid != null) {
+						var dataCart = "";
+						if (localStorage.getItem("prescNo")) {
+							dataCart = "{\"userID\":\"" + userid + "\",\"memberCouponID\":\"" + memberCouponID + "\",\"isPresc\":\"" + isPresc + "\",\"payMethod\":\"" + payMethod + "\",\"source\":\"" + source + "\",\"paySource\":\"wdpay\",\"addressInfo\":{\"shipAddress\":\"" + shipAddress + "\",\"shipPhone\":\"" + shipPhone + "\",\"shipName\":\"" + shipName + "\"},\"addressID\":\"0\",\"addressIDS\":\"" + addressId + "\",\"yyyCode\":\"100012\",\"shippingID\":\"" + shippingID + "\",\"pharmacyCode\":\"" + pharmacyCode + "\",\"isDelCart\":\"" + isDelCart + "\",\"u\":\"" + userid + "\",\"t\":\"" + token + "\",\"goodsData\":" + goodsData + ",\"prescInfo\":\"" + prescInfo + "\"," + fpDetail + "}"; //shippingID配送方式
+						} else {
+							dataCart = "{\"userID\":\"" + userid + "\",\"memberCouponID\":\"" + memberCouponID + "\",\"isPresc\":\"" + isPresc + "\",\"payMethod\":\"" + payMethod + "\",\"source\":\"" + source + "\",\"paySource\":\"wdpay\",\"addressInfo\":{\"shipAddress\":\"" + shipAddress + "\",\"shipPhone\":\"" + shipPhone + "\",\"shipName\":\"" + shipName + "\"},\"addressID\":\"0\",\"addressIDS\":\"" + addressId + "\",\"yyyCode\":\"100012\",\"shippingID\":\"" + shippingID + "\",\"pharmacyCode\":\"" + pharmacyCode + "\",\"isDelCart\":\"" + isDelCart + "\",\"u\":\"" + userid + "\",\"t\":\"" + token + "\",\"goodsData\":" + goodsData + ",\"prescInfo\":\"" + prescInfo + "\"," + fpDetail + "}"; //shippingID配送方式
+						}
+						dataCart = dataCart.replace(/'/g, '"');
+						if (!tj) {
+							return;
+						} else {
+							tj = false;
+							tijiao(dataCart);
+						}
+					} else {
+						alert("用户异常" + userid);
+					}
+				} else {
+					if (ISADDRLOADED) {
+						alert("收货地址不能为空");
+					}
+				}
+			}
+		});
+		$("#online").click(function() {
+			$("#online").addClass("button active");
+			$("#fdfk").removeClass("button active").addClass("button");
+			var code = $(".button.active").attr("code");
+		});
+		$("#fdfk").click(function() {
+			$("#fdfk").addClass("button active");
+			$("#online").removeClass("button active").addClass("button");
+			var code = $(".button.active").attr("code");
+		})
+	});
+	var goodsData = localStorage.getItem("goodsData");
+	var goods = localStorage.getItem("goods");
+	var addressId = $.trim($("#txtSuggest").val());
+	var pharmacyCode = localStorage.getItem("DRUGSUPPLIERCODE");
+	//获取当前订单可用优惠券列表
+	function getUseableCoupon() {
+		var userID = localStorage.getItem("userid");
+		var params = '[{"yyyCode":"100991","userID":"' + userID + '","pharmacyCode":"' + pharmacyCode + '","goodsData":"' + goodsData + '"}]';
+		var enResult = strEnc(params, "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(data) {
+				var data = JSON.parse(data);
+				if (data.success == "1") {
+					if (data.head.count > 0) {
+						createCoupon(data.data);
+					}
+				} else {}
+			}, //清掉loading信息
+			error: function() {
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//创建优惠券html
+	function createCoupon(data) {
+		var html = "";
+		var hasCoupon = false;
+		for (var i in data) {
+			html += '<li class="cpItem ub ubb" onclick="useCoupon(this)" price="' + data[i].CouponPar + '" CouponID="' + data[i].CouponBID + '">' +
+				'<div class="cpiCtn fs9 lh18">省' + data[i].CouponPar + '元：' + data[i].CouponName + '</div>';
+			if (data[i].CouponBID == orderCoponId) {
+				hasCoupon = true;
+				$("#couponPrice").text(data[i].CouponPar);
+				$("#cpText").text('省' + data[i].CouponPar + '元：' + data[i].CouponName);
+				html += '<div class="cpiFunc vAlign1 radio2 checked"></div></li>';
+			} else {
+				html += '<div class="cpiFunc vAlign1 radio2"></div></li>';
+			}
+		}
+		$(".cpList").append(html);
+		if (hasCoupon) {
+			$(".cpList>.cpItem").eq(0).find(".cpiFunc").removeClass("checked");
+		}
+		var price = parseFloat($("#shopMoney").text()) + parseFloat($("#ship").text()) - parseFloat($("#couponPrice").text());
+		price = price.toFixed(2);
+		$(".countMoney").text(price);
+		//显示优惠券及优惠券相关操作
+		$("#coupon, #couponJs").removeClass("uhide");
+		$("#coupon").show().click(function() {
+			$("#cpContainer").show();
+			$("body").css("overflow", "hidden");
+		});
+		$("#cpcCancel, #cpcBg").click(function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			$("#cpContainer").slideUp();
+			$("body").css("overflow", "auto");
+		});
+	}
+	//选择使用优惠券
+	function useCoupon(dom) {
+		//		$(dom).addClass("useThis").siblings().removeClass("useThis");
+		$(".cpiFunc", $(dom)).addClass("checked");
+		$(".cpiFunc", $(dom).siblings()).removeClass("checked");
+		var ctn = $(".cpiCtn", $(dom)).text();
+		var couponPrice = $(dom).attr("price");
+		//记录优惠券信息
+		localStorage.setItem("orderCoponId", $(dom).attr("CouponID"));
+		localStorage.setItem("orderCoponPrice", couponPrice);
+		$("#couponPrice").text(couponPrice);
+		$("#cpText").text(ctn);
+		var price = parseFloat($("#shopMoney").text()) + parseFloat($("#ship").text()) - parseFloat($("#couponPrice").text());
+		price = price.toFixed(2);
+		$(".countMoney").text(price);
+		$("#cpContainer").slideUp();
+		$("body").css("overflow", "auto");
+	}
+	//订单试算
+	function orderPrice() {
+		var shippingID = $("#shippingID").html() || '0';
+		var memberCouponID = $(".cpList .checked").parent().attr("couponid");
+		var Presc="0";
+		if (localStorage.getItem("prescNo")) {
+			Presc = "1"; //是处方订单
+		}
+		var dataCart = "{\"userID\":\"" + userid + "\",\"memberCouponID\":\"" + memberCouponID + "\",\"yyyCode\":\"100986\",\"shippingID\":\"" + shippingID + "\",\"source\":\""+localStorage.getItem("yyySource")+"\",\"isPresc\":\"" + Presc + "\",\"pharmacyCode\":\"" + pharmacyCode + "\",\"goodsData\":" + goodsData + "}"; //shippingID配送方式
+		var enResult = strEnc("[" + dataCart + "]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(data) {
+				data = JSON.parse(data);
+				if (data.success == 1) {
+					var countmoney = data.data.DRUG_SUPPLIER_PRICE;
+					var yunfei = data.data.DRUG_SUPPLIER_SHIP;
+					localStorage.setItem("drugship", yunfei);
+					$("#ship").text(yunfei);
+					$("#shopMoney").text(countmoney);
+					var price = parseFloat($("#shopMoney").text()) + parseFloat($("#ship").text()) - parseFloat($("#couponPrice").text());
+					price = price.toFixed(2);
+					$(".countMoney").text(price);
+				} else {
+					//当显示错误的时候，金额和运费全部显示0
+					$("#ship").text("0.00");
+					$("#shopMoney").text("0.00");
+					$(".countMoney").text("0.00");
+//					alert(data.message);
+					alert(data.message, function() {
+						if (data.err_code == 274 || data.err_code == 513) {
+							window.location.href="index1.html";
+						}
+					});
+				}
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//从购物车获取订单列表
+	function getOrder() {
+		goods = goods.replace(/\'/g, "\"");
+		goods = JSON.parse(goods);
+		iP.append(goods);
+	}
+
+	function getOrder1() {
+		iP.append(goods);
+	}
+	//插入数据
+	iP.append = function(data) {
+		//		var countmoney = "0";
+		var drugcount = 0;
+		var elem, clone = $("#list>div:first");
+		clone.siblings().remove();
+		for (var i in data) {
+			elem = clone.clone().removeClass("uhide");
+			$(".suppliername").text(data[i].shopName);
+			drugcount += parseInt(data[i].pcount);
+			var url = data[i].img;
+			url = "<img src='" + url + "' height='60px' width='60px'/>";
+			elem.find(".img").html(url);
+			//			countmoney = parseFloat(countmoney) + parseFloat(data[i].pcount) * parseFloat(data[i].price);
+			$("#list").append(elem);
+		};
+		$(".count").html(data.length);
+		$("#drugCount").html("共" + drugcount + "件");
+		//		$(".countMoney").html(countmoney.toFixed(2));
+		//		$("#shopMoney").text(countmoney.toFixed(2));
+		//		localStorage.setItem("countMoney", countmoney);
+	};
+	//提交订单
+	function tijiao(dataCart) {
+		var enResult = strEnc("[" + dataCart + "]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(productInfo) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == 1) {
+					localStorage.setItem("fpDetail", null);
+					localStorage.removeItem("frompresc");
+					var uri = "?orderNo=" + productInfo.data.DETAIL_ORDER_NO;
+					var payMethod = $(".button.active").attr("code"); //付款方式
+					if (payMethod == 0) {
+						window.location.href = "productjs.html" + uri;
+					} else if (payMethod == 1) {
+						openYfyPage('toShowOrders');
+//						window.location.href = "AllOrder.html";
+					}
+				} else {
+					tj = true;
+					alert(productInfo.message, function() {
+						if (productInfo.err_code == 274) {
+							window.location.href = "index1.html";
+						}
+					});
+				}
+			}, //清掉loading信息
+			error: function(err) {
+				tj = true;
+				alert("网络连接错误！", function() {
+					$("#page_0").remove();
+					$("#page_error").removeClass("uhide");
+				});
+			}
+		});
+	}
+	var pc = localStorage.getItem("DRUGSUPPLIERCODE");
+	//获取自提的地址
+	function getAddress() {
+		var enResult = strEnc("[{\"pharmacyCode\":\"" + pc + "\",\"yyyCode\":\"100020\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(productInfo) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == "1") {
+					$("#ztaddress select").empty();
+					var hasztd = false;
+					for (var i in productInfo.data) {
+						var option = $('<option></option>');
+						//自提地址
+						option.val(productInfo.data[i].ADDRESS_ID);
+						option.text(productInfo.data[i].ADDRESS_AREA + productInfo.data[i].ADDRESS_INFO + productInfo.data[i].ADDRESS_TEL);
+						$("#ztaddress select").append(option);
+						if (localStorage.getItem("code") && localStorage.getItem("code") == productInfo.data[i].ADDRESS_ID) {
+							hasztd = true;
+						}
+					}
+					if (hasztd) {
+						iP2.setOption($("#ztaddress"), localStorage.getItem("code"));
+					} else {
+						iP2.setOption($("#ztaddress"), productInfo.data[0].ADDRESS_ID);
+					}
+				} else {
+					//alert("提交失败");
+				}
+				noLoading();
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//选择下拉列表
+	iP2.chooseSelect = function() {
+		var that = $(this).find("select");
+		iP2.setOption(that.parents("[need]"), that.val());
+	};
+	iP2.setOption = function(elem, code) {
+		var select = elem.find("select");
+		select.val(code);
+		localStorage.setItem("code", code);
+		var codeName = select.find("option:selected").text();
+		elem.find("[show]").text(codeName);
+		elem.attr("need", code);
+	};
+	//选择支付方式
+	function choosePw(dom) {
+		$(dom).find("input")[0].checked = true;
+		$(dom).siblings().find("input")[0].checked = false;
+		checkType();
+		//优惠券金额
+		var price = parseFloat($("#shopMoney").text()) + parseFloat($("#ship").text()) - parseFloat($("#couponPrice").text());
+		price = price.toFixed(2);
+		$(".countMoney").text(price);
+	}
+	//选择配送方式事件
+	function checkType() {
+		//			$("#ztaddress >option").remove()
+		var ty1 = localStorage.getItem("TY");
+		localStorage.removeItem("TY");
+		var id = $("[name=unit]:checked").val();
+		if (ty1) {
+			id = ty1;
+		}
+		var money = "";
+		var shippingID;
+		var radio_oj = $("[name=unit]");
+		if (id == "kd") {
+			$("#payway").removeClass("uhide");
+			for (var i = 0; i < radio_oj.length; i++) { //循环
+				if (radio_oj[i].value == 'kd') { //比较值
+					radio_oj[i].checked = true; //修改选中状态
+					break; //停止循环
+				}
+			}
+			var userid = localStorage.getItem("userid");
+			getshAddress(userid);
+			shippingID = -1;
+			$(".zq").addClass("img28").removeClass("img29");
+			$(".kd").removeClass("img28").addClass("img29");
+			$("#shippingID").html(shippingID);
+			$("#Address").removeClass("uhide");
+			$("#zqContent").addClass("uhide");
+			//				$("#shopMoney").text(parseFloat($(".countMoney").text()).toFixed(2));
+			var drugship = localStorage.getItem("drugship");//运费
+			$("#ship").text(parseFloat(drugship).toFixed(2));
+			money = parseFloat($("#shopMoney").text()) + parseFloat(drugship);
+			$(".countMoney").html(money.toFixed(2));
+		} else if (id == "zq") {
+			$("#payway").addClass("uhide");
+			for (var i = 0; i < radio_oj.length; i++) { //循环
+				if (radio_oj[i].value == 'zq') { //比较值
+					radio_oj[i].checked = true; //修改选中状态
+					break; //停止循环
+				}
+			}
+			getOrder1();
+			shippingID = 0;
+			$(".zq").addClass("img29").removeClass("img28");
+			$(".kd").removeClass("img29").addClass("img28");
+			$("#shippingID").html(shippingID);
+			$("#toAddress").addClass("uhide");
+			$("#zqContent").removeClass("uhide");
+			$("#Address").addClass("uhide");
+			getAddress();
+			$("#shopMoney").text(parseFloat($("#shopMoney").text()).toFixed(2));
+			$("#ship").text("0.00");
+		}
+	}
+	//判断用户是否有默认收货地址，如果有就显示出来，没有就让用户选择
+	function getshAddress(userid) {
+		ISADDRLOADED = false;
+		var ty = $("[name=unit]:checked").val();
+		if (ty == "zq") return;
+		var id = request("addressid");
+//		var enResult = strEnc("[{\"yyyCode\":\"100999\",\"userID\":\"" + userid + "\",\"action\":\"GET\",\"addressID\":\"" + id + "\"}]", "100001", "", "");
+		var enResult = strEnc("[{\"yyyCode\":\"addressInfo\",\"userId\":\"" + userid + "\",\"action\":\"LIST\"}]", "100001", "", "");
+		if(id){
+			enResult = strEnc("[{\"yyyCode\":\"addressInfo\",\"id\":\"" + id + "\",\"userId\":\"" + userid + "\",\"action\":\"GET\"}]", "100001", "", "");
+		}
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(data) {
+				data = strDec(data, "100001", "", "");
+				data = JSON.parse(data);
+				if (data.status == "1") {
+					if (id || data.response.length > 0) {
+						$("#toAddress").addClass("uhide");
+						$("#Address").removeClass("uhide");
+						var addr = data.response[0];
+						if(id){
+							addr = data.response;
+						}
+						var addrName = addr.consignee;
+//						if (addrName.length > 5) {
+//							addrName = addrName.substring(0, 5) + "...";
+//						}
+						$(".addressname").text(addrName);
+						$(".tel").html(addr.phoneNo);
+						$(".address").text(addr.area + addr.detailAddress);
+						$(".addressid").html(addr.id)
+					} else {
+						$("#toAddress").removeClass("uhide");
+						$("#Address").addClass("uhide");
+					}
+				} else {
+					$("#toAddress").removeClass("uhide");
+					$("#Address").addClass("uhide");
+				}
+				noLoading();
+				ISADDRLOADED = true;
+			}, //清掉loading信息
+			error: function(err) {
+				noLoading();
+				ISADDRLOADED = true;
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//判断药店是否有自提功能
+	function getZT(storeId) {
+		var enResult = strEnc("[{\"yyyCode\":\"100042\",\"pharmacyCode\":\"" + storeId + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(productInfo) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == "1") {
+					if (productInfo.data == 1) //没有自提
+					{
+						$("#zttype").removeClass("uhide");
+					}
+					if(productInfo.data.invoice==1)//有发票
+					{
+						$("#fp").removeClass("uhide");
+					}
+					else
+					{
+						//没有发票
+						$("#nofp").removeClass("uhide");
+					}
+					//配送方式选择，页面加载时默认是快递
+					checkType();
+				} else {
+					alert(productInfo.message);
+				}
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//错误页面
+	$("#reload").click(function() {
+		Loading();
+		var userid = localStorage.getItem("userid");
+		var enResult = strEnc("[{\"yyyCode\":\"100047\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function() {
+				openYfyPage('toShowOrders');
+//				window.location.href = "AllOrder.html";
+			},
+			error: function() {
+				setTimeout("noLoading()", 1000);
+			}
+		});
+	});
+	//埋点
+//	Trinity.init({
+//		app_key: "2a6b0d9fb0bbee6d06d563cd2fd10de68735fea5",
+//		url: point_URL,
+//		device_id: localStorage.getItem("device_id"), //需要从android SKD Trinity.sharedInstance().getDeviceId() 或者ios的SDK[BudtrinityDeviceInfo udid]中获取该值
+//		sdk_version: localStorage.getItem("sdk_version"),
+//		app_version: app_version,
+//		u_id: localStorage.getItem("userid"), //如果访问该页面时app已经登录过则需要赋值
+//		channel: "0000000000"
+//	});
+	//自定义事件
+//	function eventBtn(ob) {
+//		Trinity.add_event({
+//			key: "page", //确认订单
+//			"segmentation": { //设置自定义事件的键值对
+//				"page_id": "productOrder",
+//				"page_name": "productOrder.html"
+//			}
+//		});
+//	}
+</script>

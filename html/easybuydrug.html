@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>轻松购药</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart="">
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">轻松购药</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<!--个人中心其他内容-->
+			<div class="bc2 ubt" id="content">
+				<div class="ub ubb ub-ac pl8 pr8 h55" id="homebuydrug">
+					<div class="ub ub-img sm"></div>
+					<div class="ub-f1 ml5 mr3">
+						<div class="fs10">查看药店</div>
+						<div class="mt3 c28 textoverflow" style="font-size: 12px;">搜索附近所有药店，进入最近药店，选择所需要药品，下单，支付，完成购药</div>
+					</div>
+					<div class="ub ub-ac">
+						<div class="ub-img img26"></div>
+					</div>
+				</div>
+				<div class="ub ubb ub-ac pl8 pr8 h55" id="pzbuydrug">
+					<div class="ub ub-img pz"></div>
+					<div class="ub-f1 ml5 mr3">
+						<div class="fs10">拍照购药</div>
+						<div class="mt3 c28 textoverflow" style="font-size: 12px;">上传清晰处方图片，输入处方药品名称及备注信息。审方通过后即可下单，完成购药。</div>
+					</div>
+					<div class="ub ub-ac">
+						<div class="ub-img img26"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	$(function() {
+		$("#back").click(function() {
+			window.location.href = "index1.html";
+		});
+		//上门购药
+		$("#homebuydrug").click(function() {
+			window.location.href = "easyshoplist.html";
+		});
+		//拍照购药
+		$("#pzbuydrug").click(function() {
+			window.location.href = "easyphonebuy.html";
+		});
+	});
+</script>

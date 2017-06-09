@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>激活优惠券</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/ui-input.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			input {
+				border: none;
+				outline: none;
+				font-size: 16px;
+				padding: 5px;
+				height: 30px;
+				line-height: 30px;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart>
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">激活优惠券</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<div class="mt10 tx-c">
+				<div class="ub bc2 ubb pr10" >
+					<div class="ub-f1 bc2 h30 lh30 pl5 tx-l">
+						<input type="text" id="cardid" style="height:36px;line-height:36px;width: 100%;" placeholder="请输入优惠券编码">
+					</div>
+					<!--<div class="ub ub-ac tx-r pr10" id="sm">
+						<img src="../images/sao.png" width="24px" height="24px">
+					</div>-->
+				</div>
+				<div class="ub mt10 tx-c">
+					<div style="width: 10%;"></div>
+					<div class="ub-f1 bc1 h25 lh25 fs10 c1 uc-a3 " id="tijiao">确认激活</div>
+					<div style="width: 10%;"></div>
+				</div>
+			</div>
+		</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<script type="text/javascript" src="../js/huiDaoJsBridge.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	//获取用户的id
+	var userid = localStorage.getItem("userid");
+	$(function() {
+		//关闭页面
+		$("#back").click(function() {
+			window.location.href = "myCoupon.html";
+		});
+		//激活优惠券
+		$("#tijiao").click(function() {
+			var cardID = $.trim($("#cardid").val());
+			if (cardID != "") {
+				invokeCoupon(userid, cardID);
+			} else {
+				toast("请输入优惠券编码");
+			}
+		});
+		//扫码识别
+//		$("#sm").click(function() {
+//			sm();
+//		});
+	});
+	//激活优惠券
+	function invokeCoupon(userid, cardNo) {
+		var enResult = strEnc("[{\"yyyCode\":\"100980\",\"userID\":\"" + userid + "\",\"cardNo\":\"" + cardNo + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(data) {
+				var data = JSON.parse(data);
+				if (data.success == "1") {
+					alert("激活成功", function() {
+						window.location.href = "myCoupon.html";
+					});
+				} else {
+					alert(data.message, function() {
+//						$("#cardid").val("");
+					});
+				}
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+			}
+		});
+	}
+//	function sm() {
+//		huiDaoJsBridge.getBarcode({
+//			onResponse: function(res) {
+//				console.log('getBarcode res:' + res);
+//				var returnData = JSON.parse(res);
+//				if (returnData.msg == "扫描成功") {
+//					var barcode = returnData.barcode;
+//					$("#cardid").val(barcode);
+//				} else {
+//					alert(returnData.msg);
+//				}
+//			}
+//		});
+//	}
+</script>

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>订单详情</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			#content {
+				padding-top: 3em;
+				padding-bottom: 50px;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart>
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">订单详情</div>
+					<div class="title-right" more id="more"></div>
+				</div>
+			</header>
+			<div class="content mt5" id="content" style=' width:100%; overflow-x:hidden; overflow-y:auto'>
+				<!--订单号-->
+				<div class="ub bc2  fs8 pl5 h30 lh30 ubb ubt">
+					<div class="">订单号：</div>
+					<div class="orderid"></div>
+				</div>
+
+				<!--配送方式-->
+				<div class="bc2 mt5 lh25 ubt fs8 ubb pl5">
+					<div class="ps" id="kd">快递</div>
+					<div class="ztaddress ubt uhide"></div>
+				</div>
+				<!--付款方式-->
+				<div class="bc2 mt5 lh25 ubt fs8 ubb pl5 ub">
+					<div>付款方式：</div>
+					<div class="paymethod"></div>
+				</div>
+				<!--订单收货详情-->
+				<div class="bc2 mt5 ubt fs8 ubb lh30" id="address">
+					<div class="ub pl5">
+						<div class="ub-img img18 mt7"></div>
+						<div id="shname" class="ml3">收货人</div>
+						<div class="ub-img img48 mt7 ml10"></div>
+						<div id="shmobile" class="ml3">联系电话</div>
+					</div>
+					<div class="ub ubt pl5 pr5">
+						<div class="ub-img img40 mt8"></div>
+						<div class="ub-f1" id="shaddress">收货地址</div>
+					</div>
+				</div>
+				<!--发票信息-->
+				<div class="bc2 mt5 lh30 ubt ubb fs8 pl5 pr5" id="fp">
+					<div class="ub">
+						<div style="width: 20%;">发票抬头</div>
+						<div id="fptt" class="pr10" style="width: 80%;"></div>
+					</div>
+					<div class="ub ubt">
+						<div style="width: 20%;">发票内容</div>
+						<div id="fpcontent" style="width: 80%;"></div>
+					</div>
+				</div>
+				<!--商品店铺信息-->
+				<div class="bc2 mt5 fs8 ubt ">
+					<div class="lh25 ubb pl5" id="shopname"></div>
+					<div class="uhide DRUGSUPPLIERCODE"></div>
+					<div id="list">
+						<div class="ub h75 pl5 pr5 uhide pt5 ubb">
+							<div style="width:30%">
+								<div class="ub-img img"></div>
+							</div>
+							<div style="width:50%" class="mt3">
+								<div class="name fsp14 h28 lh14 textoverflow"></div>
+								<div class="uhide DRUGCODE"></div>
+							</div>
+							<div style="width: 18%; text-align: right;" class="mt3">
+								<div class="price "></div>
+								<div class="QUANTITY mt2"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--实付款-->
+				<div class="ub ub-f1 bc2 tx-r fs8 lh24 pl5 mt5 ubt ubb pr5">
+					<div>
+						<div class="ub">
+							<div>订单总额：&yen;</div>
+							<div id="totalmoney"></div>
+						</div>
+						<div class="ub">
+							<div>订单日期：</div>
+							<div id="creattime"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="ub bc2 h30 lh30 ub-ac exchangeGoods ubt uhide" style="position:fixed;bottom:0;width:100%;z-index:97;">
+				<div class="fs6 lh15 pl10" id="sybuy">
+					<div>付款剩余时间:</div>
+					<div id="sytime"></div>
+				</div>
+				<div class="ub ub-f1 fs8">
+					<div class="ub ub-f1 "></div>
+					<div class="bluebutton1 mr10  uhide" id="cancelOrder">取消订单</div>
+					<div class="bluebutton1 mr10  uhide" id="pay">立即支付</div>
+					<div class="bluebutton1 mr10  uhide" id="exchangeGoods">申请退货</div>
+					<div class="bluebutton1 mr10  uhide" id="exchangeCancel">取消申请</div>
+					<div class="bluebutton1 mr10  uhide" id="processSearch">进度查询</div>
+				</div>
+			</div>
+			<div id="modalwindow" style="width:100%;height: 100%;  background-color:rgba(0,0,0,0.2); position:fixed; top:0px; left:0px; display:none;">
+				<div style='width:80%; height:250px; border-radius:5px; margin-left:auto; margin-right:auto; margin-top:140px; background-color:#fff'>
+					<div class="h30 lh30 ubb1 c3 pl5">请选择取消订单的理由</div>
+					<div class="lh24 tx-l ">
+						<div class="ub ubb pl10 pr10">
+							<div class="ub-f1">我不想买了</div>
+							<div>
+								<input type="radio" name="unit" value="c1" onClick="checkType()" checked>
+							</div>
+						</div>
+						<div class="ub ubb pl10 pr10">
+							<div class="ub-f1">信息填写错误，重新拍</div>
+							<div>
+								<input type="radio" name="unit" value="c2" onClick="checkType()">
+							</div>
+						</div>
+						<div class="ub ubb pl10 pr10">
+							<div class="ub-f1">卖家缺货</div>
+							<div>
+								<input type="radio" name="unit" value="c3" onClick="checkType()">
+							</div>
+						</div>
+						<div class="ub ubb pl10 pr10">
+							<div class="ub-f1">其他原因</div>
+							<div>
+								<input type="radio" name="unit" value="c4" onClick="checkType()">
+							</div>
+						</div>
+					</div>
+					<div class="ub tx-c h129 lh29">
+						<div onclick='closeModal(0)' class="ub-f1 ubr">取消</div>
+						<div onclick='closeModal(1)' class="ub-f1">确定</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>
+<script src="../js/jquery.js"></script>
+<script src="../js/constant.js"></script>
+<script src="../js/des.js"></script>
+<script src="../js/para.js"></script>
+<script>
+	iP = {};
+	var orderid = localStorage.getItem("orderid");
+	var userid = localStorage.getItem("userid");
+	var token = localStorage.getItem("token");
+	var source = localStorage.getItem("yyySource");
+	var cancelreason = "";
+	$(function() {
+		//根据团体颜色改变背景颜色
+	var insurecolor = localStorage.getItem("showColor");
+	$(".title").css("background-color",insurecolor);
+	
+		
+		var ot = localStorage.getItem("ORDERTYPE");
+		localStorage.removeItem("ORDERTYPE");
+		getOrderDetail(orderid, userid);
+		$("#back").click(function() {
+			if (ot) {
+				localStorage.setItem("ORDERTYPE", ot);
+			}
+			var back = request("back");
+			if (back == "1") {
+				window.location.href = "productBackList.html";
+			} else {
+				window.location.href = "AllOrder.html";
+			}
+		});
+		//申请退货
+		$("#exchangeGoods").click(function() {
+			localStorage.setItem("orderid", orderid);
+			window.location.href = "exchangeList.html";
+		});
+		//进度查询
+		$("#processSearch").click(function() {
+			localStorage.setItem("orderid", orderid);
+			window.location.href = "productBackProcess.html";
+		});
+		//取消退货申请
+		$("#exchangeCancel").click(function() {
+			confirm("确定要取消吗?", function() {
+				exchangeCancel(userid, orderid);
+			});
+		});
+		ShowMore();
+		//取消订单
+		$("#cancelOrder").click(function() {
+			openModal(orderid);
+		});
+		//立即支付
+		$("#pay").click(function() {
+			var hisName = $("#shopname").text();
+			var DRUGSUPPLIERCODE = $(".DRUGSUPPLIERCODE").text();
+			localStorage.setItem("hisName", hisName);
+			getOrderDet(orderid, userid, DRUGSUPPLIERCODE);
+		});
+		checkType();
+	});
+
+	function formatSeconds(value) {
+		var theTime = parseInt(value); // 秒
+		var theTime1 = 0; // 分
+		var theTime2 = 0; // 小时
+		var theTime3 = 0; //天
+		if (theTime > 60) {
+			theTime1 = parseInt(theTime / 60);
+			theTime = parseInt(theTime % 60);
+			if (theTime1 > 60) {
+				theTime2 = parseInt(theTime1 / 60);
+				if (theTime2 > 24) {
+					theTime3 = parseInt(theTime2 / 24);
+				}
+				theTime2 = parseInt(theTime2 % 24);
+				theTime1 = parseInt(theTime1 % 60);
+			}
+		}
+		var result = "";
+		//		var result = "" + parseInt(theTime) + "秒";
+		if (theTime1 > 0) {
+			result = "" + parseInt(theTime1) + "分钟" + result;
+		}
+		if (theTime2 > 0) {
+			result = "" + parseInt(theTime2) + "小时" + result;
+		}
+		if (theTime3 > 0) {
+			result = "" + parseInt(theTime3) + "天" + result;
+		}
+		return result;
+	}
+	//根据订单号获取订单信息
+	function getOrderDetail(orderid, userid) {
+		Loading();
+		var enResult = strEnc("[{\"yyyCode\":\"100102\",\"userId\":\"" + userid + "\",\"detailOrderNo\":\"" + orderid + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			beforeSend: function() {}, //添加loading信息
+			success: function(productInfo, textStatus) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == "1") {
+					if (productInfo.data.ORDER.SHIPPING.SHIPPING_NAME == "买家自提") {
+						$("#address").addClass("uhide");
+						$(".ztaddress").removeClass("uhide");
+						$(".ztaddress").text(productInfo.data.ORDER.CONSIGNEE.AREA + productInfo.data.ORDER.CONSIGNEE.ADDR + productInfo.data.ORDER.CONSIGNEE.TELEPHONE);
+					} else {
+						$("#shname").text(productInfo.data.ORDER.CONSIGNEE.NAME); //收货人
+						$("#shmobile").text(productInfo.data.ORDER.CONSIGNEE.TELEPHONE); //联系电话
+						$("#shaddress").text(productInfo.data.ORDER.CONSIGNEE.AREA + productInfo.data.ORDER.CONSIGNEE.ADDR);
+					}
+					if (productInfo.data.ORDER.INVOICE.length == 0) {
+						$("#fp").addClass("uhide");
+					} else {
+						if (productInfo.data.ORDER.INVOICE.INVOICE_TYPE == 0) {
+							$("#fptt").text("个人");
+						} else {
+							$("#fptt").text(productInfo.data.ORDER.INVOICE.INVOICE_TITLE);
+						}
+						$("#fpcontent").text(productInfo.data.ORDER.INVOICE.INVOICE_CONTENT);
+					}
+					$(".orderid").text(productInfo.data.ORDER.ORDER_ID); //订单号
+					$(".ps").text(productInfo.data.ORDER.SHIPPING.SHIPPING_NAME); //配送方式
+					$("#kd").text(productInfo.data.ORDER.SHIPPING.SHIPPING_NAME);
+					$("#totalmoney").text(parseFloat(productInfo.data.ORDER.TOTAL_AMOUNT).toFixed(2));
+					$("#creattime").text(productInfo.data.ORDER.CREATETIME);
+					$("#shopname").text(productInfo.data.ORDER.STORE_NAME);
+					$(".DRUGSUPPLIERCODE").text(productInfo.data.ORDER.STORE_CODE);
+					var timem = productInfo.data.ORDER.PAY_EXPIRE_TIME;
+					timem = formatSeconds(timem);
+					$("#sytime").text(timem);
+					var paymethod = productInfo.data.ORDER.PAY_METHOD;
+					if (paymethod == 0) {
+						paymethod = "在线支付";
+					} else if (paymethod == 1) {
+						$("#sybuy").addClass("uhide");
+						paymethod = "货到付款";
+					}
+					$(".paymethod").text(paymethod);
+					iP.append(productInfo.data.ORDER.ORDER_ITEMS);
+					var status = productInfo.data.ORDER.STATUS;
+					if (status == 4 || status == 5) {
+						//4 已收货待评价，5 已评价
+						$(".exchangeGoods,#exchangeGoods").removeClass("uhide");
+						$("#sybuy").addClass("uhide");
+					} else if (status == 7 || status == 8) {
+						//7 申请退款等待卖家同意，8 卖家已同意等待退货
+						$(".exchangeGoods,#exchangeCancel,#processSearch").removeClass("uhide");
+					} else if (status == 9 || status == 10 || status == 11) {
+						//9 已退货等待卖家退款,10 退款被拒绝 待评价,11 退款被拒绝 已评价
+						$(".exchangeGoods,#processSearch").removeClass("uhide");
+					} else if (status == 0) {
+						//未支付
+						$(".exchangeGoods,#cancelOrder,#pay").removeClass("uhide");
+					}
+					if (productInfo.data.ORDER.PAY_METHOD == 1 && productInfo.data.ORDER.STATUS == 1) //货到付款并且代发货
+					{
+						$(".exchangeGoods,#cancelOrder").removeClass("uhide");
+					}
+				}
+				noLoading();
+			}, //清掉loading信息
+			error: function(xmlHttpRequest, error) {
+				alert("网络连接错误！");
+				$(".noProduct").removeClass("uhide");
+				noLoading();
+			}
+		});
+	}
+	iP.append = function(data) {
+		var elem, clone = $("#list>div:first");
+		clone.siblings().remove();
+		for (var i in data) {
+			elem = clone.clone().removeClass("uhide");
+			elem.find(".name").text(data[i].NAME);
+			elem.find(".DRUGCODE").text(data[i].DRUG_CODE);
+			elem.find(".price").html("&yen;" + changeTwoDecimal_f(data[i].PRICE));
+			elem.find(".QUANTITY").html("×" + data[i].QUANTITY);
+			var url = data[i].THUMBNAIL_PIC || defaultImg;
+			url = "<img src='" + url + "' height='80px' width='80px'/>";
+			elem.find(".img").html(url);
+			$("#list").append(elem);
+			//点击商品时 到商品详细页面
+			elem.on("click", function() {
+				var DRUGCODE = $(this).find(".DRUGCODE").text(); //DRUGSUPPLIERCODE
+				var DRUGSUPPLIERCODE = $(".DRUGSUPPLIERCODE").text();
+				localStorage.setItem("DRUGCODE", DRUGCODE);
+				localStorage.setItem("DRUGSUPPLIERCODE", DRUGSUPPLIERCODE);
+				localStorage.setItem("pdBackPage", "productOrderDetail.html"); //从该页面到商品详情
+				window.location.href = "productDetail.html";
+			});
+		};
+	};
+	//取消退货申请
+	function exchangeCancel(userid, orderid) {
+		Loading();
+		var enResult = strEnc("[{\"yyyCode\":\"100106\",\"userId\":\"" + userid + "\",\"detailOrderNo\":\"" + orderid + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			beforeSend: function() {}, //添加loading信息
+			success: function(data) {
+				var data = JSON.parse(data);
+				if (data.success == "1") {
+					alert("取消退货申请成功！", function() {
+						window.location.href = "AllOrder.html";
+					});
+				} else {
+					alert("取消退货申请失败！", function() {
+						location.reload();
+					});
+				}
+				noLoading();
+			}, //清掉loading信息
+			error: function() {
+				noLoading();
+				alert("网络连接错误！");
+			}
+		});
+	}
+
+	function openModal(orderid) {
+		$("#modalwindow").fadeIn();
+	}
+
+	function closeModal(type) {
+		if (type == 0) {
+			$("#modalwindow").fadeOut();
+		} else if (type == 1) {
+			DeleteOrder(orderid, userid, cancelreason);
+			$("#modalwindow").fadeOut();
+		}
+	}
+
+	function checkType() {
+		var chkObj = document.getElementsByName("unit");
+		for (var i = 0; i < chkObj.length; i++) {
+			if (chkObj[i].checked) {
+				if (chkObj[i].value == "c1") {
+					cancelreason = "我不想买了";
+				} else if (chkObj[i].value == "c2") {
+					cancelreason = "信息填写错误，重新拍";
+				} else if (chkObj[i].value == "c3") {
+					cancelreason = "卖家缺货";
+				} else if (chkObj[i].value == "c4") {
+					cancelreason = "其他原因";
+				}
+			}
+		}
+	}
+	//取消订单
+	function DeleteOrder(orderid, userid, cancelText) {
+		var enResult = strEnc("[{\"yyyCode\":\"100021\",\"userID\":\"" + userid + "\",\"detailOrderNo\":\"" + orderid + "\",\"reason\":\"" + cancelText + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(productInfo) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == "1") {
+					window.location.href = "AllOrder.html";
+				} else {
+					alert(productInfo.message);
+				}
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！", function() {
+					$("#orderlist").html("");
+					$(".noProduct").removeClass("uhide");
+					$("#aaa").text("网络连接不上，请检查网络");
+				});
+			}
+		});
+	}
+	//根据订单号获取订单信息
+	function getOrderDet(orderid, userid, DRUGSUPPLIERCODE) {
+		var enResult = strEnc("[{\"yyyCode\":\"100032\",\"userId\":\"" + userid + "\",\"detailOrderNo\":\"" + orderid + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(productInfo) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == "1") {
+					var totalmoney = productInfo.data.ORDER.TOTAL_AMOUNT;
+					localStorage.setItem("allPrice", totalmoney);
+					var payId = productInfo.data.ORDER.DRUG_SUPPLIER_PAY;
+					var subPayId=productInfo.data.ORDER.DRUG_SUPPLIER_PAYSUB;
+					localStorage.setItem("payId", payId);
+					localStorage.setItem("subPayId",subPayId);
+					localStorage.setItem("hisName", productInfo.data.ORDER.STORE_NAME);
+					localStorage.setItem("orderid", productInfo.data.ORDER.ORDER_ID);
+					//					localStorage.setItem("price", );
+					//					localStorage.setItem("ship",);
+					isZF(payId, productInfo.data.ORDER.ORDER_ID, DRUGSUPPLIERCODE,subPayId);
+				}
+				ljzf = false;
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+				$("#orderlist").html("");
+				$(".noProduct").removeClass("uhide");
+				$("#aaa").text("网络连接不上，请检查网络");
+			}
+		});
+	}
+	//判断订单是否支付
+	function isZF(payId, orderid, DRUGSUPPLIERCODE,subPayId) {
+		var enResult = strEnc("[{\"yyyCode\":\"100127\",\"payId\":\"" + payId + "\",\"subPayId\":\"" + subPayId + "\",\"orderid\":\"" + orderid + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(productInfo) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == "1") {
+					if (productInfo.message[0].success == "false") {
+						var uri = "?allPrice=" + localStorage.getItem("allPrice") +
+							"&hisName=" + localStorage.getItem("hisName") +
+							"&orderid=" + orderid +
+							"&payId=" + payId +
+							"&subPayId=" + subPayId +
+							"&token=" + token +
+							"&userid=" + userid +
+							"&source=" + source;
+						window.location.href = "productjs.html" + uri;
+					} else if (productInfo.message[0].success) {
+						var status = productInfo.message[0].data.res;
+						if (status == "TRADE_SUCCESS" || status == "SUCCESS") {
+							alert("订单已支付，请勿重复支付");
+						} else {
+							var uri = "?allPrice=" + localStorage.getItem("allPrice") +
+								"&hisName=" + localStorage.getItem("hisName") +
+								"&orderid=" + orderid +
+								"&payId=" + payId +
+								"&subPayId=" + subPayId +
+								"&token=" + token;
+							"&userid=" + userid +
+								"&source=" + source;
+							window.location.href = "productjs.html" + uri;
+						}
+					}
+				} else {
+					alert("网络超时");
+				}
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+				$("#orderlist").html("");
+				$(".noProduct").removeClass("uhide");
+				$("#aaa").text("网络连接不上，请检查网络");
+			}
+		});
+	}
+</script>

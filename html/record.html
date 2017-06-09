@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>浏览记录</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			#header{width: 100%;position: fixed;top: 0px;left: 0px;z-index: 99;}
+			#list{padding-top: 3em;}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart>
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">浏览记录</div>
+					<div class="title-right" id="qk">
+						<div class="c1 fs9">清空</div>
+					</div>
+				</div>
+			</header>
+			<section id="list">
+				<div class="bc2 uhide">
+					<div class="ub pl6 pr8 h75 ubb ">
+						<div class=" ub-img img" style="width:40%"></div>
+						<div class=" pt5" style="width:60%">
+							<div class="ub fs8 fb pl4 lh16 h30 textoverflow">
+								<div class="name fsp14"></div>
+							</div>
+							<div class="ub fs8 pl4 lh16">
+								<div class="fs8 c4">&yen;</div>
+								<div class="fs8 c4 price"></div>
+							</div>
+							<div class=" fs8 pl4 lh16 shopname"></div>
+						</div>
+						<div class="uhide">
+							<div class="DRUGCODE"></div>
+							<div class="DRUGSUPPLIERCODE"></div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<div id="norecord" class="uhide tx-c">
+				暂无数据
+			</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+	</body>
+
+</html>
+<script>
+	iP = {};
+	var userid = localStorage.getItem("userid");
+	var RecordList = null;
+	$(function() {
+		//关闭页面
+		$("#back").click(function() {
+			window.location.href = "PersonalCenter.html";
+		});
+		userid = localStorage.getItem("userid");
+		getRecord();
+		//清空
+		$("#qk").click(function() {
+			confirm("确定清空吗?", function(){
+				removeRecord();
+			});
+		});
+	});
+	function removeRecord() {
+		localStorage.removeItem("record_" + userid);
+		$(".bc2").each(function(index, ele) {
+			if (index != 0) {
+				$(ele).remove();
+			} else {
+				$("#norecord").removeClass("uhide");
+			}
+		})
+	}
+
+	function getRecord() {
+		var record = localStorage.getItem("record_" + userid);
+		if (record != "" && record != null) {
+			record = JSON.parse(record);
+			if (userid == record.userid) {
+				iP.append(record.data);
+			} else {
+				$("#norecord").removeClass("uhide");
+			}
+		} else {
+			$("#norecord").removeClass("uhide");
+		}
+	}
+	iP.append = function(data) {
+		var elem, clone = $("#list>div:first");
+		for (var i in data) {
+			elem = clone.clone().removeClass("uhide");
+//			var name;
+//			if (data[i].name.length > 13) {
+//				name = data[i].name.substring(0, 13) + "...";
+//			} else {
+//				name = data[i].name;
+//			}
+			elem.find(".name").text(data[i].name);
+			elem.find(".price").html(changeTwoDecimal_f(data[i].price));
+			elem.find(".DRUGCODE").text(data[i].drugcode);
+			elem.find(".DRUGSUPPLIERCODE").text(data[i].DRUGSUPPLIERCODE);
+			elem.find(".shopname").text(data[i].shopname);
+			var url = data[i].img || defaultImg;
+			url = "<img src='" + url + "' height='110px' width='110px'/>";
+			elem.find(".img").html(url);
+			$("#list").append(elem);
+			//点击商品时 到商品详细页面
+			elem.on("click", function() {
+				var DRUGCODE = $(this).find(".DRUGCODE").text(); //DRUGSUPPLIERCODE
+				var DRUGSUPPLIERCODE = $(this).find(".DRUGSUPPLIERCODE").text();
+				localStorage.setItem("DRUGSUPPLIERCODE", DRUGSUPPLIERCODE);
+				localStorage.setItem("DRUGCODE", DRUGCODE);
+				localStorage.setItem("pdBackPage", "record.html"); //从该页面到商品详情
+				window.location.href = "productDetail.html";
+			});
+		};
+	};
+</script>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>资质证书</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<link rel="stylesheet" href="../css/scale.css">
+		<style>
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			#list, .nozz {
+				padding-top: 3em;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart>
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">资质证书</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<section id="list">
+				<div class="mt10 ml10 mr10 mb10 tx-c uhide">
+					<div class="ub-img img"></div>
+				</div>
+			</section>
+			<div class="uhide nozz tx-c mt10">该药房暂无资质证明</div>
+		</div>
+
+		<script src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/constant.js"></script>
+		<!--<script src="../js/budtrinity-0.1.3.min.js"></script>-->
+		<script type="text/javascript" src="../js/scale.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	$(function() {
+		//根据团体颜色改变背景颜色
+	var insurecolor = localStorage.getItem("showColor");
+	$(".title").css("background-color",insurecolor);
+	
+		$("#back").click(function() {
+			window.history.go(-1);
+		});
+		getZZZM();
+		//添加埋点
+//		eventBtn(this);
+	});
+
+	function getZZZM() {
+		var zzzm = localStorage.getItem("zzzm");
+		var hpname = new Array();
+		hpname = zzzm.split(",");
+		var elem, clone = $("#list>div:first");
+		clone.siblings().remove();
+		if (hpname.length >= 1) {
+			for (var i in hpname) {
+				elem = clone.clone().removeClass("uhide");
+				var url = hpname[i];
+				url = "<img src='" + url + "' height='100%' width='100%' onclick='touchScale(this)'/>";
+				elem.find(".img").html(url);
+				$("#list").append(elem);
+			}
+		} else {
+			$(".nozz").removeClass("uhide");
+		}
+	}
+	//埋点
+//	Trinity.init({
+//		app_key: "2a6b0d9fb0bbee6d06d563cd2fd10de68735fea5",
+//		url: point_URL,
+//		device_id: localStorage.getItem("device_id"), //需要从android SKD Trinity.sharedInstance().getDeviceId() 或者ios的SDK[BudtrinityDeviceInfo udid]中获取该值
+//		sdk_version: localStorage.getItem("sdk_version"),
+//		app_version: app_version,
+//		u_id: localStorage.getItem("userid"), //如果访问该页面时app已经登录过则需要赋值
+//		channel: "0000000000"
+//	});
+	//自定义事件
+//	function eventBtn(ob) {
+//		Trinity.add_event({
+//			key: "page", //资质证书
+//			"segmentation": { //设置自定义事件的键值对
+//				"page_id": "certificate",
+//				"page_name": "certificate.html"
+//			}
+//		});
+//	}
+</script>

@@ -1,0 +1,311 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>退货订单</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			#orderlist {
+				padding-top: 3em;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh">
+		<div id="page_0" class="up ub ub-ver">
+			<div id="orderlist"></div>
+			<div class="ub ub-f1 bc2 noProduct pt5 ubt  uhide ">
+				<div class="ub-img noproduct ml35"></div>
+				<div class="uhide noproduct"></div>
+				<div class="ub-ac mt30 ml5">
+					<div class="fs10">很抱歉！</div>
+					<div class="fs8" id="aaa">没有为您找到相关商品订单。</div>
+				</div>
+			</div>
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid fs10">退货订单</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<!--<div id="content" class="ubb h25 lh25 bc2 pl10 ">
+				<div class="">我的订单</div>
+			</div>-->
+			<div id="list">
+				<div class="uhide mt5">
+					<div class="bc2 mt5 testbutton">
+						<div class="ub h22 lh22  ubt pl10 pr10" onclick="toShop(this)">
+							<div class="ub ub-f1 fs8">
+								<div class="shopname"></div>
+								<!--<div class="oder fs7 ml3"></div>-->
+								<div style="width: 30px;background: url(../images/img26.png) no-repeat center;background-size: 24%;"></div>
+							</div>
+							<div class="uhide DRUGSUPPLIERCODE"></div>
+							<div class="ub fs7 c22 ">
+								<div class="status"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="plist">
+				<div class="ub bc2 pl6 pr8 h65 ub-ac ubt uhide">
+					<div class=" ub-img img" style="width:40%"></div>
+					<div style="width:60%">
+						<div class="ub fs10 fb pl4 ">
+							<div class="name fsp16"></div>
+						</div>
+						<div class="ub fs8 pl4 pt3">
+							<div class=" c4">&yen;</div>
+							<div class=" c4 price">130.5</div>
+						</div>
+						<div class="ub fs8 pl4 mt3">
+							<div>购买数量：</div>
+							<div class="ORDER_COUNT ml3"></div>
+						</div>
+					</div>
+					<div class="uhide">
+						<div class="orderids"></div>
+					</div>
+				</div>
+			</div>
+			<div id="pplist">
+				<div class=" bc2 ub h34 lh34 ubb ubt pl10 pr10 fs7 c14 ub-ac uhide">
+					<div class="ub-f1 ub">
+						<div class="fs8"> 实付款：&yen;</div>
+						<div class="countpay fs8"></div>
+					</div>
+					<div class="ub">
+						<div class="orderid uhide"></div>
+						<!--<div class=" h20 lh20 w60 tx-c c22 uba6 ml10 uhide exchangeGoods" id="exchangeGoods" onclick="exchangeGoods(this)">申请退货</div>-->
+						<div class=" h20 lh20 w60 tx-c c22 uba6 ml10 uhide exchangeCancel" id="exchangeCancel" onclick="exchangeCancel(this)">取消申请</div>
+						<div class=" h20 lh20 w60 tx-c c22 uba6 ml10 uhide processSearch" id="processSearch" onclick="processSearch(this)">进度查询</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<script type="text/javascript" src="../js/para.js"></script>
+	</body>
+
+</html>
+<script>
+	var userid;
+	iP = {};
+	userid = localStorage.getItem("userid");
+	var token=localStorage.getItem("token");
+	//页面加载
+	$(function() {
+		//获取退货商品列表
+		getOrderList(6, userid);
+		//返回上一页
+		$("#back").click(function() {
+			window.location.href = "PersonalCenter.html";
+		});
+	});
+	//获取订单列表
+	function getOrderList(status, userid) {
+		Loading(); //显示加载中
+		var enResult = strEnc("[{\"userID\":\"" + userid + "\",\"pharmacyCode\":\"\",\"detailOrderStatus\":\"" + status + "\",\"yyyCode\":\"100101\",\"u\":\""+userid+"\",\"t\":\""+token+"\"}]","100001","","");
+		$.ajax({
+			url: GLOBAL_URL + "?json="+enResult,
+			type: "GET",
+			timeout: 60000,
+			beforeSend: function() {}, //添加loading信息
+			success: function(productInfo, textStatus) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == "1") {
+					if (productInfo.data.length != 0) {
+						$(".deleteOrder").addClass("uhide");
+						$(".noProduct").addClass("uhide");
+						iP.append(productInfo.data);
+					} else {
+						$("#orderlist").html("");
+						$(".noProduct").removeClass("uhide");
+						$("#aaa").text("没有为您找到相关商品订单.");
+					}
+					noLoading();
+				} else {
+					noLoading();
+					$("#orderlist").html("");
+					$(".noProduct").removeClass("uhide");
+					$("#aaa").text("没有为您找到相关商品订单.");
+				}
+			}, //清掉loading信息
+			error: function(xmlHttpRequest, error) {
+				noLoading();
+				alert("网络连接错误！", function() {
+					$("#orderlist").html("");
+					$(".noProduct").removeClass("uhide");
+					$("#aaa").text("网络连接不上，请检查网络");
+				});
+			}
+		});
+	}
+	//插入数据
+	iP.append = function(data) {
+		var elem, clone = $("#list>div:first");
+		clone.siblings().remove();
+		var ppelem, ppclone = $("#pplist>div:first");
+		$("#orderlist").html("");
+		for (var i in data) {
+			elem = clone.clone().removeClass("uhide");
+			ppelem = ppclone.clone().removeClass("uhide");
+			elem.find(".shopname").text(data[i].DRUG_SUPPLIER_NAME);
+			elem.find(".DRUGSUPPLIERCODE").text(data[i].DRUG_SUPPLIER_CODE);
+			elem.find(".oder").text(data[i].DETAIL_ORDER_NO);
+			ppelem.find(".oder").text(data[i].DETAIL_ORDER_NO);
+			var status = "";
+			var orderid = "";
+			var statusNo = data[i].DETAIL_ORDER_STATUS;
+//			if (statusNo == 0) {
+//				status = "等待付款";
+//				ppelem.find(".cancelOrder").removeClass("uhide");
+//				ppelem.find(".ljfk").removeClass("uhide");
+//			} else if (statusNo == 1) {
+//				status = "等待发货";
+//				//ppelem.find(".fh").removeClass("uhide");
+//			} else if (statusNo == 2) {
+//				status = "等待收货";
+//				ppelem.find(".wl").removeClass("uhide");
+//				ppelem.find(".sh").removeClass("uhide");
+//			} else if (statusNo == 3) //
+//			{
+//				status = "交易成功";
+//				ppelem.find(".pj").removeClass("uhide");
+//			} else if (statusNo == 4 || statusNo == 10 || statusNo == 12 || statusNo  == 14) 
+//			{
+//				status = "未评价";
+//				ppelem.find(".pj").removeClass("uhide");
+//			} else if (statusNo == 5 || statusNo == 11 || statusNo == 13 || statusNo  == 15) {
+//				status = "已评价";
+//				ppelem.find(".pj").addClass("uhide");
+//				ppelem.find(".deleteOrder").removeClass("uhide");
+//			} else if(statusNo == 7 || statusNo == 8 || statusNo  == 9){
+//				status = "退货中";
+//			}
+			if (statusNo == 4 || statusNo == 5) {
+				//4 已收货待评价，5 已评价
+				$("#exchangeGoods", ppelem).removeClass("uhide");
+			} else if(statusNo == 7 || statusNo == 8){
+				//7 申请退款等待卖家同意，8 卖家已同意等待退货
+				$("#exchangeCancel,#processSearch", ppelem).removeClass("uhide");
+			} else if(statusNo == 9){
+				//9 已退货等待卖家退款
+				$("#processSearch", ppelem).removeClass("uhide");
+			} else if(statusNo > 9){
+				$("#processSearch", ppelem).removeClass("uhide");
+			}
+//			else if(statusNo == 10 || statusNo == 11){
+//				//10 退款被拒绝，待评价，11 退款被拒绝，已评价
+//				$("#exchangeGoods,#processSearch", ppelem).removeClass("uhide");
+//			} else if(statusNo > 11){
+//				$("#processSearch", ppelem).removeClass("uhide");
+//			}
+			orderid = data[i].DETAIL_ORDER_NO;
+			var statusContent = orderStatusSwitch(statusNo);
+//			elem.find(".status").text(status);
+			elem.find(".status").text(statusContent);
+			ppelem.find(".orderid").text(orderid);
+			elem.attr("id", data[i].DETAIL_ORDER_NO);
+			$("#orderlist").append(elem);
+			var datas = data[i].ITEMS;
+			var pelem, pclone = $("#plist>div:first");
+			for (var j in datas) {
+				pelem = pclone.clone().removeClass("uhide");
+				var name;
+				if (datas[j].NAME.length > 10) {
+					name = datas[j].NAME.substring(0, 10) + "...";
+				} else {
+					name = datas[j].NAME;
+				}
+				pelem.find(".name").text(name);
+				pelem.find(".price").text(changeTwoDecimal_f(datas[j].DRUG_PRICE));
+				pelem.find(".orderids").text(orderid);
+				pelem.find(".ORDER_COUNT").text(datas[j].ORDER_COUNT);
+				var url = datas[j].DRUG_IMG_URL;
+				url = "<img src='" + url + "' height='100px' width='100px'/>";
+				pelem.find(".img").html(url);
+				elem.append(pelem);
+//				pelem.on("click", function() {
+//					var orderid = $(this).find(".orderids").text(); //orderid
+//					localStorage.setItem("orderid", orderid);
+//					window.location.href = "productOrderDetail.html?back=1";
+//				});
+			}
+			ppelem.find(".countpay").text(changeTwoDecimal_f(data[i].DETAIL_ORDER_TOTAL));
+			pelem.after(ppelem);
+		};
+	};
+	//点击药店名称进入店铺首页
+	function toShop(dom) {
+		var _s = $(dom);
+		var c = $(dom).find(".DRUGSUPPLIERCODE").text();
+		localStorage.setItem("DRUGSUPPLIERCODE", c);
+		window.location.href = "shop.html";
+	}
+	//申请退货
+	function exchangeGoods(dom) {
+		var orderid = $(dom).parent().find(".orderid").text();
+		localStorage.setItem("orderid",orderid);
+		window.location.href = "exchangeList.html?type=1";
+	}
+	//进度查询
+	function processSearch(dom){
+		var orderid = $(dom).parent().find(".orderid").text();
+		localStorage.setItem("orderid",orderid);
+		window.location.href = "productBackProcess.html?back=1";
+	}
+	//取消退货申请
+	function exchangeCancel(dom){
+		confirm("确定要取消吗?", function(){
+			var orderid = $(dom).parent().find(".orderid").text();
+			Loading();
+			var enResult = strEnc("[{\"yyyCode\":\"100106\",\"userId\":\"" + userid + "\",\"detailOrderNo\":\"" + orderid + "\"}]", "100001", "", "");
+			$.ajax({
+				url: GLOBAL_URL + "?json=" + enResult,
+				type: "GET",
+				timeout: 60000,
+				beforeSend: function() {}, //添加loading信息
+				success: function(data) {
+					var data = JSON.parse(data);
+					if (data.success == "1") {
+						alert("取消退货申请成功！", function(){
+							location.reload();
+						});
+					} else {
+						alert("取消退货申请失败！", function(){
+							location.reload();
+						});
+					}
+					noLoading();
+				}, //清掉loading信息
+				error: function() {
+					noLoading();
+					alert("网络连接错误！");
+				}
+			});
+		}, function(){
+			return false;
+		});
+	}
+</script>

@@ -1,0 +1,284 @@
+@CHARSET "UTF-8";
+.clear {
+	clear: both;
+	width: 100%;
+	height: 0;
+}
+ul.tab_title {
+	list-style-type: none;
+	border: 1px solid #ddd;
+	display: -webkit-box;
+	display: box;
+	background-color: #ffffff;
+}
+.tab_title>li {
+	text-align: center;
+	-webkit-box-flex: 1;
+	-box-flex: 1;
+	overflow: hidden;
+}
+/*li.tabs_current_tab {
+	color: #8f8f8f;
+	border-bottom: 2px solid #38A3F5;
+	margin-bottom: -1px;
+}*/
+.rcBanner{
+	width: 100%;
+	height: 100px;
+	background: url(../images/couponBanner.jpg) no-repeat center;
+	background-size: auto 100%;
+}
+.couponItem {
+	width: 90%;
+	font-size: 12px;
+	border: 4px solid;
+	border-top: none;
+	border-bottom: none;
+	margin: 10px auto;
+	background: url(../images/couponBg.png) repeat top left;
+	position: relative;
+}
+.couponItem .couponContent, .couponItem .clear {
+	border: none;
+	border-top: 4px solid;
+}
+.couponItem:before, .couponItem:after {
+	content: " ";
+	width: 4px;
+	height: 100%;
+	position: absolute;
+	top: 0;
+}
+.couponMoney, .couponMsg {
+	float: left;
+	height: 100%;
+	text-align: center;
+	position: relative;
+}
+.couponMoney {
+	width: 30%;
+	font-size: 48px;
+	margin-top: 35px;
+	/*font-size: 60px;
+    margin-top: 25px;*/
+	/*font-size: 36px;
+    margin-top: 40px;*/
+	/*font-weight: bold;*/
+}
+.couponMsg {
+	width: 70%;
+	padding: 5px 0;
+}
+.couponMoney:before {
+	content: "￥";
+	font-size: 24px;
+	position: absolute;
+	top: -18px;
+	left: 8px;
+}
+.couponDeadDate {
+	color: #646464;
+}
+.couponHead {
+	font-size: 24px;
+}
+.couponHead, .couponUseCtn {
+	line-height: 24px;
+}
+.couponUseNow {
+	height: 25px;
+	line-height: 25px;
+	margin-top: 5px;
+	font-size: 14px;
+}
+.couponUseNow>span {
+	color: #FFFFFF;
+	padding: 3px 30px;
+	border-radius: 20px;
+}
+.shopName {
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	background-color: #666;
+	color: #e0e0e0;
+	border-radius: 5px;
+	padding: 1px 5px;
+}
+/*未使用*/
+.useAble.couponItem, .useAble .couponContent, .useAble .clear {
+	border-color: #ef3737;
+}
+.useAble .couponMoney, .useAble .couponHead {
+	color: #ff7200;
+}
+.useAble .couponUseNow>span {
+	background-color: #ef3737;
+}
+.useAble.couponItem:before {
+	background: url(../images/left.png) repeat-y top left;
+	background-size: 100%;
+	left: -8px;
+}
+.useAble.couponItem:after {
+	background: url(../images/right.png) repeat-y top right;
+	background-size: 100%;
+	right: -8px;
+}
+/*已使用*/
+.hasUsed.couponItem, .hasUsed .couponContent, .hasUsed .clear {
+	border-color: #828282;
+}
+.hasUsed .couponMoney, .hasUsed .couponHead {
+	color: #9f9f9f;
+}
+.hasUsed .couponUseNow>span {
+	background-color: #828282;
+}
+.hasUsed.couponItem:before {
+	background: url(../images/left1.png) repeat-y top left;
+	background-size: 100%;
+	left: -8px;
+}
+.hasUsed.couponItem:after {
+	background: url(../images/right1.png) repeat-y top right;
+	background-size: 100%;
+	right: -8px;
+}
+.couponStatus1, .couponStatus2 {
+	width: 50px;
+	height: 50px;
+	position: absolute;
+	bottom: -10px;
+	right: -10px;
+	z-index: 50;
+}
+.couponStatus1 {
+	background: url(../images/hasUsed.png) no-repeat center;
+	background-size: 100%;
+}
+.couponStatus2 {
+	background: url(../images/overdue.png) no-repeat center;
+	background-size: 100%;
+}
+/**
+ * 领取优惠券页面 
+ */
+.tips {
+	margin-top: 10px;
+	height: 30px;
+	line-height: 30px;
+	font-size: 16px;
+	padding-left: 15px;
+	border-left: 3px solid #f19149;
+}
+.tips:after {
+	content: "领取立减，惠爽不停";
+	position: absolute;
+	right: 15px;
+	font-size: 14px;
+	color: #AAA;
+}
+.rclItem {
+	position: relative;
+	margin: 10px 15px;
+	/*height: 86px;*/
+	border: 1px solid #E5E5E5;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+/*.rclLayer {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 2;
+	-webkit-border-top-left-radius: 3px;
+	-webkit-border-top-right-radius: 3px;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+}*/
+.rclTitle1, .rclTitle2 {
+	position: relative;
+	height: 18px;
+	line-height: 18px;
+	-webkit-border-top-left-radius: 3px;
+	-webkit-border-top-right-radius: 3px;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	font-size: 12px;
+	color: #FFFFFF;
+	padding: 0px 10px;
+}
+.rclTitle1 {
+	background-color: #f19149;
+}
+.rclTitle2 {
+	background-color: #38a3f5;
+}
+.rclTitle1:after, .rclTitle2:after {
+	content: "";
+	position: absolute;
+	left: 0;
+	bottom: -4px;
+	width: 100%;
+	height: 4px;
+}
+.rclTitle1:after {
+	background: url(../images/b1.png) repeat-x left top;
+	background-size: auto 100%;
+}
+.rclTitle2:after {
+	background: url(../images/b2.png) repeat-x left top;
+	background-size: auto 100%;
+}
+.rclValidity {
+	position: absolute;
+	right: 10px;
+}
+.rclDetail {
+	padding: 10px;
+	font-size: 12px;
+	color: #666666;
+	line-height: 14px;
+}
+.rclFunc {
+	padding: 10px;
+	width: 60px;
+	text-align: center;
+}
+.rcldName {
+	font-size: 14px;
+	color: #333333;
+	line-height: 24px;
+	font-weight: bold;
+}
+.rclfMoney {
+	color: #ff0018;
+	font-size: 14px;
+	font-weight: bold;
+	margin-top: 5px;
+}
+.rclfReceive {
+	background-color: #f19149;
+	text-align: center;
+	color: #FFFFFF;
+	font-size: 12px;
+	padding: 3px 0;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	margin-top: 5px;
+}
+.rclfHasUsed{
+	position: absolute;
+	background: url(../images/used.png) no-repeat center;
+	background-size: 100%;
+	width: 70px;
+	height: 60px;
+	bottom: 0;
+	right: 0;
+	filter: alpha(opacity=50);
+	opacity: 0.5;
+}

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>商品列表页面</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<link rel="stylesheet" href="../css/ui-input.css" />
+		<style>
+			.totalcount {
+				width: 100%;
+				text-align: center;
+				position: fixed;
+				bottom: 12px;
+				font-size: 12px;
+			}
+			
+			#totalcount {
+				padding: 5px 12px;
+				background-color: rgba(0, 0, 0, 0.5);
+				color: #FFFFFF;
+				border-radius: 20px;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh">
+		<div class="up ub ub-ver">
+			<!-- 页头 -->
+			<div class="title" style="position: fixed;width: 100%;z-index: 99;padding: 0px;top: 0px;left: 0px;">
+				<div id="back" class="ml5 mr5">
+					<div class="ub-img img70"></div>
+				</div>
+				<div class="ub ub-f1 bc2 pl3 ub-ac uc-a3 h20 lh20  ">
+					<div class="ub ub-f1 bc2 pl5 pr5 ub-ac uc-a7 h18">
+						<div class="ub-img img1"></div>
+						<div class="ub-f1 uinput">
+							<input id="txtSearch" class="fs8 h30 uo" placeholder="搜索商品" />
+						</div>
+					</div>
+				</div>
+				<div class="toSearch" style="opacity: 0;filter: alpha(opacity = 0);width: 0;height: 0;">
+					<input type="submit" value="" />
+				</div>
+				<div class="title-right1 ub ub-ac toSearch">
+					<div class="fs10 c1">搜索</div>
+				</div>
+			</div>
+			<!-- 内容 -->
+			<div class="bc2">
+				<!-- 商品筛选框-->
+				<div class="ub ubb h30 ub-ac tx-c pl8 pr8 bc2" id="sx" style="position: fixed;width: 100%;z-index: 99;top: 3em;left: 0px;">
+					<div class="ub ub-f1 c3" id="zh">
+						<div class="fs8">综合排序</div>
+					</div>
+					<!--<div class="c9">|</div>-->
+					<div class="ub ub-f1 tx-c" id="xl">
+						<div class="fs8">销量</div>
+						<div class="ub-img img16 mt5" id="xlimg"></div>
+					</div>
+					<!--<div class="c9">|</div>-->
+					<div class="ub ub-f1 tx-c" id="jg">
+						<div class="fs8">价格</div>
+						<div class="ub-img img17 mt5 " id="jgimg"></div>
+					</div>
+					<!--<div class="c9">|</div>-->
+					<div class="ub ub-f1 tx-c" id="pj">
+						<div class="fs8">评价</div>
+						<div class="ub-img img16 mt5" id="pjimg"></div>
+					</div>
+				</div>
+				<!--商品列表-->
+				<section id="list" style="padding-top: 6em;">
+					<!--1-->
+					<div class="ub pr5 pl3 ubb uhide">
+						<div class="ub ub-ac ub-img img tx-c" style="width:35%"></div>
+						<div class="pt4 pr5" style="width:63%">
+							<div class="ub fs8 c19 lh15 h30 textoverflow pt3">
+								<div class="name fs10 fb"></div>
+							</div>
+							<div class="ub ub-ac fs8 c4 h18 lh18">
+								<div>&yen;</div>
+								<div class=" price">130.5</div>
+								<div class="fs6 pl1 pr2 h12 lh12 ub-ac tx-c ml4 mr4 otc">OTC</div>
+								<div class="fs6 pl2 pr2 h15 lh15 tx-c act mr4 uhide">秒杀</div>
+								<div class="fs6 pl2 pr2 h15 lh15 tx-c act1 mr4 uhide">包邮</div>
+								<div class="fs6 pl2 pr2 h15 lh15 tx-c act2 mr4 uhide">团购</div>
+								<!--<div class=" c20">运费：&yen;</div>
+								<div class="ship c20"></div>-->
+							</div>
+							<!--<div class="ub fs8 c2 h18 lh18">
+								<div>月成交：</div>
+								<div class="buycount"></div>
+								<div>笔&nbsp;|&nbsp;评价：</div>
+								<div class="comments"></div>
+							</div>-->
+							<!--<div class="ub pt2">
+								<div class="fs6 w30 h12 lh12 ub-ac tx-c mr4 otc">OTC</div>
+								<div class="fs6 pl2 pr2 h15 lh15 tx-c act mr4 uhide"></div>
+								<div class="fs6 pl2 pr2 h15 lh15 tx-c act1 mr4 uhide"></div>
+							</div>-->
+							<div class="ub ub-ac">
+								<div class="fs8 c20 suppliername"></div>
+							</div>
+						</div>
+						<div class="uhide">
+							<div class="DRUGCODE"></div>
+							<div class="DRUGSUPPLIERCODE"></div>
+						</div>
+					</div>
+					<!---->
+				</section>
+				<div class="uhide ub noProduct mb10" style="margin-top: 3.6em;">
+					<div class="ub-img noproduct ml35"></div>
+					<div class="ub-ac mt30 ml5">
+						<div class="fs10">很抱歉！</div>
+						<div class="fs8">没有为您找到相关商品。</div>
+					</div>
+				</div>
+				<div class="uhide totalcount">
+					<span id="totalcount"></span>
+				</div>
+				<!-- 上滑加载下一页样式s -->
+				<div id="slideUp">
+					<!-- 正在加载 -->
+					<div id="slideUp1">
+						<div class="ub ml60">
+							<div class="ub-img jz"></div>
+							<div class="fs8">正在加载...</div>
+						</div>
+					</div>
+					<!-- 加载完毕 -->
+					<div id="slideUp2">
+						<p>所有商品已加载完毕</p>
+					</div>
+				</div>
+				<!-- 上滑加载下一页样式e -->
+			</div>
+		</div>
+		<div id="gotop"></div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/para.js"></script>
+		<script src="../js/des.js"></script>
+		<!--<script src="../js/budtrinity-0.1.3.min.js"></script>-->
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	var name;
+	window.onbeforeunload = function() {
+		localStorage.removeItem("TOTALCOUNT");
+	}
+	iP = {};
+	var loadPage = true; //是否可以上滑加载下一页
+	localStorage.setItem("SORTWAY", 0);
+	//获取用户id
+	var userid = localStorage.getItem("userid");
+	//页面加载
+	$(function() {
+		//根据团体颜色改变背景颜色
+	var insurecolor = localStorage.getItem("showColor");
+	$(".title").css("background-color",insurecolor);
+	
+		goTop();
+		name = localStorage.getItem("pname");
+		if (name) {
+			$("#txtSearch").val(name);
+			getProduct(name, 1);
+		};
+		//返回上一页
+		$("#back").on("click", function() {
+			window.location = "productSearch.html";
+		});
+		//到商品搜索页面
+		$("#txtSearch").click(function() {
+			window.location = "productSearch.html";
+		});
+		//销量排序
+		$("#xl").click(function() {
+			slideUpStep3();
+			$("#list>div:first").siblings().remove();
+			$(this).addClass("c3").removeClass("c2").siblings().addClass("c2").removeClass("c3");
+			if ($("#xlimg").hasClass("img17")) {
+				getProduct(name, 1, 'sales', 'sales_desc');
+				localStorage.setItem("SORTWAY", 1);
+				$("#xlimg").removeClass("img17").addClass("img16");
+			} else {
+				getProduct(name, 1, 'sales', 'sales_asc');
+				localStorage.setItem("SORTWAY", 2);
+				$("#xlimg").removeClass("img16").addClass("img17");
+			}
+		});
+		//价格排序
+		$("#jg").click(function() {
+			slideUpStep3();
+			$("#list>div:first").siblings().remove();
+			$(this).addClass("c3").removeClass("c2").siblings().addClass("c2").removeClass("c3");
+			if ($("#jgimg").hasClass("img17")) {
+				getProduct(name, 1, 'price', 'price_desc');
+				localStorage.setItem("SORTWAY", 3);
+				$("#jgimg").removeClass("img17").addClass("img16");
+			} else {
+				getProduct(name, 1, 'price', 'price_asc');
+				localStorage.setItem("SORTWAY", 4);
+				$("#jgimg").removeClass("img16").addClass("img17");
+			}
+		});
+		//评价排序
+		$("#pj").click(function() {
+			slideUpStep3();
+			$("#list>div:first").siblings().remove();
+			$(this).addClass("c3").removeClass("c2").siblings().addClass("c2").removeClass("c3");
+			if ($("#pjimg").hasClass("img16")) {
+				getProduct(name, 1, 'comment', 'comment_asc');
+				localStorage.setItem("SORTWAY", 5);
+				$("#pjimg").removeClass("img16").addClass("img17");
+			} else {
+				getProduct(name, 1, 'comment', 'comment_desc');
+				localStorage.setItem("SORTWAY", 6);
+				$("#pjimg").removeClass("img17").addClass("img16");
+			}
+		});
+		//综合排序
+		$("#zh").click(function() {
+			slideUpStep3();
+			$("#list>div:first").siblings().remove();
+			$(this).addClass("c3").removeClass("c2").siblings().addClass("c2").removeClass("c3");
+			getProduct(name, 1);
+			localStorage.setItem("SORTWAY", 0);
+		});
+		slideUp("list", 55, getProduct);
+		//添加埋点
+//		eventBtn(this);
+	});
+	//获取商品列表方法
+	function getProduct(name, pageNo, orderBy, order) {
+		loadPage = false;
+		var pn = pageNo;
+		Loading(); //显示加载中
+		var json = null;
+		if(orderBy){
+			json = strEnc("[{\"name\":\"" + name + "\",\"yyyCode\":\"100004\",\"groupCode\":\""+localStorage.getItem("insureCode")+"\",\"source\":\""+localStorage.getItem("yyySource")+"\",\"goods_class\":\"\",\"pageSize\":\"10\",\"pageNo\":\"" + pageNo + "\",\"" + orderBy + "\":\"" + order + "\"}]", "100001", "", "");
+		} else {
+			json = strEnc("[{\"name\":\"" + name + "\",\"yyyCode\":\"100004\",\"groupCode\":\""+localStorage.getItem("insureCode")+"\",\"source\":\""+localStorage.getItem("yyySource")+"\",\"goods_class\":\"\",\"pageSize\":\"10\",\"pageNo\":\"" + pageNo + "\"}]", "100001", "", "");
+		}
+		$.post(GLOBAL_URL, {
+			"json": json
+		}).success(function(data) {
+			var productInfo = JSON.parse(data);
+			localStorage.removeItem("TOTALCOUNT");
+			if (productInfo.success == "1") {
+				localStorage.setItem("TOTALCOUNT", productInfo.head.total_count);
+				if (productInfo.data.length != 0) {
+					$(".noProduct").addClass("uhide");
+					totalPage = productInfo.head.total_page;
+					if (pageNo < totalPage) {
+						pageNo = parseInt(pageNo) + 1;
+						localStorage.setItem("PAGENO", pageNo);
+					} else {
+						localStorage.removeItem("PAGENO");
+					}
+					iP.append(productInfo.data, pn);
+					loadPage = true;
+				} else {
+					$("#list>div:first").siblings().remove();
+					$(".noProduct").removeClass("uhide");
+					$("#sx").removeClass("uhide");
+				}
+			} else {
+				$("#list>div:first").siblings().remove();
+				$(".noProduct").removeClass("uhide");
+			}
+			noLoading();
+		}).error(function() {
+			noLoading();
+			loadPage = true;
+		});
+	}
+	//插入数据
+	iP.append = function(data, pageNo) {
+		if (pageNo == 1) {
+			$("#list>div:first").siblings().remove();
+		}
+		var elem, clone = $("#list>div:first");
+		for (var i in data) {
+			elem = clone.clone().removeClass("uhide");
+			elem.find(".name").text(data[i].NAME);
+			var price = "";
+			if (data[i].PROMOTION_PRICE != "") {
+				price = data[i].PROMOTION_PRICE;
+			} else {
+				price = data[i].DRUG_PRICE;
+			}
+			elem.find(".price").html(changeTwoDecimal_f(price));
+			elem.find(".ship").text(data[i].DRUG_SHIP);
+			elem.find(".buycount").text(data[i].BUY_COUNT);
+			elem.find(".comments").text(data[i].COMMENTS);
+			elem.find(".suppliername").text(data[i].DRUG_SUPPLIER_NAME);
+			elem.find(".DRUGCODE").text(data[i].DRUG_CODE);
+			elem.find(".DRUGSUPPLIERCODE").text(data[i].DRUG_SUPPLIER_CODE);
+			if (data[i].IS_OTC == 1) {
+				elem.find(".otc").removeClass("uhide").addClass("otcborder");
+			} else {
+				elem.find(".otc").addClass("uhide");
+			}
+			//判断是否参加活动
+			if (data[i].PROMOTION_TYPE.indexOf("seckill") > -1) //秒杀
+			{
+				elem.find(".act").removeClass("uhide");
+			}
+			if (data[i].PROMOTION_TYPE.indexOf("freedly") > -1) //包邮
+			{
+				elem.find(".act1").removeClass("uhide");
+			}
+			if (data[i].PROMOTION_TYPE.indexOf("teambuy") > -1) //团购
+			{
+				elem.find(".act2").removeClass("uhide");
+			}
+			var url = data[i].DRUG_IMG_URL || defaultImg;
+			url = "<img src='" + url + "' height='110px' width='110px'/>";
+			elem.find(".img").html(url);
+			$("#list").append(elem);
+			//点击商品时 到商品详细页面
+			elem.on("click", function() {
+				var DRUGCODE = $(this).find(".DRUGCODE").text(); //DRUGSUPPLIERCODE
+				var DRUGSUPPLIERCODE = $(this).find(".DRUGSUPPLIERCODE").text();
+				localStorage.setItem("DRUGCODE", DRUGCODE);
+				localStorage.setItem("DRUGSUPPLIERCODE", DRUGSUPPLIERCODE);
+				localStorage.setItem("pdBackPage", "productList.html"); //从该页面到商品详情
+				window.location.href = "productDetail.html";
+			});
+		};
+	};
+	//搜索商品
+	$(".toSearch").click(function(event) {
+		event.preventDefault();
+		var pname = $.trim($("#txtSearch").val());
+		if (pname.length > 50) {
+			alert("搜索的关键字不能超过50个字！");
+		} else if (pname != "") {
+			localStorage.setItem("pname", pname); //传给下一个页面
+			//先得到用户之前搜索的记录
+			var history = window.localStorage.getItem("historyList");
+			if (history == null) history = "";
+			if (history.indexOf(pname + "") <= 0) {
+				if (history != "null") {
+					history = history + "|" + pname;
+				} else {
+					history = "|" + pname;
+				}
+			}
+			//存到用户的历史记录
+			localStorage.setItem("historyList", history);
+			//用户搜索商品，传搜索商品名
+			window.location.href = "productList.html";
+		} else {
+			alert("您没有搜索任何商品，请输入商品名！");
+		}
+	});
+	//第一步：上滑过程 
+	function slideUpStep1(dist) { // dist 下滑的距离，用以拉长背景模拟拉伸效果 
+		var slideUp1 = document.getElementById("slideUp1"),
+			slideUp2 = document.getElementById("slideUp2");
+		slideUp2.style.display = "none";
+		slideUp1.style.display = "block";
+		slideUp1.style.height = (parseInt("20px") + dist) + "px";
+	}
+	//第二步：上滑，松开
+	function slideUpStep2(callback) {
+		var slideUp1 = document.getElementById("slideUp1"),
+			slideUp2 = document.getElementById("slideUp2");
+		slideUp1.style.display = "block";
+		slideUp1.style.height = "20px";
+		slideUp2.style.display = "none";
+		var success = true;
+		//刷新数据
+		if (callback) {
+			success = callback();
+		}
+		return success;
+	}
+	//第三步：加载完成，回归之前状态 
+	function slideUpStep3() {
+		var slideUp1 = document.getElementById("slideUp1"),
+			slideUp2 = document.getElementById("slideUp2");
+		$(slideUp1).hide();
+		$(slideUp2).hide();
+	}
+	//第四步：所有商品加载完成
+	function slideUpStep4() {
+		var slideUp1 = document.getElementById("slideUp1"),
+			slideUp2 = document.getElementById("slideUp2");
+		slideUp1.style.display = "none";
+		slideUp2.style.height = "20px";
+		slideUp2.style.display = "block";
+	}
+	//上滑加载
+	function slideUp(contentId, num, callback) {
+		var _start = 0,
+			_end = 0,
+			_content = document.getElementById(contentId);
+//		_content.removeEventListener();
+		var ah = window.screen.availHeight;
+		_content.addEventListener('touchmove', function() {
+			var tc = localStorage.getItem("TOTALCOUNT");
+			if (tc) {
+				var ct = "共 " + tc + " 条";
+				$("#totalcount").html(ct);
+				$(".totalcount").removeClass("uhide");
+			}
+			var yn = ynAddEvent(num);
+			if (!yn) return;
+			_content.addEventListener("touchstart", touchStart, false);
+			_content.addEventListener("touchmove", touchMove, false);
+		}, false);
+		_content.addEventListener('touchmove', function() {
+			setTimeout(function() {
+				$(".totalcount").addClass('uhide');
+			}, 500);
+		}, false);
+
+		function touchStart(event) {
+			var yn = ynAddEvent(num);
+			if (!yn) return;
+			var touch = event.targetTouches[0];
+			_start = touch.pageY;
+		}
+
+		function touchMove(event) {
+			var yn = ynAddEvent(num);
+			if (!yn) return;
+			var touch = event.targetTouches[0];
+			_end = (_start - touch.pageY);
+			if (_end > 0) {
+				touchEnd(event);
+			}
+		}
+
+		function touchEnd(event) {
+			var pageNo = localStorage.getItem("PAGENO");
+			if (pageNo) {
+				if (loadPage) {
+					var CLASSIDPAGE = localStorage.getItem("CLASSIDPAGE");
+					var sw = localStorage.getItem("SORTWAY");
+					if (sw == 0) {
+						getProduct(name, pageNo);
+					} else if (sw == 1) {
+						getProduct(name, pageNo, 'sales', 'sales_desc');
+					} else if (sw == 2) {
+						getProduct(name, pageNo, 'sales', 'sales_asc');
+					} else if (sw == 3) {
+						getProduct(name, pageNo, 'price', 'price_desc');
+					} else if (sw == 4) {
+						getProduct(name, pageNo, 'price', 'price_asc');
+					} else if (sw == 5) {
+						getProduct(name, pageNo, 'comment', 'comment_asc');
+					} else if (sw == 6) {
+						getProduct(name, pageNo, 'comment', 'comment_desc');
+					}
+					slideUpStep3();
+				}
+			} else {
+				slideUpStep4();
+				setTimeout(slideUpStep3, 500);
+			}
+		}
+
+		function ynAddEvent() {
+			var bh = $(_content).height(),
+				st = $("body").scrollTop();
+			if ((ah + st) >= (bh + num)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+	//埋点
+//	Trinity.init({
+//		app_key: "2a6b0d9fb0bbee6d06d563cd2fd10de68735fea5",
+//		url: point_URL,
+//		device_id: localStorage.getItem("device_id"), //需要从android SKD Trinity.sharedInstance().getDeviceId() 或者ios的SDK[BudtrinityDeviceInfo udid]中获取该值
+//		sdk_version: localStorage.getItem("sdk_version"),
+//		app_version: app_version,
+//		u_id: localStorage.getItem("userid"), //如果访问该页面时app已经登录过则需要赋值
+//		channel: "0000000000"
+//	});
+//	//自定义事件
+//	function eventBtn(ob) {
+//		Trinity.add_event({
+//			key: "page", //商品搜索列表
+//			"segmentation": { //设置自定义事件的键值对
+//				"page_id": "productList",
+//				"page_name": "productList.html"
+//			}
+//		});
+//	}
+</script>

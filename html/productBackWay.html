@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>退货信息完善</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<link rel="stylesheet" href="../css/ui-input.css">
+		<link rel="stylesheet" href="../plugin/diyUpload/css/diyUpload.css" />
+		<link rel="stylesheet" href="../plugin/diyUpload/css/webuploader.css" />
+		<style>
+			#header {width: 100%;position: fixed;top: 0px;left: 0px;z-index: 99;}
+			#content {padding-top: 3em;}
+			input, textarea{outline: none;}
+			.listContent{width: 100%;}
+			/*.backway1{margin: 0px 18px 0px 0px;}*/
+			.add-btn, .webuploader-container {
+				position: relative;
+				display: inline-block;
+				width: 63px;
+				height: 63px;
+				margin-right: 10px;
+				/*border: 2px dotted #828282;*/
+				border: 2px dotted #38a3f5;
+				border-radius: 5px;
+				vertical-align: middle;
+				margin-left: 5px;
+			}
+			.webuploader-pick{
+				width: 63px;
+				height: 63px;
+			}
+			.add-btn .plus, i.upload/*,.webuploader-pick*/ {
+				position: absolute;
+				top: 32px;
+				left: 24px;
+				width: 29px;
+				height: 4px;
+				/*background: #828282;*/
+				background: #38a3f5;
+				border-radius: 4px;
+			}
+			.add-btn .plus:after, i.upload:after/*,.webuploader-pick:after*/ {
+				content: "";
+				position: absolute;
+				top: -13px;
+				left: 12px;
+				width: 4px;
+				height: 29px;
+				/*background: #828282;*/
+				background: #38a3f5;
+				border-radius: 4px;
+			}
+			.diyUploadChoose{
+				position: absolute;
+				top: 26px;
+				left: 80px;
+				width: 121px;
+				height: 15px;
+				background: url(../images/add-pic-guide.png) no-repeat center center;
+				background-size: 121px 15px;
+			}
+			.diyButton{
+				display: none;
+			}
+			.webuploader-element-invisible {
+				width: 63px;
+				height: 63px;
+			}
+			.parentFileBox>.fileBoxUl>li:hover .diyFileName, .diyFileName{
+				display: none;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh">
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid fs10">退货信息完善</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<div class="content" id="content" style='width:100%;overflow-x:hidden;overflow-y:auto;margin-bottom: 20px;'>
+				<div class="pl5 pr5 pb5 bc2 ubb ubt mb5">
+					<div class="h25 lh25">退货列表</div>
+					<div id="list" class="c2 bc2 uc-a2 uinput">
+						<div class="listContent h35 ubt uhide">
+							<div class="repairName h20 lh20 fs9" style="overflow: hidden;"></div>
+							<div class="ub c14 fs8 h15 lh15">
+								<div>退货数量：</div>
+								<div class="repairNum">1</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="pl5 pr5 bc2 ubb ubt mb5">
+					<table style="width: 100%;">
+						<tr class="h20">
+							<td>联系人：</td>
+							<td>
+								<input name="userName" class="input" />
+							</td>
+						</tr>
+						<tr class="h20">
+							<td>手机号码：</td>
+							<td>
+								<input type="tel" name="telphone" class="input" maxlength="11" oninput="value=this.value.replace(/\D+/g,'')" />
+							</td>
+						</tr>
+					</table>
+				</div>
+				<!-- 问题描述 s-->
+				<div class="pl5 pr5 pb5 bc2 ubb ubt mb5">
+					<div class="h25 lh25">问题描述</div>
+					<div class="ub h50 c2 bc2 uc-a2 uinput">
+						<textarea class="fs8" maxlength="200" name="pDecrible" style="resize: none; box-sizing: border-box;border: 1px solid #cccccc;" placeholder="请您在此描述详细问题"></textarea>
+					</div>
+				</div>
+				<!-- 问题描述 e-->
+				<!-- 上传图片 s-->
+				<div class="pl5 pr5 pb5 bc2 ubb ubt mb5" style="position: relative;">
+					<div class="h25 lh25">上传图片</div>
+					<div style="line-height: 67px;position: relative;">
+						<i class="upload uhide"></i>
+						<div id="diyUpload"></div>
+						<div class="diyUploadChoose uhide"></div>
+					</div>
+					<!--<div class="diyUploadTips c14 mt5" style="font-size: 12px;">最多上传三张，每张不超过5M，支持JPG、BMP、PNG</div>-->
+					<div class="diyUploadTips c14 mt5" style="font-size: 12px;">最多上传一张，大小不超过5M，支持JPG、BMP、PNG</div>
+				</div>
+				<!-- 上传图片 e-->
+				<div class="bluebutton1 smNext" style="margin: 5px auto;">提交</div>
+			</div>
+			<div style="display: none;">
+				<input type="file" name="myFlie" id="myFlie"/>
+			</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<script type="text/javascript" src="../js/para.js"></script>
+		<script type="text/javascript" src="../plugin/diyUpload/js/diyUpload.js" ></script>
+		<script type="text/javascript" src="../plugin/diyUpload/js/webuploader.html5only.js"></script>
+		<!--<script type="text/javascript" src="../plugin/diyUpload/js/webuploader.html5only.min.js"></script>-->
+	</body>
+
+</html>
+<script>
+	$(function(){
+		$("#back").click(function(){
+			window.location.href = "exchangeList.html?type=" + request("type");
+		});
+		//退货商品列表
+		getRepairList();
+		//图片上传
+		$("#diyUpload").diyUpload({
+			accept:{
+				title:"Images",
+				extensions:"gif,jpg,jpeg,bmp,png",
+				mimeTypes:"image/*"
+			},
+//			server: '',
+			buttonText : ' ',
+			chunked:true,
+			// 分片大小
+			chunkSize:512 * 1024,
+			//最大上传的文件数量, 总文件大小,单个文件大小(单位字节);
+			fileNumLimit:1,
+			fileSizeLimit:5000 * 1024,
+			fileSingleSizeLimit:5000 * 1024,
+			accept: {
+				title:"Images",
+				extensions:"gif,jpg,jpeg,bmp,png",
+				mimeTypes:"image/*"
+			}
+		}, function(data){
+//			alert(JSON.stringify(data));
+		});
+		$(".diyUploadChoose,i.upload").removeClass("uhide");
+		//下一步
+		$(".smNext").click(function(e){
+			e.preventDefault();
+			var userName = $.trim($("[name=userName]").val());
+			var telphone = $.trim($("[name=telphone]").val());
+			var decrible = $.trim($("[name=pDecrible]").val());
+			//提交验证
+			var valid = validate(userName, telphone, decrible);
+			var msg = '"reason":"'+decrible+'","mobile":"'+telphone+'","name":"'+userName+'"';
+			if(valid){
+				Loading();
+//				smBackApply1(msg);
+				smBackApply(decrible, telphone, userName);
+			}
+		});
+	});
+	//提交退货申请
+	function smBackApply(decrible, telphone, userName){
+		var userid = localStorage.getItem("userid");
+		var ptr = localStorage.getItem("repairProducts");
+		var orderId = localStorage.getItem("ptrOrderNo");
+		var _l = $(".fileBoxUl>li").length;
+		var fd = new FormData();
+		fd.append('userId', userid);
+		fd.append('reason', decrible);
+		fd.append('mobile', telphone);
+		fd.append('name', userName);
+		fd.append('goodsData', ptr);
+		fd.append('detailOrderNo', orderId);
+		if(_l > 0){
+			fd.append('myfile', document.getElementById('myFlie').files[0]);
+		}
+		$.ajax({
+			url: upload_img,
+			data: fd,
+			cache: false,
+			contentType: false,
+			processData: false,
+			type: 'POST',
+			success: function(data) {
+//				var data = $.parseJSON(data);
+				if(data.success == "1"){
+					localStorage.setItem("orderid", orderId);
+					window.location.href = "productBackProcess.html";
+				} else {
+					alert("提交退货申请失败！", function(){
+						localStorage.setItem("orderid", orderId);
+						window.location.href = "productOrderDetail.html";
+					});
+				}
+				noLoading();
+			},
+			error: function(){
+				noLoading();
+				alert("网络连接错误！");
+			}
+		});
+	}
+	function smBackApply1(msg){
+		var userid = localStorage.getItem("userid");
+		var ptr = localStorage.getItem("repairProducts");
+		var images = '[';
+		var len = $("ul.fileBoxUl>li").length;
+		if(len > 0){
+			for(var i=0;i<len;i++){
+				images = images + "\"" + $("ul.fileBoxUl>li img").eq(i).attr("src") + "\",";
+				images = images.replace("data:image/jpeg;base64,","");
+			}
+			images = images.substring(0,images.length-1);
+		}
+		images += ']';
+		var uri = '[{"yyyCode":"100103","userId":"'+userid+'",'+msg+',"goodsData":'+ptr+',"image":'+images+'}]';
+		var jsonStr = strEnc(uri,"100001","","");
+		$.ajax({
+			url: GLOBAL_URL,
+			data: {json: jsonStr},
+			type: "POST",
+			timeout: 60000,
+			success: function(data){
+				var data = $.parseJSON(data);
+				if(data.success == "1"){
+					window.location.href = "productBackProcess.html";
+				} else {
+					alert("提交退货申请失败！", function(){
+						window.location.href = "productOrderDetail.html";
+					});
+				}
+				noLoading();
+			},
+			error: function(){
+				noLoading();
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//页面数据验证
+	function validate(userName, telphone, decrible){
+		if(!userName){
+			toast("请输入联系人姓名");
+			return;
+		} else if (!valid1(userName, "联系人姓名只能包含汉字和字母")) {
+			return;
+		}
+		if(!telphone){
+			toast("请输入联系人电话");
+			return;
+		} else if(isNaN(telphone) || telphone.length != 11){
+			toast("手机号码为11位数字");
+			return;
+		}
+		if(!decrible){
+			toast("请输入问题描述");
+			return;
+		} else if(!valid6(decrible, "问题描述只能包含中文、字母、数字和标点符号")){
+			$("[name=pDecrible]").val("");
+			return;
+		}
+		return true;
+	}
+	//退货商品列表
+	function getRepairList(){
+		var pdtr = localStorage.getItem("repairProductsDetail");
+		pdtr = $.parseJSON(pdtr);
+		$("[name=userName]").val(pdtr.name);
+		$("[name=telphone]").val(pdtr.tel);
+		pdtr = $.parseJSON(pdtr.pds);
+		var elem, clone = $("#list>div:first");
+		clone.siblings().remove();
+		for (var i in pdtr) {
+			elem = clone.clone().removeClass("uhide");
+			elem.find(".repairName ").text(pdtr[i].name);
+			elem.find(".repairNum ").text(pdtr[i].cartCount);
+			$("#list").append(elem);
+		}
+	}
+</script>

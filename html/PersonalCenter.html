@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>个人中心</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style type="text/css">
+			body {
+				height: 100%;
+			}
+			
+			.psmt {
+				position: absolute;
+				right: 10px;
+				color: #AAA;
+				font-size: 12px;
+			}
+			
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			
+			#content {
+				padding-top: 3em;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart="">
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">个人中心</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<!--个人中心其他内容-->
+			<div class="bc2 ubt" id="content">
+				<div class="ub h30 lh30 ubb ub-ac pl10 pr10 target testbutton" target="AllOrder">
+					<div class="ub-f1 ub ub-ac ">
+						<div class="ub-img img42"></div>
+						<div class="fs10 c18 ml6">我的订单</div>
+						<div class="psmt">查看全部订单</div>
+					</div>
+					<div class="ub-f1 tx-r" style="display:inline; text-align:right;">
+						<div class="ub-img img26"></div>
+					</div>
+				</div>
+				<!--<div class="ub h30 lh30 ubb ub-ac pl10 pr10 target testbutton" target="allpresc">
+					<div class="ub-f1 ub ub-ac ">
+						<div class="ub-img presc"></div>
+						<div class="fs10 c18 ml6">我的处方</div>
+						<div class="psmt">查看全部处方</div>
+					</div>
+					<div class="ub-f1 tx-r" style="display:inline; text-align:right;">
+						<div class="ub-img img26"></div>
+					</div>
+				</div>-->
+				<div class="ub h30 lh30 ubb ub-ac pl10 pr10 target testbutton" target="myStore">
+					<div class="ub-f1 ub ub-ac ">
+						<div class="ub-img img45"></div>
+						<div class="fs10 c18 ml6">我的收藏</div>
+					</div>
+					<div class="ub-f1 tx-r " style="display:inline; text-align:right;">
+						<div class="ub-img img26"></div>
+					</div>
+				</div>
+				<div class="ub h30 lh30 ubb ub-ac pl10 pr10 target testbutton" target="member">
+					<div class="ub-f1 ub ub-ac ">
+						<div class="ub-img member"></div>
+						<div class="fs10 c18 ml6">成为会员</div>
+					</div>
+					<div class="ub-f1 tx-r" style="display:inline; text-align:right;">
+						<div class="ub-img img26"></div>
+					</div>
+				</div>
+			</div>
+			<div class="bc2 ubt mt10">
+				<div class="ub h30 lh30 ubb ub-ac pl10 pr10 target testbutton" target="personalAddress">
+					<div class="ub-f1 ub ub-ac ">
+						<div class="ub-img img80"></div>
+						<div class="fs10 c18 ml6">收货地址管理</div>
+						<div class="psmt">新增、修改、删除</div>
+					</div>
+					<div class="ub-f1 tx-r" style="display:inline; text-align:right;">
+						<div class="ub-img img26"></div>
+					</div>
+				</div>
+				<div class="ub h30 lh30 ubb ub-ac pl10 pr10 target testbutton" target="productBackList">
+					<div class="ub-f1 ub ub-ac">
+						<div class="ub-img img82"></div>
+						<div class="fs10 c18 ml6">退货管理</div>
+					</div>
+					<div class="ub-f1 tx-r" style="display:inline; text-align:right;">
+						<div class="ub-img img26"></div>
+					</div>
+				</div>
+				<div class="ub h30 lh30 ubb ub-ac pl10 pr10 target testbutton" target="messageList">
+					<div class="ub-f1 ub ub-ac">
+						<div class="ub-img img84"></div>
+						<div class="fs10 c18 ml6">消息中心</div>
+						<div class="hasNewMsgs psmt uhide">您有新的消息</div>
+					</div>
+					<div class="ub-f1 tx-r" style="display:inline; text-align:right;">
+						<div class="ub-img img26"></div>
+					</div>
+				</div>
+				<!--<div class="ub h30 lh30 ubb ub-ac pl10 pr10 target testbutton" target="myCoupon">
+					<div class="ub-f1 ub ub-ac ">
+						<div class="ub-img img83"></div>
+						<div class="fs10 c18 ml6">我的优惠券</div>
+					</div>
+					<div class="ub-f1 tx-r" style="display:inline; text-align:right;">
+						<div class="ub-img img26"></div>
+					</div>
+				</div>-->
+			</div>
+			<div class="bc2 ubt mt10">
+				<div class="ub h30 lh30 ubb ub-ac pl10 pr10 target testbutton" target="record">
+					<div class="ub-f1 ub ub-ac ">
+						<div class="ub-img img44"></div>
+						<div class="fs10 c18 ml6">浏览记录</div>
+					</div>
+					<div class="ub-f1 tx-r" style="display:inline; text-align:right;">
+						<div class="ub-img img26"></div>
+					</div>
+				</div>
+				<div class="ub h30 lh30 ubb ub-ac pl10 pr10 target testbutton" target="feedBack">
+					<div class="ub-f1 ub ub-ac">
+						<div class="ub-img img43"></div>
+						<div class="fs10 c18 ml6">意见反馈</div>
+					</div>
+					<div class="ub-f1 tx-r" style="display:inline; text-align:right;">
+						<div class="ub-img img26"></div>
+					</div>
+				</div>
+				<div class="ub h30 lh30 ubb ub-ac pl10 pr10 testbutton">
+					<div class="ub-f1 ub ub-ac">
+						<div class="ub-img img81"></div>
+						<div class="fs10 c18 ml6">当前版本号</div>
+						<div class="psmt version"></div>
+					</div>
+					<div class="ub-f1 tx-r" style="display:inline; text-align:right;">
+						<div class="ub-img img26"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<!--<script src="../js/budtrinity-0.1.3.min.js"></script>-->
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	var userid = localStorage.getItem("userid");
+	$(function() {
+		$(".version").text(app_version);
+		$(".target").click(function() {
+			window.location = $(this).attr("target") +　".html";
+		});
+		//返回上一页
+		$("#back").on("click", function() {
+			var personBackPage = localStorage.getItem("personBackPage") || "index1.html"; //获取个人中心来源
+			localStorage.removeItem("personBackPage");
+			window.location.href = personBackPage;
+		});
+		//获取所有购物车商品数量
+		//		getAllCartCount(localStorage.getItem("userid"));
+		getMsgList();
+		//添加埋点
+//		eventBtn(this);
+	});
+	//	var appKey = 'yyappdemo',
+	//		appSecret = 'secret',
+	//		targetAppKey = 'ydappdemo';
+	var unreadMsgCount = 0; //未读消息条数
+	//Load bizIds who have been talked to (For C End)
+	//获取用户消息列表
+	function getMsgList() {
+		var str = '[{"yyyCode":"100116","appUid":"' + userid + '"}]';
+		var enResult = strEnc(str, "100001", "", "");
+		var uri = GLOBAL_URL + "?json=" + enResult;
+		$.ajax({
+			type: "GET",
+			url: uri,
+			success: function(data) {
+				data = JSON.parse(data);
+				if (data.bizIds) {
+					data = data.bizIds;
+					if (data.length > 0) {
+						for (var i in data) {
+							//getUnreadCount(data[i], data.length, i);
+							getShopById(data[i]);
+						}
+					}
+				}
+			},
+			error: function(error) {}
+		});
+	}
+	//根据药店id获取药店信息，判断药店是否存在
+	function getShopById(bizId) {
+		var str = '[{"yyyCode":"100117","pharmacyCode":"' + bizId + '"}]';
+		var enResult = strEnc(str, "100001", "", "");
+		var uri = GLOBAL_URL + "?json=" + enResult;
+		$.ajax({
+			type: "GET",
+			url: uri,
+			success: function(data) {
+				data = JSON.parse(data);
+				if (data.success == '1') {
+					getUnreadCount(bizId)
+				}
+			},
+			error: function(error) {}
+		});
+	}
+	//Get unread message count
+	//未读消息条数
+	function getUnreadCount(bizId) {
+		//targetAppKey	yes	target app key which c end user talk to
+		//appUid	yes	c end user id in local app
+		//bizId	yes	target biz id or shop id which c end user talk to
+		var str = '[{"yyyCode":"100112","appUid":"' + userid + '","bizId":"' + bizId + '"}]';
+		var enResult = strEnc(str, "100001", "", "");
+		var uri = GLOBAL_URL + "?json=" + enResult;
+		$.get(uri)
+			.success(function(data) {
+				data = JSON.parse(data);
+				if (data.count && data.count > 0) {
+					var count = data.count;
+					unreadMsgCount += count;
+				}
+				if (unreadMsgCount > 0) {
+					//$(".hasNewMsgs").html("您有"+unreadMsgCount+"条新消息");
+					$(".hasNewMsgs").removeClass("uhide");
+				}
+			});
+	}
+	//	function ismember(userid) {
+	//		var enResult = strEnc("[{\"yyyCode\":\"100981\",\"userID\":\"" + userid + "\"}]", "100001", "", "");
+	//		$.ajax({
+	//			url: GLOBAL_URL + "?json=" + enResult,
+	//			type: "GET",
+	//			timeout: 60000,
+	//			success: function(productInfo) {
+	//				var productInfo = JSON.parse(productInfo);
+	//				if (productInfo.success == 1) {
+	//					if (productInfo.data.VIP_LEVEL == 1) {
+	//						$(".becomemember").addClass("uhide");
+	//					}
+	//					else
+	//					{
+	//						$(".becomemember").removeClass("uhide");
+	//					}
+	//				} else {
+	//					toast(productInfo.message);
+	//				}
+	//			}, //清掉loading信息
+	//			error: function(err) {
+	//				alert("网络连接错误！");
+	//			}
+	//		});
+	//	}
+	//埋点
+//	Trinity.init({
+//		app_key: "2a6b0d9fb0bbee6d06d563cd2fd10de68735fea5",
+//		url: point_URL,
+//		device_id: localStorage.getItem("device_id"), //需要从android SKD Trinity.sharedInstance().getDeviceId() 或者ios的SDK[BudtrinityDeviceInfo udid]中获取该值
+//		sdk_version: localStorage.getItem("sdk_version"),
+//		app_version: app_version,
+//		u_id: localStorage.getItem("userid"), //如果访问该页面时app已经登录过则需要赋值
+//		channel: "0000000000"
+//	});
+	//自定义事件
+//	function eventBtn(ob) {
+//		Trinity.add_event({
+//			key: "page", //首页
+//			"segmentation": { //设置自定义事件的键值对
+//				"page_id": "PersonalCenter",
+//				"page_name": "PersonalCenter.html"
+//			}
+//		});
+//	}
+</script>

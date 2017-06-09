@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+	<head>
+		<title>优惠券</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta http-equiv="pragma" content="no-cache">
+		<meta http-equiv="cache-control" content="no-cache">
+		<meta http-equiv="expires" content="0">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<link rel="stylesheet" href="../plugin/tabs/tabs.css">
+		<link rel="stylesheet" href="../css/coupon.css" />
+		<style>
+			#header{width: 100%;position: fixed;top: 0px;left: 0px;z-index: 99;}
+			#content{padding-top: 3em;}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart ng-controller="getList">
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">优惠券</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<div id="content" style=" width:100%; overflow-x:hidden; overflow-y:auto;">
+				<!--<div class="rcBanner"></div>-->
+				<div class="tips bc2">
+					每日抢券
+				</div>
+				<ul id="rcList">
+					<li class="rclItem bc2" ng-repeat="i in list" a="{{i.CouponUseMore}}" b="{{i.CouponApplyMore}}" onclick="funcCoupon(this)" ng-cloak>
+						<div ng-class="$index%2==0?'rclTitle1':'rclTitle2'">
+							{{i.PharmacyName}}
+							<span class="rclValidity" ng-if="i.CouponValidity==0">永久有效</span>
+							<span class="rclValidity" ng-if="i.CouponValidity!=0">有效期：{{i.CouponValidity}}天</span>
+						</div>
+						<div class="rclCtn ub">
+							<div class="rclDetail ub-f1">
+								<div class="rcldName">{{i.CouponName}}</div>
+								<div class="rcdlCdt">单笔订单满{{i.CouponPrice | number: 0}}元使用</div>
+								<div class="rcdlTime">
+									{{i.CouponApplyEndTime * 1000 | date: 'yyyy年MM月dd日'}}前领取
+									<!--<span ng-if="i.CouponValidity==0">永久有效</span>
+									<span ng-if="i.CouponValidity!=0">有效期：{{i.CouponValidity}}天</span>-->
+								</div>
+							</div>
+							<div class="rclFunc">
+								<div class="rclfMoney">&yen;&nbsp;{{i.CouponPar | number: 0}}</div>
+								<div ng-if="i.CouponApplyMore>0" class="rclfReceive" CouponID="{{i.CouponID}}" CouponName="{{i.CouponName}}">立即领取</div>
+								<div ng-if="i.CouponUseMore>0&&i.CouponApplyMore==0" class="rclfReceive" CouponID="{{i.CouponID}}" CouponName="{{i.CouponName}}">立即使用</div>
+								<div ng-if="i.CouponUseMore==0&&i.CouponApplyMore==0" class="rclfHasUsed" CouponID="{{i.CouponID}}"></div>
+							</div>
+						</div>
+						<!--<div class="rclLayer"></div>-->
+					</li>
+				</ul>
+				<div id="noCoupon" style="padding-top: 2em;display: none;text-align: center;">
+					暂无优惠券
+				</div>
+			</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<script src="../js/para.js"></script>
+		<script src="../js/angular.min.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	getCouponList('');
+	$(function(){
+		$("#back").click(function(){
+			window.location.href = "index1.html";
+		});
+	});
+	//获取店铺优惠券列表
+	function getCouponList(pharmacyCode) {
+		var userID = localStorage.getItem("userid");
+		var app = angular.module('myApp', []);
+		app.controller('getList', function($http, $scope) {
+			var param = '[{"yyyCode":"100994","userid":"'+userID+'","pharmacyCode":"'+pharmacyCode+'"}]';
+			param = strEnc(param, '100001', '', '');
+			$http({
+				method: 'GET',
+				url: GLOBAL_URL,
+				params: {
+					'json': param
+				}
+			})
+			.success(function(data) {
+				$scope.list = data.data;
+				if(data.data.length > 0){
+					$("#noCoupon").css("display", "none");
+				} else {
+					$("#noCoupon").css("display", "block");
+				}
+				noLoading();
+			}).error(function() {
+				noLoading();
+				alert("网络连接错误！");
+			});
+		});
+	}
+	//优惠券操作
+	function funcCoupon(dom){
+		var a = $(dom).attr("a"),
+			b = $(dom).attr("b");
+		if(b > 0){
+			receiveCoupon($(dom).find(".rclfReceive")[0]);
+		} else if(a > 0){
+			useCoupon($(dom).find(".rclfReceive")[0]);
+		} else {
+			return;
+		}
+//		if(a == 0){
+//			return;
+//		} else if(b == 0) {
+//			useCoupon($(dom).find(".rclfReceive")[0]);
+//		} else {
+//			receiveCoupon($(dom).find(".rclfReceive")[0]);
+//		}
+	}
+	//领取优惠券
+	function receiveCoupon(dom){
+		var userID = localStorage.getItem("userid"),
+			couponID = $(dom).attr("CouponID");
+		var params = '[{"yyyCode":"100993","userID":"'+userID+'","couponID":"'+couponID+'"}]';
+		var enResult = strEnc(params, "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(data) {
+				var data = JSON.parse(data);
+				if (data.success == "1") {
+					toast("领取成功", 3);
+					$(dom).parent().parent().parent().attr("b", "0").attr("a", "1");
+					$(dom).text("立即使用");
+//					$(dom).text("立即使用").attr("onclick", "useCoupon(this)");
+				} else {
+					toast(data.message);
+				}
+			}, //清掉loading信息
+			error: function() {
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//使用优惠券
+	function useCoupon(dom){
+		var userID = localStorage.getItem("userid"),
+			couponID = $(dom).attr("CouponID"),
+			name = $(dom).attr("CouponName");
+		//优惠券ID
+		localStorage.setItem('plCId', couponID);
+		//优惠券活动名称
+		localStorage.setItem('plCName', name);
+		localStorage.setItem("plbcBackUrl", "receiveCoupon.html");
+		window.location.href = "productListByCoupon.html";
+	}
+</script>

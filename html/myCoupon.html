@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+	<head>
+		<title>我的优惠券</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta http-equiv="pragma" content="no-cache">
+		<meta http-equiv="cache-control" content="no-cache">
+		<meta http-equiv="expires" content="0">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<link rel="stylesheet" href="../plugin/tabs/tabs.css">
+		<link rel="stylesheet" href="../css/coupon.css" />
+		<style>
+			#header{width: 100%;position: fixed;top: 0px;left: 0px;z-index: 99;}
+			#content{padding-top: 3em;}
+			.title-right{color: #FFFFFF;}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart ng-controller="getList">
+		<div class="img29 uhide"></div>
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">我的优惠券</div>
+					<div class="title-right" id="invokeCoupon">激活</div>
+				</div>
+			</header>
+			<div id="content" class="bc2 tabs_container" style=" width:100%; overflow-x:hidden; overflow-y:auto;">
+				<ul class="h30 lh30 tab_title" style="position: fixed;width: 100%;z-index: 99;top: 48px;left: 0px;font-size: 14px;">
+					<li ng-click="getCoupon('0')" status="0" class="tabs_current_tab">可使用</li>
+					<div class="ub-img img69 mt5"></div>
+					<li ng-click="getCoupon('1')" status="1">已使用</li>
+					<div class="ub-img img69 mt5"></div>
+					<li ng-click="getCoupon('2')" status="2">已过期</li>
+				</ul>
+				<ul id="ctr" style="padding-top: 3em;">
+					<li class="couponItem" ng-class="i.Status=='0'?'useAble':'hasUsed'" ng-repeat="i in list" ng-cloak>
+						<div class="couponContent">
+							<div class="shopName">{{i.PharmacyName}}</div>
+							<div class="couponMoney">{{i.CouponPar | number: 0}}</div>
+							<div class="couponMsg">
+								<div class="couponHead">{{i.CouponName}}</div>
+								<div class="couponUseCtn">订单满{{i.CouponPrice | number: 0}}元时使用</div>
+								<div class="couponDeadDate" ng-if="i.CouponExpireTime!=0">有效期:{{i.CouponStartTime | limitTo: 10 | date: 'yyyy.MM.dd'}}-{{i.CouponExpireTime | limitTo: 10 | date: 'yyyy.MM.dd'}}</div>
+								<div class="couponDeadDate" ng-if="i.CouponExpireTime==0">有效期:{{i.CouponStartTime | limitTo: 10 | date: 'yyyy.MM.dd'}}-永久</div>
+								<div class="couponUseNow">
+									<span CouponID="{{i.CouponID}}" Status="{{i.Status}}" ng-click="toPList(i.CouponID, i.CouponName, i.Status)">立即使用</span>
+								</div>
+								<div ng-if="i.Status=='1'" class="couponStatus1"></div>
+								<div ng-if="i.Status=='2'" class="couponStatus2"></div>
+							</div>
+						</div>
+						<div class="clear"></div>
+					</li>
+				</ul>
+				<div id="noCoupon" style="padding-top: 2em;display: none;text-align: center;">
+					暂无优惠券
+				</div>
+			</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<script src="../js/angular.min.js"></script>
+		<!--<script src="../js/coupon.js"></script>-->
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	//优惠券状态：0未使用，1已使用，2已过期，""全部
+	getMyCoupon('0');
+	$(function(){
+		$("#back").click(function(){
+			window.location.href = "PersonalCenter.html";
+		});
+		$(".tab_title>li").click(function(){
+			$(this).addClass("tabs_current_tab").siblings().removeClass("tabs_current_tab");
+		});
+		//激活优惠券
+		$("#invokeCoupon").click(function(){
+			window.location.href = "invokeCoupon.html";
+		});
+	});
+	function getMyCoupon(status) {
+		var app = angular.module('myApp', []);
+		app.controller('getList', function($http, $scope) {
+			getMyCouponByStatus($http, $scope, status);
+			$scope.getCoupon = function(sts){
+				getMyCouponByStatus($http, $scope, sts);
+			}
+		});
+	}
+	function getMyCouponByStatus($http, $scope, status){
+		Loading();
+		var userID = localStorage.getItem("userid"),
+			pharmacyCode = '',
+			status = status || '';
+		var param = '[{"yyyCode":"100992","userID":"'+userID+'","pharmacyCode":"'+pharmacyCode+'","status":"'+status+'"}]';
+		param = strEnc(param, '100001', '', '');
+		$http({
+			method: 'GET',
+			url: GLOBAL_URL,
+			params: {
+				'json': param
+			}
+		})
+		.success(function(data) {
+			$scope.list = data.data;
+//			$scope.toShop = function(PharmacyCode){
+//				localStorage.setItem("DRUGSUPPLIERCODE", PharmacyCode);
+//				window.location.href = "shop.html";
+//			};
+			$scope.toPList = function(id, name, sts){
+				if(sts != '0') return;
+				//优惠券ID
+				localStorage.setItem('plCId', id);
+				//优惠券活动名称
+				localStorage.setItem('plCName', name);
+				localStorage.setItem("plbcBackUrl", "myCoupon.html");
+				window.location.href = "productListByCoupon.html";
+			};
+			if(data.data.length > 0){
+				$("#noCoupon").hide();
+			} else {
+				$("#noCoupon").show();
+			}
+			noLoading();
+		}).error(function() {
+			noLoading();
+			alert("网络连接错误！");
+		});
+	}
+</script>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>拍照购药</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<link rel="stylesheet" href="../css/ui-input.css">
+		<style>
+			input {
+				border: none;
+				outline: none;
+				font-size: 16px;
+			}
+			
+			#content {
+				margin-bottom: 60px;
+				padding-top: 3em;
+			}
+			
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			.developing{
+				width: 80%;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart="">
+		<div id="page_0" class="up ub ub-ver bc2">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">拍照购药</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<!--个人中心其他内容-->
+			<div class="ubt tx-c" id="content">
+				<img src="../images/developing.png" class="developing" />
+				<div class="fsp16">我们正在努力建设中，</div>
+				<div class="fsp16">感谢您的到访！</div>
+				<!--<form name="formName" enctype="multipart/form-data" id="myform" method="POST">
+					<div class="bc2 ubb">
+						<div class="ub pl10 pt5 pb5">
+							<div><img src="../images/phone.png" style="width: 80px;height: 80px;" onclick="$('#imgUpload').click()" /></div>
+							<div class="ml10" id="showpic"></div>
+						</div>
+						<div class="ubt lh15 pl10 ">
+							<div class="fs8 c4" style="word-break: break-all;">拍照要求：只支持图片类型，请保持处方照片内信息清晰可见</div>
+						</div>
+					</div>
+					<div class="ub mt5 h40 c2 bc2 uc-a2 pt5 pb5 pl5 pr5 uinput">
+						<textarea class="fs8" id="comment" maxlength="200" name="text" style="resize: none; box-sizing: border-box;width: 100%; outline: none;" placeholder="请输入药品的名称，数量等备注信息，便于药剂师审方"></textarea>
+					</div>
+					<div class="bc2 fs8 mt5 h30 lh30 pl10">
+						<input type="tel" id="Tel" placeholder="请输入联系电话" style="height:30px; line-height:30px;width:98%" maxlength="11" minlength="11" oninput="value=this.value.replace(/\D+/g,'')">
+					</div>
+					<div class="ml10 mr10 mt10">
+						<input type="submit" value="提交" class="bc1 c1 uc-a3 tx-c h26 lh26 fs9" style='display:inline-block;width:100%;-webkit-appearance: none;'>
+					</div>
+				</form>-->
+			</div>
+		</div>
+		<div style="display: none;">
+			<input type="file" id="imgUpload" name="imgUpload" />
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<script type="text/javascript" src="../js/huiDaoJsBridge.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	var isbuy = true;
+	$(function() {
+		$("#back").click(function() {
+			window.location.href = "easybuydrug.html";
+		});
+		$("#imgUpload").change(function(e) {
+			Loading();
+			for (var i = 0; i < e.target.files.length; i++) {
+				var file = e.target.files.item(i);
+				if (!(/^image\/.*$/i.test(file.type))) {
+					continue; //不是图片 就跳出这一次循环
+					toast("上传的不是图片类型");
+				}
+				//实例化FileReader API
+				var freader = new FileReader();
+				freader.readAsDataURL(file);
+				freader.onload = function(e) {
+					var img = '<img src="' + e.target.result + '" width="80px" height="80px"/>';
+					$("#showpic").empty().append(img);
+				}
+			}
+			noLoading();
+		});
+		$("#myform").submit(function(e) {
+			e.preventDefault();
+			var data = new FormData();
+			var userID = localStorage.getItem("userid"); //用户id
+			var file = document.getElementById("imgUpload").files[0]; //处方图片
+			var pharmacyCode = ""; //药店编码
+			var comment = $.trim($("#comment").val()); //备注
+			var mobile = $.trim($("#Tel").val()); //手机号码
+			if (comment != "" && mobile != "") {
+				if (!valid2(comment, "备注信息只能包含汉字、字母、数字和标点符号！")) {
+					$("#comment").val("");
+					return;
+				} else {
+					if (mobile.length == 11) {
+						//获取文件
+						var file = document.getElementById("imgUpload").files[0];
+						if (file) {
+							if (file.type.indexOf('image') > -1) {
+								var size = Math.floor(file.size / 1024);
+								if (size < 5000) {
+									Loading();
+									data.append('userID', userID);
+									data.append('file', file);
+									data.append('pharmacyCode', pharmacyCode);
+									data.append('comment', comment);
+									data.append('mobile', mobile);
+									$.ajax({
+										url: presc_img,
+										data: data,
+										cache: false,
+										contentType: false,
+										processData: false,
+										type: 'POST',
+										success: function(res) {
+											if (res.success == 1) {
+												alert("提交成功", function() {
+													window.location.href = "allpresc.html";
+												});
+											} else {
+												alert(res.message);
+											}
+											noLoading();
+										}
+									});
+									noLoading();
+								} else {
+									toast("上传文件不得超过5M");
+								}
+							} else {
+								toast("请选择图片文件");
+							}
+						} else {
+							toast("请选择上传图片");
+						}
+					} else {
+						toast("手机号码11位");
+					}
+				}
+			} else {
+				noLoading();
+				toast("备注信息和电话号码不能为空");
+			}
+		});
+		//		function checkFile() {
+		//			//获取文件
+		//			var file = document.getElementById("imgUpload").files[0];
+		//			//文件为空判断
+		//			if (file == null || file == undefined) {
+		//				alert("请选择上传图片", function() {
+		//					isbuy = false;
+		//				});
+		//			} else {
+		//				//检测文件类型
+		//				if (file.type.indexOf('image') === -1) {
+		//					alert("请选择图片文件！", function() {
+		//						isbuy = false;
+		//					});
+		//				} else {
+		//					//计算文件大小
+		//					var size = Math.floor(file.size / 1024);
+		//					if (size > 5000) {
+		//						alert("上传文件不得超过5M", function() {
+		//							isbuy = false;
+		//						});
+		//					};
+		//				}
+		//			}
+		//		}
+	});
+</script>

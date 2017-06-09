@@ -1,0 +1,236 @@
+@CHARSET "UTF-8";
+#header {
+	width: 100%;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	z-index: 99;
+}
+#cartCount {
+	top: 2px;
+	right: 2px;
+}
+#content {padding-top: 3em;}
+.toImcloud .img86:after {content: "咨询";}
+.toCart .img23:after {content: "购物车";}
+.toImcloud .img86:after, .toCart .img23:after {
+	position: absolute;
+	bottom: 4px;
+	font-size: 12px;
+	height: 12px;
+	line-height: 12px;
+	width: 100%;
+	text-align: center;
+	color: #38A3F5;
+}
+.tab_title>li {margin: 0px 12px;}
+li.tabs_current_tab {
+	border-bottom: 2px solid #009cff;
+	margin-bottom: -1px;
+}
+#picDetail {width: 100%;}
+#picDetail img {
+	width: 100%;
+	max-width: 100%;
+	height: auto;
+	display: block;
+}
+.name {
+	height: 42px;
+	line-height: 21px;
+	overflow: hidden;
+}
+/*.swiper-container, */#piclist {
+	width: 100%;
+	height: 200px;
+	color: #fff;
+	text-align: center;
+	margin: 0px auto;
+	/*overflow: hidden;*/
+}
+.pagination {
+	position: absolute;
+	z-index: 20;
+	left: 50%;
+	-webkit-transform: translateX(-50%);
+	transform: translateX(-50%);
+	bottom: 5px;
+}
+#aa, #cc {
+	position: fixed;
+	width: 100%;
+	height: 48px;
+	bottom: -1px;
+	left: 0px;
+	z-index: 99;
+}
+.contactDoctor {
+	width: 100%;
+	background-color: #ff7300;
+}
+.tobuy {
+	width: 50%;	
+}
+.buynormal{
+	background-color: #ff7300;
+}
+.addCart {
+	width: 50%;
+}
+.addcartnormal{
+	background-color: #ffa200;
+}
+.forbin{
+	cursor: not-allowed;
+	color:#fff;
+	background-color: #B0B0B0;
+	border-right:1px solid #EEEEEE;
+}
+.contactDoctor, .tobuy, .addCart {
+	color: #FFFFFF;
+	height: 100%;
+	line-height: 48px;
+	text-align: center;
+}
+.cdTC, .cdTIm {
+	width: 15%;
+}
+#cdContainer, #cdcContent, #cpContainer, #cpcContent {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+}
+#cdContainer, #cpContainer {
+	height: 100%;
+	z-index: 100;
+	display: none;
+}
+#cdcContent, #cpcContent {
+	z-index: 101;
+	background-color: #FFF;
+}
+#cpcContent {padding-bottom: 40px;}
+#cpcBg {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background-color: #000000;
+	opacity: 0.8;
+	z-index: 1;
+}
+.cdccEnable, .cdccDisable {
+	display: block;
+	text-decoration: none;
+	width: 90%;
+	height: 40px;
+	line-height: 40px;
+	margin: 10px auto;
+	text-align: center;
+	color: #FFFFFF;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+#coupon, #tips {
+	font-size: 14px;
+	background-color: #FAFAFA;
+	height: 32px;
+	line-height: 32px;
+	margin-bottom: -1px;
+	position: relative;
+}
+.pdTips {
+	display: inline-block;
+	border: 1px solid #38A3F5;
+	-webkit-border-radius: 50%;
+	border-radius: 50%;
+	font-size: 12px;
+	width: 16px;
+	height: 16px;
+	line-height: 16px;
+	text-align: center;
+}
+#coupon:before {
+	content: " ";
+	position: absolute;
+	width: 18px;
+	height: 100%;
+	top: 0;
+	left: 1.2em;
+	background: url(../images/cp.png) no-repeat center;
+	background-size: 18px;
+}
+#coupon:after {
+	content: " ";
+	position: absolute;
+	width: 16px;
+	height: 100%;
+	top: 0;
+	right: 14px;
+	background: url(../images/img26.png) no-repeat center;
+	background-size: auto 18px;
+}
+#cpcCancel {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+}
+.cpList {
+	min-height: 200px;
+	max-height: 300px;
+	overflow-y: auto;
+	padding: 0px 10px;
+}
+.cpItem {
+	position: relative;
+	padding: 5px 0px;
+}
+#bb {margin-bottom: -1px;}
+.pdButton {
+	width: 48%;
+	height: 32px;
+	line-height: 32px;
+	border: 1px solid #CCCCCC;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+}
+.toDrugBtn, .toShopBtn {
+	padding-left: 26px;
+	width: 64px;
+	margin: auto;
+}
+.toDrugBtn {
+	background: url(../images/drug.png) no-repeat 10px 8px;
+	background-size:75px  18px;
+	/*background-size:cover;*/
+}
+.toShopBtn {
+	background: url(../images/shop.png) no-repeat 10px 8px;
+	/*background-size: 18px;*/
+	background-size:75px 18px;
+}
+.picmsg{
+	border-top: 1px solid #DDDDDD;	
+	border-bottom: 1px solid #DDDDDD;
+	background-color: #FAFAFA;
+	line-height: 40px;
+	padding-left: 15px;
+}
+.starmsg{
+	border-bottom: 1px solid #DDDDDD;
+	background-color: #FAFAFA;
+	line-height: 40px;
+	padding-left: 15px;
+}
+.all{
+    border-bottom: 1px solid #DDDDDD;
+	background-color: #FAFAFA;
+	line-height: 40px;
+	text-align: center;
+}
+.itemright {
+	width: 18px;
+	background: url(../images/img26.png) no-repeat center right;
+	background-size: 10px;
+}
+

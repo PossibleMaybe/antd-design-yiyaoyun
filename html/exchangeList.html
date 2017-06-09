@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>退货列表</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			#content {
+				padding-top: 3em;
+				/*padding-bottom: 3.5em;*/
+			}
+			.orderStatus {
+				color: red;
+				position: absolute;
+				right: 10px;
+				top: 5px;
+			}
+			.btnDisabled {
+				background-color: #d1d1d1;
+				opacity: 0.8;
+				filter: alpha(opacity=80);
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh">
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid fs10">可退货商品列表</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<div class="content" id="content" style='width:100%;overflow-x:hidden;overflow-y:auto;'>
+				<div class="ub bc2 fs8 pl5 pt5">
+					<input type="hidden" name="tel" />
+					<input type="hidden" name="userName" />
+					<div class="">订单编号：</div>
+					<div class="orderid"></div>
+					<div class="orderStatus">完成</div>
+				</div>
+				<div class="ub bc2 fs8 pl5 pt5 pb5 ubb">
+					<div>下单时间：</div>
+					<div id="creattime"></div>
+				</div>
+				<!--可退货列表-->
+				<div class="bc2 mt5 fs8 ubt">
+					<div class="lh25 ubb pl5 ub">
+						<div id="shopname" class="ub-f1"></div>
+						<div class="ub-f1 tx-r pr10">
+							<span class="exchangeConfirm button btnDisabled">申请退货</span>
+						</div>
+					</div>
+					<div id="plist">
+						<div class="uhide ub pl6 pr8 fs8 h82 ubb" style="overflow: hidden;">
+							<div class="ub ub-ac " style="width: 12%;">
+								<div class="ub-img img28 tx-l ncheckbox" ck="0"></div>
+							</div>
+							<div class="ub-img img" style="width: 30%;"></div>
+							<div class="pl10" style="width: 53%;">
+								<div class="ub fb pt8 h26 lh13">
+									<div class="name fs10 textoverflow"></div>
+								</div>
+								<div class="pt4 uhide shopName"></div>
+								<div class="ub tx-c mt3 uhide isRefund">
+									<div id="numreduce" class="numreduce fsp14 disabled" onclick="numreduce(this)">-</div>
+									<div>
+										<input id="numcount" type="text" value="1" class="cartCount" readonly min="1" max="20" />
+									</div>
+									<div id='numadd' class="numadd fsp14" onclick="numadd(this)">+</div>
+								</div>
+								<div class="c14 mt2 uhide isRefund">
+									<div class="QUANTITY ub-f1"></div>
+								</div>
+								<div class="c14 mt2 uhide noRefund">
+									该商品不支持退货
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<script src="../js/para.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	iP = {};
+	$(function() {
+		var orderid = localStorage.getItem("orderid");
+		var userid = localStorage.getItem("userid");
+		getOrderDetail(orderid, userid);
+		//申请退货
+		$(".exchangeConfirm").click(function() {
+			var isDisabled = $(this).hasClass("btnDisabled");
+			if (isDisabled) return;
+			var ptr = productToRepair(); //退货商品信息
+			var pdtr = productDetailToRepair();
+			var orderId = $(this).attr("orderId");
+			if (ptr == '[]') {
+				toast("您没有选中任何商品");
+				return;
+			}
+//			ptr = ptr + ',"detailOrderNo":"' + orderId + '"';
+			localStorage.setItem("ptrOrderNo", orderId);
+			localStorage.setItem("repairProducts", ptr);
+			localStorage.setItem("repairProductsDetail", pdtr);
+			window.location.href = "productBackWay.html?type=" + request("type");
+		});
+		//申请退货返回
+		$("#back").click(function() {
+			var type = request("type");
+			if(type && type == "1"){
+				window.location.href = "productBackList.html";
+			} else {
+				window.location.href = "productOrderDetail.html";
+			}
+		});
+	});
+	//根据订单号获取订单信息
+	function getOrderDetail(orderid, userid) {
+		Loading();
+		var enResult = strEnc("[{\"yyyCode\":\"100102\",\"userId\":\"" + userid + "\",\"detailOrderNo\":\"" + orderid + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			beforeSend: function() {}, //添加loading信息
+			success: function(productInfo, textStatus) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == "1") {
+					$(".orderid").text(productInfo.data.ORDER.ORDER_ID); //订单号
+					$(".exchangeConfirm").attr("orderId", productInfo.data.ORDER.ORDER_ID);
+					$(".ps").text(productInfo.data.ORDER.SHIPPING.SHIPPING_NAME); //配送方式
+					$("#kd").text(productInfo.data.ORDER.SHIPPING.SHIPPING_NAME);
+					$("#creattime").text(productInfo.data.ORDER.CREATETIME);
+					$("#shopname").text(productInfo.data.ORDER.STORE_NAME);
+					$("[name=tel]").val(productInfo.data.ORDER.CONSIGNEE.TELEPHONE);
+					$("[name=userName]").val(productInfo.data.ORDER.CONSIGNEE.NAME);
+					//判断是否已申请退货
+					var status = productInfo.data.ORDER.STATUS;
+					//判断是否已申请退货
+					if (status == 4 || status == 5 || status == 10 || status == 11) {
+						$(".btnDisabled").removeClass("btnDisabled");
+					} else {
+						$(".btnDisabled").addClass("btnDisabled");
+					}
+					iP.append(productInfo.data.ORDER.ORDER_ITEMS);
+				}
+				noLoading();
+			}, //清掉loading信息
+			error: function(xmlHttpRequest, error) {
+				alert("网络连接错误！");
+				$(".noProduct").removeClass("uhide");
+				noLoading();
+			}
+		});
+	}
+	iP.append = function(data) {
+		var pelem, pclone = $("#plist>div:first");
+		pclone.siblings().remove();
+		for (var i in data) {
+			pelem = pclone.clone().removeClass("uhide");
+			pelem.find(".ncheckbox").attr("drugCode", data[i].DRUG_CODE).attr("isRefund", data[i].IS_REFUND); //药品编码
+			pelem.find(".name").text(data[i].NAME);
+			pelem.find(".cartCount").attr("max", data[i].QUANTITY);
+			pelem.find(".QUANTITY").html("您最多可提交数量为" + data[i].QUANTITY);
+			var url = data[i].THUMBNAIL_PIC;
+			url = "<img src='" + url + "' height='80px' width='80px'/>";
+			pelem.find(".img").html(url);
+			//判断商品是否支持退货
+			if(data[i].IS_REFUND == 1){
+				//可退货
+				pelem.find(".noRefund").addClass("uhide");
+				pelem.find(".isRefund").removeClass("uhide");
+			} else {
+				//不可退货
+				pelem.find(".isRefund").addClass("uhide");
+				pelem.find(".noRefund").removeClass("uhide");
+			}
+			pelem.find(".ncheckbox").click(function(event) {
+				event.preventDefault();
+				event.stopPropagation();
+				var _self = $(this);
+				var isRefund = _self.attr("isRefund");
+				if(isRefund == 0){
+					toast("该商品不支持退货");
+					return;
+				}
+				//移除提示信息
+				$(".autoDSMsg").remove();
+				if (_self.attr("ck") == 1) { //选中状态
+					_self.removeClass("img29").addClass("img28").attr("ck", "0");
+				} else {
+					_self.removeClass("img28").addClass("img29").attr("ck", "1");
+				}
+			});
+			if (data[i].QUANTITY <= 1) {
+				pelem.find(".numadd").addClass("disabled");
+			}
+			$("#plist").append(pelem);
+		};
+	};
+	//退货数量操作
+	function numreduce(dom) {
+		var el = $(dom).parent().find(".cartCount");
+		var ccc = parseInt(el.val());
+		var total = parseInt(el.attr("max"));
+		if (ccc <= 1) {
+			el.val(1);
+		} else {
+			el.val(ccc - 1);
+		}
+		countChange(dom);
+	}
+
+	function numadd(dom) {
+		var el = $(dom).parent().find(".cartCount");
+		var ccc = parseInt(el.val());
+		var total = parseInt(el.attr("max"));
+		if (ccc >= total) {
+			el.val(total);
+		} else {
+			el.val(ccc + 1);
+		}
+		countChange(dom);
+	}
+
+	function countChange(dom) {
+		var el = $(dom).parent().find(".cartCount");
+		var ccc = parseInt(el.val());
+		var total = parseInt(el.attr("max"));
+		var nr = $(dom).parent().find(".numreduce");
+		var na = $(dom).parent().find(".numadd");
+		ccc <= 1 ? nr.addClass("disabled") : nr.removeClass("disabled");
+		ccc >= total ? na.addClass("disabled") : na.removeClass("disabled");
+	}
+	//获取要退货的商品信息（商品编码，退货数量）
+	function productToRepair() {
+		var pds = "[";
+		$("#plist .ncheckbox").each(function() {
+			var _s = $(this);
+			var ck = _s.attr("ck");
+			if (ck == "1") {
+				var drugCode = _s.attr("drugCode");
+				var cartCount = _s.parent().parent().find(".cartCount").val();
+				pds = pds + '{"drugCode":"' + drugCode + '","cartCount":"' + cartCount + '"},';
+			}
+		});
+		if (pds.length > 1) {
+			pds = pds.substring(0, pds.length - 1);
+		}
+		pds += "]";
+		return pds;
+	}
+	//获取要退货的商品信息（商品名称，退货数量）
+	function productDetailToRepair() {
+		var pdtr = {};
+		pdtr.tel = $("[name=tel]").val();
+		pdtr.name = $("[name=userName]").val();
+		var pds = "[";
+		$("#plist .ncheckbox").each(function() {
+			var _s = $(this);
+			var _p = _s.parent().parent();
+			var ck = _s.attr("ck");
+			if (ck == "1") {
+				var name = $(".name", _p).text();
+				var cartCount = $(".cartCount", _p).val();
+				pds = pds + '{"name":"' + name + '","cartCount":"' + cartCount + '"},';
+			}
+		});
+		if (pds.length > 1) {
+			pds = pds.substring(0, pds.length - 1);
+		}
+		pds += "]";
+		pdtr.pds = pds;
+		pdtr = JSON.stringify(pdtr);
+		return pdtr;
+	}
+</script>

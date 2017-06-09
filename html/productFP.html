@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>开具发票</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/ui-input.css">
+		<link rel="stylesheet" href="../css/win.css">
+	</head>
+
+	<body class="um-vp c-wh" style="min-height:500px;">
+		<div class="up ub ub-ver" style=' height:100%'>
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" close id="close"></div>
+					<div class="title-mid">开具发票</div>
+					<div class="title-right" id="ok">
+						<div id="toDel" class="c1 fs9">完成</div>
+					</div>
+				</div>
+			</header>
+			<!---->
+			<div class="ub bc2 mt10 h35 lh35 ubb ubt  ub-ac ">
+				<div class="ub-f1 pl5">需要发票</div>
+				<div style="float:right" class="pr5">
+					<!--on-->
+					<div class="ub bc1 w44 h18 lh18 fs10 c1 uc-a9 tx-c uhide" id="yes">
+						<div class="ml5">是</div>
+						<div class="bc2 w12 h12 fs10 uc-a16 ml13 mt3"></div>
+					</div>
+					<!--off-->
+					<div class="ub bc6 w44 h18 lh18 fs10 c1 uc-a9 tx-c" id="no">
+						<div class="bc2 w12 h12 fs10 uc-a16 mt3 ml5"></div>
+						<div class=" ml13">否</div>
+					</div>
+					<!---->
+					<div class="uhide" id="isInvoice"></div>
+				</div>
+			</div>
+			<!--发票信息-->
+			<div class="mt10 bc2 ubb ubt uhide" id="fpDetail">
+				<div class="h25 lh25 ubb pl5">发票抬头</div>
+				<div class="ub h25 lh25 pl7 ubb">
+					<div>
+						<input type="radio" name="unit" value="gr" onClick="checkType()" checked>
+					</div>
+					<div class="pl5">个人</div>
+					<div class="pl5">
+						<!--<input id="grtxtSearch" class="fs9 w150 h18 lh18" placeholder="请输入个人信息" />-->
+					</div>
+				</div>
+				<div class="ub h25 lh25 pl7">
+					<div>
+						<input type="radio" name="unit" value="dw" onClick="checkType()">
+					</div>
+					<div class="pl5">单位</div>
+					<div class="pl5">
+						<input id="dwtxtSearch" class="fs9 w150 h18 lh18 uba2" maxlength="60" placeholder="请输入单位名称" />
+					</div>
+				</div>
+				<div class="uhide" id="InvoiceType"></div>
+				<div class=" ubb ubt">
+					<div class="h25 lh25 ubb pl5">发票内容</div>
+					<div class="ub ub-f1 h20 lh20 mt5 mb5  ub-ac pl10  uba2 c2 ml7 mr10 uc-a2 bc2" need id="tailNo">
+						<div class="fs9 c2 ub-f1" show></div>
+						<div class="h19 lh19 bc9 ubl2 ub ub-ac w20 uba">
+							<div class="img47 ub-img ml5" img></div>
+						</div>
+						<select class="fs9">
+							<option value="" selected>请选择发票内容</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/para.js"></script>
+		<script src="../js/constant.js"></script>
+	</body>
+
+</html>
+<script>
+	iP = {};
+	iP3 = {};
+	var addressid = localStorage.getItem("ADDRESSID");
+	localStorage.removeItem("ADDRESSID");
+	//页面加载
+	$(function() {
+		//根据团体颜色改变背景颜色
+	var insurecolor = localStorage.getItem("showColor");
+	$(".title").css("background-color",insurecolor);
+	
+		iP3.init();
+		$("#tailNo").on("change", iP3.chooseSelect);
+		$("#isInvoice").text(0);
+		var fptext = localStorage.getItem("fptext");
+		if (fptext == "不需要发票信息") {
+			$("#yes").addClass("uhide");
+			$("#no").removeClass("uhide");
+			$("#fpDetail").addClass("uhide");
+			checkType();
+			$("#isInvoice").text(0);
+		} else {
+			$("#yes").removeClass("uhide");
+			$("#no").addClass("uhide");
+			$("#fpDetail").removeClass("uhide");
+			checkType();
+			$("#isInvoice").text(1);
+			if (localStorage.getItem("fpDetail") != "null" && localStorage.getItem("fpDetail") != null && localStorage.getItem("fpDetail") != '') {
+				var fpDetail = localStorage.getItem("fpDetail").replace('"', '');
+				fpDetail = "{" + fpDetail.replace(/'/g, '"') + "}";
+				var obj = JSON.parse(fpDetail);
+				var chkObj = document.getElementsByName("unit");
+				if (obj.invoiceInfo[0].invoiceType == 0) {
+					chkObj[0].checked = true;
+				} else if (obj.invoiceInfo[0].invoiceType == 1) {
+					chkObj[1].checked = true;
+					$("#dwtxtSearch").val(obj.invoiceInfo[0].invoiceTitle)
+				}
+				iP3.setOption($("#tailNo"), obj.invoiceInfo[0].invoiceContent);
+			}
+		}
+		checkType();
+		$("#yes").click(function() {
+			$("#yes").addClass("uhide");
+			$("#no").removeClass("uhide");
+			$("#fpDetail").addClass("uhide");
+			checkType();
+			$("#isInvoice").text(0);
+		});
+		$("#no").click(function() {
+			$("#yes").removeClass("uhide");
+			$("#no").addClass("uhide");
+			$("#fpDetail").removeClass("uhide");
+			checkType();
+			$("#isInvoice").text(1);
+		});
+		$("#close").click(function() {
+			window.history.go(-1);
+		});
+		$("#ok").click(function() {
+			var id = request("ty");
+			var payMethod=request("payMethod");
+			//alert($("#isInvoice").text());
+			if ($("#isInvoice").text() == 0) {
+				var fpDetail = "'isInvoice':'0','invoiceInfo':[]";
+				localStorage.setItem("fpDetail", fpDetail);
+				window.location.href = "productOrder.html?ty=" + id + "&addressid=" + addressid+"&payMethod="+payMethod;
+			} else {
+				var invoiceType = $("#InvoiceType").html();
+				var invoiceTitle = "";
+				var grtxtSearch = "";
+				var dwtxtSearch = $.trim($("#dwtxtSearch").val());
+				if (invoiceType == 0) //个人
+				{
+					if (grtxtSearch != '') {
+						invoiceTitle = grtxtSearch
+					}
+				} else if (invoiceType == 1) {
+					if (dwtxtSearch != '') {
+						if (!valid4(dwtxtSearch, "单位信息只能包汉字、字母、数字和（）！")) {
+							$("#dwtxtSearch").val("");
+							return;
+						}
+						invoiceTitle = dwtxtSearch
+					} else {
+						toast("单位信息不能为空");
+						return;
+					}
+				}
+				var invoiceContent = $("#tailNo").attr("need");
+				if (invoiceType != '') {
+					if (invoiceContent != '') {
+						var fpDetail = "'isInvoice':'1','invoiceInfo': [{'invoiceType':'" + invoiceType + "','invoiceTitle':'" + invoiceTitle + "','invoiceContent':'" + invoiceContent + "'}]";
+						localStorage.setItem("fpDetail", fpDetail);
+						window.location.href = "productOrder.html?ty=" + id + "&addressid=" + addressid+"&payMethod="+payMethod;
+					} else {
+						toast("您未选择发票内容");
+					}
+				} else {
+					toast("您未选择发票类型");
+				}
+			}
+		});
+	});
+
+	function checkType() {
+		var chkObj = document.getElementsByName("unit");
+		var InvoiceType;
+		for (var i = 0; i < chkObj.length; i++) {
+			if (chkObj[i].checked) {
+				if (chkObj[i].value == "gr") //个人
+				{
+					InvoiceType = 0;
+					$("#InvoiceType").text(0);
+				} else if (chkObj[i].value == "dw") //单位
+				{
+					InvoiceType = 1;
+					$("#InvoiceType").text(1);
+				}
+			}
+		}
+	}
+
+	function openModal(elem) {
+			SmodalEle = elem;
+			No_dragcode = $(".drugcode", $(elem).parent().next()).html();
+			$("#modalwindow").fadeIn();
+			countChange();
+		}
+		//设置机号
+	iP3.inittailNo = function() {
+		var tailNoArray = ["药品", "医疗器械", "参茸饮片", "食品", "保健品", "化妆品", "日用品"];
+		for (var i in tailNoArray) {
+			var option = $('<option></option>');
+			option.val(tailNoArray[i]);
+			option.text(tailNoArray[i]);
+			$("#tailNo select").append(option);
+		}
+		iP3.setOption($("#tailNo"), "");
+	};
+	//选择下拉列表
+	iP3.chooseSelect = function() {
+		var that = $(this).find("select");
+		iP3.setOption(that.parents("[need]"), that.val());
+	};
+	iP3.setOption = function(elem, code) {
+		var select = elem.find("select");
+		select.val(code);
+		var codeName = select.find("option:selected").text();
+		elem.find("[show]").text(codeName);
+		elem.attr("need", code);
+	};
+	iP3.init = function() {
+		iP3.inittailNo();
+		$("#tailNo").on("change", iP3.chooseSelect);
+		//iP3.setInput();
+	};
+</script>

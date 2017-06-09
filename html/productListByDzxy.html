@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>对症下药商品列表页面</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			#content {
+				padding-top: 6em;
+			}
+			.totalcount {
+				width: 100%;
+				text-align: center;
+				position: fixed;
+				bottom: 12px;
+				font-size: 12px;
+			}
+			#totalcount {
+				padding: 5px 12px;
+				background-color: rgba(0, 0, 0, 0.5);
+				color: #FFFFFF;
+				border-radius: 20px;
+			}
+			#txtSearch{
+				position: relative;
+				border-radius: 5px;
+			}
+			#searchBox{
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				border-radius: 5px;
+				border: 0;
+				outline: none;
+				padding: 0px 10px;
+			}
+			#searchSubmit{
+				width: 0;
+				height: 0;
+				border: 0;
+				outline: none;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart>
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" id="back" goback></div>
+					<div class="title-mid pr10" id="cateName"></div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<!-- 搜索 -->
+			<form class="ub ub-ac bc13 h30 lh30" style="position: fixed;width: 100%;z-index: 99;top: 48px;left: 0px;">
+				<div class="ub ub-f1 bc2 pl3 ub-ac uc-a3 tx-c h20 lh20 ml10 mr10" id="txtSearch">
+					<input type="search" id="searchBox" placeholder="搜索商品" />
+					<input type="submit" id="searchSubmit" />
+				</div>
+			</form>
+			<input type="hidden" name="keyWords" id="keyWords" />
+			<!-- 内容 -->
+			<div class="bc2" id="content">
+				<!--商品列表-->
+				<section id="list">
+					<div class="ub pr5 pl3 ubb uhide">
+						<div class="ub ub-ac ub-img img tx-c" style="width:40%"></div>
+						<div class="ub-f5 pt4 " style="width:60%">
+							<div class="ub fs8 c19 pl4 pt3 lh15 h30 textoverflow">
+								<div class="name fs10 fb"></div>
+							</div>
+							<div class="ub ub-ac fs8 pl4 c4 h18 lh18">
+								<div>&yen;</div>
+								<div class=" price"></div>
+								<div class="fs6 w30 h12 lh12 ub-ac tx-c ml4 mr4 otc">OTC</div>
+								<div class="fs6 pl2 pr2 h12 lh12 tx-c mr4 act uhide">秒杀</div>
+								<div class="fs6 pl2 pr2 h12 lh12 tx-c act1 mr4 uhide">包邮</div>
+								<div class="fs6 pl2 pr2 h12 lh12 tx-c act2 mr4 uhide">团购</div>
+								<!--<div class=" c20">&nbsp;&nbsp;运费：&yen;</div>
+								<div class="ship c20"></div>-->
+							</div>
+							<!--<div class="ub fs8 c2 pl4 h18 lh18">
+								<div>月成交：</div>
+								<div class="buycount"></div>
+								<div>笔&nbsp;|&nbsp;评价：</div>
+								<div class="comments"></div>
+							</div>-->
+							<!--<div class="ub pl4 pt2">
+								<div class="fs6 w30 h12 lh12 ub-ac tx-c mr4 otc">OTC</div>
+								<div class="fs6 pl2 pr2 h15 lh15 tx-c mr4 act uhide">秒杀</div>
+								<div class="fs6 pl2 pr2 h15 lh15 tx-c act1 mr4 uhide">包邮</div>
+								<div class="fs6 pl2 pr2 h15 lh15 tx-c act2 mr4 uhide">团购</div>
+							</div>-->
+							<div class="ub ub-ac">
+								<div class=" ub-f4 fs7 c20 pl4 pt5 pb5 suppliername"></div>
+							</div>
+						</div>
+						<div class="uhide">
+							<div class="DRUGCODE"></div>
+							<div class="DRUGSUPPLIERCODE"></div>
+						</div>
+					</div>
+				</section>
+				<div class="uhide ub noProduct mt30 mb10">
+					<div class="ub-img noproduct ml35"></div>
+					<div class="ub-ac mt30 ml5">
+						<div class="fs10">很抱歉！</div>
+						<div class="fs8" id="aaa">没有为您找到相关商品。</div>
+					</div>
+				</div>
+				<div class="uhide totalcount">
+					<span id="totalcount"></span>
+				</div>
+				<!-- 上滑加载下一页样式s -->
+				<div id="slideUp">
+					<!-- 正在加载 -->
+					<div id="slideUp1">
+						<div class="ub ml60">
+							<div class="ub-img jz"></div>
+							<div class="fs8">正在加载...</div>
+						</div>
+					</div>
+					<!-- 加载完毕 -->
+					<div id="slideUp2">
+						<p>所有商品已加载完毕</p>
+					</div>
+				</div>
+				<!-- 上滑加载下一页样式e -->
+			</div>
+		</div>
+		<div id="gotop"></div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	iP = {};
+	var userid = localStorage.getItem("userid");
+	//页面加载
+	$(function() {
+		//根据团体颜色改变背景颜色
+	var insurecolor = localStorage.getItem("showColor");
+	$(".title").css("background-color",insurecolor);
+	
+		
+		
+		goTop();
+		var cateId = localStorage.getItem("dzxyId");
+		var dzxyName = localStorage.getItem("dzxyName");
+		$("#cateName").text(dzxyName);
+		//获取商品列表
+		getProduct(cateId, 1, "");
+		//返回上一页
+		$("#back").on("click", function() {
+			window.location.href = "index1.html";
+		});
+		//搜索
+		$("#searchSubmit").click(function(e){
+			e.preventDefault();
+			var kw = $.trim($("#searchBox").val());
+			if (!valid5(kw, "药品名只能包含汉字、字母、数字和标点符号！")) {
+				$("#searchBox").val("");
+				return;
+			}
+			if (kw.length > 50) {
+				toast("搜索的关键字不能超过50个字！");
+			}
+			$("#keyWords").val(kw);
+			$("#list>div:first").siblings().remove();
+			$(".noProduct").addClass("uhide");
+			getProduct(cateId, 1, kw);
+		});
+		slideUp("list", 0);
+//		slideUp("list", 48);
+	});
+	//获取对症下药商品列表方法
+	function getProduct(cateId, pageNo, keyWords) {
+		loadPage = false;
+		var pn = pageNo;
+		var totalPage;
+		Loading(); //显示加载中
+		var enResult = strEnc("[{\"yyyCode\":\"100080\",\"cateId\":\"" + cateId + "\",\"keyWords\":\"" + keyWords + "\",\"pageNo\":\"" + pageNo + "\",\"pageSize\":\"10\",\"source\":\""+localStorage.getItem("yyySource")+"\",\"groupCode\":\""+localStorage.getItem("insureCode")+"\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			beforeSend: function() {}, //添加loading信息
+			success: function(productInfo, textStatus) {
+				var productInfo = JSON.parse(productInfo);
+				localStorage.removeItem("TOTALCOUNT");
+				if (productInfo.success == "1" && productInfo.data.length > 0) {
+					localStorage.setItem("TOTALCOUNT", productInfo.head.totalSize);
+					totalPage = productInfo.head.totalPage;
+					//判断当前页是第几页
+					pageNo = productInfo.head.currentPageNo;
+					if (pageNo < totalPage) {
+						pageNo = parseInt(pageNo) + 1;
+						localStorage.setItem("PAGENO", pageNo);
+					} else {
+						localStorage.removeItem("PAGENO");
+					}
+					iP.append(productInfo.data, pn);
+					loadPage = true;
+				} else {
+					$(".noProduct").removeClass("uhide");
+					//alert("提交失败");
+				}
+				noLoading();
+			}, //清掉loading信息
+			error: function(xmlHttpRequest, error) {
+				noLoading();
+				loadPage = true;
+				alert("网络连接错误！");
+				$(".noProduct").removeClass("uhide");
+				$("#aaa").text("网络连接不上，请检查网络");
+			}
+		});
+	}
+	//插入数据
+	iP.append = function(data, pn) {
+		var elem, clone = $("#list>div:first");
+		for (var i in data) {
+			elem = clone.clone().removeClass("uhide");
+			elem.find(".name").text(data[i].NAME);
+			var price = "";
+			if (data[i].PROMOTION_PRICE != "") {
+				price = data[i].PROMOTION_PRICE;
+			} else {
+				price = data[i].DRUG_PRICE;
+			}
+			elem.find(".price").html(changeTwoDecimal_f(price));
+			elem.find(".ship").text(data[i].DRUG_SHIP);
+			elem.find(".buycount").text(data[i].BUY_COUNT);
+			elem.find(".comments").text(data[i].COMMENTS);
+			elem.find(".suppliername").text(data[i].DRUG_SUPPLIER_NAME);
+			elem.find(".DRUGCODE").text(data[i].DRUG_CODE);
+			elem.find(".DRUGSUPPLIERCODE").text(data[i].DRUG_SUPPLIER_CODE);
+			if (data[i].IS_OTC == 1) {
+				elem.find(".otc").removeClass("uhide").addClass("otcborder");
+			} else {
+				elem.find(".otc").addClass("uhide");
+			}
+			//判断是否参加活动
+			if (data[i].PROMOTION_TYPE.indexOf("seckill") > -1) //秒杀
+			{
+				elem.find(".act").removeClass("uhide");
+			}
+			if (data[i].PROMOTION_TYPE.indexOf("freedly") > -1) //包邮
+			{
+				elem.find(".act1").removeClass("uhide");
+			}
+			if (data[i].PROMOTION_TYPE.indexOf("teambuy") > -1) //团购
+			{
+				elem.find(".act2").removeClass("uhide");
+			}
+			var url = data[i].DRUG_IMG_URL;
+			url = "<img src='" + url + "' height='110px' width='110px'/>";
+			elem.find(".img").html(url);
+			$("#list").append(elem);
+			//点击商品时 到商品详细页面
+			elem.on("click", function() {
+				var DRUGCODE = $(this).find(".DRUGCODE").text(); //DRUGSUPPLIERCODE
+				var DRUGSUPPLIERCODE = $(this).find(".DRUGSUPPLIERCODE").text();
+				localStorage.setItem("DRUGCODE", DRUGCODE);
+				localStorage.setItem("DRUGSUPPLIERCODE", DRUGSUPPLIERCODE);
+				localStorage.setItem("dzxyBackPage", "productListByDzxy.html"); //从该页面到商品详情
+				localStorage.setItem("pdBackPage", "productListByDzxy.html"); //从该页面到商品详情
+				window.location.href = "productDetail.html";
+			});
+		};
+	};
+	//第三步：加载完成，回归之前状态 
+	function slideUpStep3() {
+		var slideUp1 = document.getElementById("slideUp1"),
+			slideUp2 = document.getElementById("slideUp2");
+		$(slideUp1).hide();
+		$(slideUp2).hide();
+	}
+	//第四步：所有商品加载完成
+	function slideUpStep4() {
+		var slideUp1 = document.getElementById("slideUp1"),
+			slideUp2 = document.getElementById("slideUp2");
+		slideUp1.style.display = "none";
+		slideUp2.style.height = "20px";
+		slideUp2.style.display = "block";
+	}
+	//上滑加载
+	function slideUp(contentId, num) {
+		var _start = 0,
+			_end = 0,
+			_content = document.getElementById(contentId);
+//		_content.removeEventListener();
+		var ah = window.screen.availHeight;
+		_content.addEventListener('touchmove', function() {
+			var tc = localStorage.getItem("TOTALCOUNT");
+			if (tc) {
+				var ct = "共 " + tc + " 条";
+				$("#totalcount").html(ct);
+				$(".totalcount").removeClass("uhide");
+			}
+			var yn = ynAddEvent(num);
+			if (!yn) return;
+			_content.addEventListener("touchstart", touchStart, false);
+			_content.addEventListener("touchmove", touchMove, false);
+		}, false);
+		_content.addEventListener('touchmove', function() {
+			setTimeout(function() {
+				$(".totalcount").addClass('uhide');
+			}, 500);
+		}, false);
+
+		function touchStart(event) {
+			var yn = ynAddEvent(num);
+			if (!yn) return;
+			var touch = event.targetTouches[0];
+			_start = touch.pageY;
+		}
+
+		function touchMove(event) {
+			var yn = ynAddEvent(num);
+			if (!yn) return;
+			var touch = event.targetTouches[0];
+			_end = (_start - touch.pageY);
+			if (_end > 0) {
+				touchEnd(event);
+			}
+		}
+
+		function touchEnd(event) {
+			var pageNo = localStorage.getItem("PAGENO");
+			if (pageNo) {
+				if (loadPage) {
+					var CLASSIDPAGE = localStorage.getItem("CLASSIDPAGE");
+					var cateId = localStorage.getItem("dzxyId");
+					var kw = $("#keyWords").val();
+					getProduct(cateId, pageNo, kw);
+					slideUpStep3();
+				}
+			} else {
+				slideUpStep4();
+				setTimeout(slideUpStep3, 500);
+			}
+		}
+
+		function ynAddEvent(num) {
+			var bh = $(_content).height(),
+				st = $("body").scrollTop();
+			if ((ah + st) >= bh) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+</script>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+	<head>
+		<title>我的处方</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			.po_status.active {
+				color: #38a3f5;
+				border-bottom: 2px solid #38A3F5;
+			}
+			
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			
+			#content1 {
+				margin-bottom: 60px;
+				padding-top: 3em;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart="" ng-controller="getList">
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">我的处方</div>
+					<div class="title-right">
+					</div>
+				</div>
+			</header>
+			<div id="content1" class="tabs_container">
+				<div class="tabs_content">
+					<div class="po_type h30 lh30 ub fs9 tx-c ubb bc2" style="position: fixed;width: 100%;z-index: 99;top: 48px;left: 0px;">
+						<div ng-click="findOrder('0')" class="ub-f1 po_status active" id="po_all">
+							<div class="po_img i1"></div>
+							<div>待审核</div>
+						</div>
+						<div ng-click="findOrder('1')" class="ub-f1 po_status " id="po_noPay">
+							<div class="po_img i2"></div>
+							<div>通过</div>
+						</div>
+						<div ng-click="findOrder('2')" class="ub-f1 po_status" id="po_underWay">
+							<div class="po_img i4"></div>
+							<div>拒绝</div>
+						</div>
+						<div ng-click="findOrder('')" class="ub-f1 po_status" id="po_finished">
+							<div class="po_img i5"></div>
+							<div>全部</div>
+						</div>
+					</div>
+					<!--处方 start-->
+					<div id="pList" style="padding-top: 2.3em;">
+						<div class="pItem bc2 ubb fs8 pl10 pr10 lh18 mt5" ng-repeat="i in list" ng-click="toDetail(i.PRESCS_ID)" ng-cloak>
+							<div class="ub">
+								<div class="ub-f1">
+									<div class="ub">
+										<div class="ub ub-f1">
+											<div>编号：</div>
+											<div>{{i.PRESCS_ID}}</div>
+										</div>
+										<div class="c4">
+											<span ng-if="i.PRESCS_STATUS=='0'">未审核</span>
+											<span ng-if="i.PRESCS_STATUS=='1'">待购买</span>
+											<span ng-if="i.PRESCS_STATUS=='2'">被拒绝</span>
+											<span ng-if="i.PRESCS_STATUS=='3'">已购买</span>
+										</div>
+									</div>
+									<div class="ub">
+										<div class="ub-f1">审核药店数量：{{i.SUPPLIER_APPLY_NUM}}</div>
+										<div></div>
+									</div>
+									<div class="ub">
+										<div class="ub ub-f1">
+											<div>通过数量：</div>
+											<div>{{i.SUPPLIER_CONFIRM_NUM}}</div>
+										</div>
+										<div class="ub ub-f1">
+											<div>未通过数量：</div>
+											<div>{{i.SUPPLIER_REJECT_NUM}}</div>
+										</div>
+									</div>
+								</div>
+								<div class="ub ub-ac ml10">
+									<div class="ub-img img26"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="ub bc2 pt5 mt5 ubb ubt uhide" id="nop">
+					<div class="ub-f1"></div>
+					<div class="ub ub-ac ub-f1" style="width: 38%;">
+						<div class="ub-img noproduct"></div>
+						<div class="ml5">
+							<div class="fs10">很抱歉！</div>
+							<div class="fs8" id="aaa">没有为您找到相关订单。</div>
+						</div>
+					</div>
+					<div class="ub-f1"></div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/angular.min.js"></script>
+		<script src="../js/des.js"></script>
+		<script src="../js/constant.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	var userid = localStorage.getItem("userid");
+	getPreList(userid, 0);
+	$(function() {
+		//返回上一页
+		$("#back").click(function() {
+			window.location.href = "PersonalCenter.html";
+		});
+//		$("#presc").click(function() {
+//			window.location.href = "prescDetail.html";
+//		});
+		//状态切换
+		$(".po_status").click(function() {
+			var _s = $(this);
+			_s.siblings().removeClass("active");
+			_s.addClass("active");
+		});
+	});
+	//获取处方列表
+	function getPreList(userid, status) {
+		var app = angular.module('myApp', []);
+		app.controller('getList', function($http, $scope) {
+			$scope.orderType = '0'; //0未审核，1待购买，2被拒绝，3已购买，不传为所有
+			$scope.findOrder = function(sts) {
+				$scope.list = [];
+				$scope.orderType = sts;
+				$scope.curStus = '';
+				if (sts == "1") {
+					getList($http, $scope, userid, '1');
+				} else if (sts == "2") {
+					getList($http, $scope, userid, '2');
+				} else if (sts == "0") {
+					getList($http, $scope, userid, '0');
+				} else {
+					status = "";
+					getList($http, $scope, userid, status);
+				}
+			};
+			getList($http, $scope, userid, status);
+		});
+	}
+
+	function getList($http, $scope, userid, status) {
+		Loading();
+		var param = strEnc("[{\"yyyCode\":\"100983\",\"userID\":\"" + userid + "\",\"status\":\"" + status + "\"}]", "100001", "", "");
+		$http({
+				method: 'GET',
+				url: GLOBAL_URL,
+				params: {
+					'json': param
+				}
+			})
+			.success(function(data) {
+				if (data.success) {
+					if (data.data.length > 0) {
+						$("#nop").addClass("uhide");
+						//						//处方列表
+						$scope.list = data.data;
+						$scope.toDetail = function(id) {
+							localStorage.setItem("perscNo",id);
+							window.location.href = "prescDetail.html";
+						}
+					} else {
+						$("#nop").removeClass("uhide");
+					}
+				} else {
+					alert(data.message);
+				}
+				noLoading();
+			})
+			.error(function() {
+				noLoading();
+				alert("网络连接错误！");
+			});
+	}
+</script>

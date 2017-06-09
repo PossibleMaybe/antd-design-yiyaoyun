@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>网络状态</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+	</head>
+
+	<body>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+	<script type="text/javascript" src="../js/jquery.js"></script>
+	<script type="text/javascript" src="../js/constant.js"></script>
+	<script type="text/javascript" src="../js/des.js"></script>
+	<script>
+		var enResult = strEnc("[{\"yyyCode\":\"100126\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			beforeSend: function() {}, //添加loading信息
+			success: function(data) {
+				$("body").html(data);
+			}, //清掉loading信息
+			error: function(err) {
+			    alert("网络连接错误！");
+			}
+		});
+	</script>
+
+</html>

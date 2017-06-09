@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>收货地址管理</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/ui-input.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			input,
+			textarea {
+				border: none;
+				outline: none;
+				font-size: 16px;
+				padding: 5px;
+				height: 30px;
+				line-height: 30px;
+			}
+			
+			div[show] {
+				padding: 0 8px;
+				width: 66px;
+				overflow: hidden;
+				height: 28px;
+			}
+			
+			.bluebutton {
+				width: 100%;
+				margin: 0px 10px;
+			}
+			
+			select {
+				border: 1px solid #e5e5e5;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart>
+		<div id="page_0" class="up ub ub-ver" style="overflow-x:hidden;">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">添加收货地址</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<div id="content c18" class="content">
+				<div class="bc2 h30 lh30 ubb pl5">
+					<input type="text" id="Name" style="height:30px; line-height:30px; width:98%" min="2" maxlength="8" placeholder="收货人姓名">
+				</div>
+				<div class="bc2 h30 lh30 ubb pl5">
+					<input type="tel" id="Tel" placeholder="联系电话" style="height:30px; line-height:30px;width:98%" maxlength="11" oninput="value=this.value.replace(/\D+/g,'')">
+				</div>
+				<div class="ub bc2 h30 lh30 ubb pl5">
+					<div class="ub ub-f1 ub-ac mt6 mr10 uba4 c2 uc-a2 bc2 h18 lh18" need id="province" style="border: 1px solid #e5e5e5;">
+						<div class="fs9 c2 ub-f1" show></div>
+						<div class="h18 lh18 bc9 ubl2 ub ub-ac w15">
+							<div class="img47 ub-img mr3 ml3" img></div>
+						</div>
+						<select class="fs9">
+							<!--<option value="" class="c74" selected>省</option>-->
+						</select>
+					</div>
+					<div class="ub ub-f1 ub-ac mt6 uba4 c2 uc-a2 bc2  h18 lh18" need id="Area" style="border: 1px solid #e5e5e5;">
+						<div class="fs9 c2 ub-f1" show></div>
+						<div class="h18 lh18 bc9 ubl2 ub ub-ac w15">
+							<div class="img47 ub-img mr3 ml3" img></div>
+						</div>
+						<select class="fs9">
+							<option value="" class="c74" selected>请选择</option>
+						</select>
+					</div>
+					<div class="ml10 ub ub-f1 ub-ac mt6 mr10 uba4 c2 uc-a2 bc2 h18 lh18" need id="subArea" style="border: 1px solid #e5e5e5;">
+						<div class="fs9 c2 ub-f1" show></div>
+						<div class="h18 lh18 bc9 ubl2 ub ub-ac w15">
+							<div class="img47 ub-img mr3 ml3" img></div>
+						</div>
+						<select class="fs9">
+							<option value="" class="c74" selected>请选择</option>
+						</select>
+					</div>
+				</div>
+				<div class="bc2 h50 lh50 ubb pl5 pt3 ub-as">
+					<textarea id="addressInfo" placeholder="详细地址" name="text" maxlength="30" style="resize:none;box-sizing:border-box; height:70px; width:100%;padding-right: 10px;"></textarea>
+				</div>
+				<div class="ub fs8 bc2 h30 lh30 pl10 pr10 ubb" id="isms">
+					<div class="ub-f1">设为默认地址</div>
+					<div class="ub-img" id="mr">
+						<div class="uhide mr">1</div>
+					</div>
+				</div>
+				<div class="ub ub-ac h35 lh35 mt10">
+					<div class="ub-f1"></div>
+					<div class="ub-f1 bluebutton" id="saveAddress">保存并使用</div>
+					<div class="ub-f1"></div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/para.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<!--<script src="../js/budtrinity-0.1.3.min.js"></script>-->
+	</body>
+
+</html>
+<script>
+	iP = {};
+	//获取用户信息
+	var userid = localStorage.getItem("userid");
+	var CHOOSEADDR = localStorage.getItem("CHOOSEADDR");
+	localStorage.removeItem("CHOOSEADDR");
+	$(function() {
+		var insurecolor = localStorage.getItem("showColor");
+		$(".title").css("background-color", insurecolor);
+		if($(".mr").text() == "0") {
+			$("#mr").addClass("img28");
+		} else if($(".mr").text() == "1") {
+			$("#mr").addClass("img29");
+		}
+		//是否设置为默认地址
+		$("#isms").click(function() {
+			if($(".mr").text() == "0") {
+				$("#mr").removeClass("img28").addClass("img29");
+				$(".mr").text(1);
+			} else if($(".mr").text() == "1") {
+				$("#mr").removeClass("img29").addClass("img28");
+				$(".mr").text(0);
+			}
+		});
+		//获取区域
+		getProvince();
+		//选择区域
+		$("#province").on("change", function() {
+			var select = $(this).find("select");
+			var code = select.val();
+			var codeName = select.find("option:selected").text();
+			$(this).find("[show]").text(codeName);
+			$(this).attr("need", code);
+			getArea(code, "1", "2");
+		});
+		$("#Area").on("change", function() {
+			var select = $(this).find("select");
+			var code = select.val();
+			var codeName = select.find("option:selected").text();
+			$(this).find("[show]").text(codeName);
+			$(this).attr("need", code);
+			getArea(code, "1");
+		});
+		$("#subArea").on("change", iP.chooseSelect);
+		//保存收货地址
+		$("#saveAddress").click(function() {
+			var areaID = $("#subArea").attr("need");
+			var addressInfo = $.trim($("#addressInfo").val()).replace(/"/g, "").replace(/'/g, "");
+			var addressName = $.trim($("#Name").val());
+			var addressTel = $.trim($("#Tel").val());
+			if(areaID != "" && addressInfo != "" && addressName != "" && addressTel != "" && userid != "") {
+				if(addressName.length >= 2 && addressName.length <= 14) {
+					if(!valid1(addressName, "收货人姓名只能包含汉字和字母！")) {
+						//						$("#Name").val("");
+						return;
+					}
+					if(!valid2(addressInfo, "详细地址只能包含汉字、字母、数字和标点符号！")) {
+						//						$("#addressInfo").val("");
+						return;
+					}
+					if(addressTel.length != 11) {
+						alert("手机号码为11位");
+					} else if(!/^(13[0-9]|14[0-9]|15[0-9]|17[0-9]|18[0-9])\d{8}$/i.test(addressTel)) {
+						alert("手机号码格式不对");
+					} else if(addressInfo.length > 30) {
+						alert("详细地址的字数不能超过30个");
+					} else {
+						var area = $("#province>[show]").text() + 　$("#Area>[show]").text() + $("#subArea>[show]").text();
+						addAddress(area, addressInfo, addressName, addressTel, userid);
+					}
+				} else {
+					alert("收件人的名字长度需要控制在2到14位以内");
+				}
+			} else {
+				alert("请把信息填写完整");
+			}
+		});
+		$("#back").click(function() {
+			if(CHOOSEADDR == "productOrder") {
+				localStorage.setItem("CHOOSEADDR", CHOOSEADDR);
+			}
+			history.go(-1);
+		});
+		//添加埋点
+		//		eventBtn(this);
+	});
+	//添加地址
+	function addAddress(area, addressInfo, addressName, addressTel, userid) {
+		var addressDefault = $(".mr").text();
+		var json = strEnc("[{\"yyyCode\":\"addressInfo\",\"userId\":\"" + userid + "\",\"action\":\"ADD\",\"area\":\"" + area + "\",\"detailAddress\":\"" + addressInfo + "\",\"consignee\":\"" + addressName + "\",\"phoneNo\":\"" + addressTel + "\",\"source\":\"" + localStorage.getItem("yyySource") + "\"}]", "100001", "", "");
+		$.post(GLOBAL_URL, {
+			"json": json
+		}, function() {}).success(function(data) {
+			var productInfo = strDec(data, "100001", "", "");
+			productInfo = JSON.parse(productInfo);
+			if(productInfo.status == "1") {
+				if(CHOOSEADDR == "productOrder") {
+					var addressid = productInfo.response.id;
+					localStorage.setItem("addressid", addressid);
+					var payMethod = request("payMethod");
+					window.location.href = "productOrder.html?addressid=" + addressid + "&payMethod=" + payMethod;
+				} else {
+					var payMethod = request("payMethod");
+					window.location.href = "personalAddress.html?payMethod=" + payMethod;
+				}
+			} else {
+				alert("添加收货地址失败！");
+			}
+		}).error(function() {
+			alert("网络连接错误！");
+		});
+	}
+	//获取省份
+	function getProvince() {
+		var enResult = strEnc("[{\"yyyCode\":\"getArea\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(data) {
+				var data = JSON.parse(data);
+				if(data.success == "1") {
+					for(var i in data.data) {
+						var option = $('<option></option>');
+						option.val(data.data[i].region_id);
+						option.text(data.data[i].local_name);
+						$("#province select").append(option);
+					}
+					iP.setOption($("#province"), "21");
+					getArea("21", "1", "2");
+				}
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//获取区域
+	function getArea(areaID, area1, area2) {
+		var elem = "#subArea";
+		$("select", "#subArea").html('<option value="" class="c74" selected>请选择</option>');
+		iP.setOption($(elem), "");
+		if(area2) {
+			elem = "#Area";
+			$("select", "#Area").html('<option value="" class="c74" selected>请选择</option>');
+			iP.setOption($(elem), "");
+		}
+		var enResult = strEnc("[{\"yyyCode\":\"100019\",\"areaID\":\"" + areaID + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(productInfo) {
+				var productInfo = JSON.parse(productInfo);
+				if(productInfo.success == "1") {
+					//区域
+					for(var i in productInfo.data.SUB_AREA) {
+						var option = $('<option></option>');
+						option.val(productInfo.data.SUB_AREA[i].AREA_ID);
+						option.text(productInfo.data.SUB_AREA[i].AREA_NAME);
+						$(elem + " select").append(option);
+					}
+					//					iP.setOption($(elem), "");
+				}
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//选择下拉列表
+	iP.chooseSelect = function() {
+		var that = $(this).find("select");
+		iP.setOption(that.parents("[need]"), that.val());
+	};
+	iP.setOption = function(elem, code) {
+		var select = elem.find("select");
+		select.val(code);
+		var codeName = select.find("option:selected").text();
+		elem.find("[show]").text(codeName);
+		elem.attr("need", code);
+	};
+	//埋点
+	//	Trinity.init({
+	//		app_key: "2a6b0d9fb0bbee6d06d563cd2fd10de68735fea5",
+	//		url: point_URL,
+	//		device_id: localStorage.getItem("device_id"), //需要从android SKD Trinity.sharedInstance().getDeviceId() 或者ios的SDK[BudtrinityDeviceInfo udid]中获取该值
+	//		sdk_version: localStorage.getItem("sdk_version"),
+	//		app_version: app_version,
+	//		u_id: localStorage.getItem("userid"), //如果访问该页面时app已经登录过则需要赋值
+	//		channel: "0000000000"
+	//	});
+	//自定义事件
+	//	function eventBtn(ob) {
+	//		Trinity.add_event({
+	//			key: "page", //添加收货地址
+	//			"segmentation": { //设置自定义事件的键值对
+	//				"page_id": "personalAddressAdd",
+	//				"page_name": "personalAddressAdd.html"
+	//			}
+	//		});
+	//	}
+</script>

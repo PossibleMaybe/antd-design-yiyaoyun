@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>收货地址管理</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			
+			#content {
+				padding-top: 3em;
+			}
+			
+			.name {
+				height: 28px;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart>
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">收货地址管理</div>
+					<div class="title-right">
+						<!-- <div class="">编辑</div>-->
+					</div>
+				</div>
+			</header>
+			<div id="content" class="content">
+				<div class="ub tx-c h30 lh30 bc2 mt5 ub-ac ubb ubt pl38" id="toAdd">
+					<div class="ub-f1"></div>
+					<div class="ub ub-f1">
+						<div class="ub-img img49 mt9"></div>
+						<div class="tx-c">添加收货地址</div>
+					</div>
+					<div class="ub-f1"></div>
+				</div>
+				<div id="list" class="h75">
+					<div class="bc2 mt5 mb5 pt7 pb7 lh20 fs9 uhide pl10 pr10 ubb ubt ub">
+						<div class="addrDetail ub-f1">
+							<div class="ub">
+								<div class="ub" style="width:50%">
+									<div class="ub-img img18 mt3"></div>
+									<div class="name ml5"></div>
+								</div>
+								<div class="ub">
+									<div class="ub-img img48 mt3 ml8"></div>
+									<div class="tel ml3"></div>
+									<div class="addressid uhide"></div>
+								</div>
+							</div>
+							<div class="ub">
+								<div class="uhide tx-c bc12 h15 lh15 w24 c1 fs6 mtp5" id="default">默认</div>
+								<div class="ub-f1 address c14"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/para.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<!--<script src="../js/budtrinity-0.1.3.min.js"></script>-->
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	iP = {};
+	//获取用户信息
+	var userid = localStorage.getItem("userid");
+	var CHOOSEADDR = localStorage.getItem("CHOOSEADDR");
+	localStorage.removeItem("CHOOSEADDR");
+	$(function() {
+		var insurecolor = localStorage.getItem("showColor");
+		$(".title").css("background-color", insurecolor);
+		AddressList(userid);
+		//添加新的收货地址
+		$("#toAdd").click(function() {
+			if(CHOOSEADDR) {
+				localStorage.setItem("CHOOSEADDR", CHOOSEADDR);
+			}
+			var payMethod = request("payMethod");
+			window.location.href = "personalAddressAdd.html?payMethod=" + payMethod;
+		});
+		//返回上一页
+		$("#back").click(function() {
+			if(CHOOSEADDR == "productOrder") {
+				localStorage.removeItem("CHOOSEADDR");
+				var payMethod = request("payMethod");
+				window.location.href = "productOrder.html?payMethod=" + payMethod;
+			} else {
+				//				localStorage.setItem("personBackPage", "personalAddress.html"); //从收货地址列表到个人中心
+				window.location.href = "PersonalCenter.html";
+			}
+		});
+		//添加埋点
+		//		eventBtn(this);
+	});
+	//获取地址列表
+	function AddressList(userid) {
+		var enResult = strEnc("[{\"yyyCode\":\"addressInfo\",\"userId\":\"" + userid + "\",\"action\":\"LIST\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(data) {
+				data = strDec(data, "100001", "", "");
+				data = JSON.parse(data);
+				if(data.status == "1") {
+					if(data.response != null) {
+						iP.append(data.response);
+					}
+				} else {
+					alert(data.message);
+				}
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//插入数据
+	iP.append = function(data) {
+		var elem, clone = $("#list>div:first");
+		clone.siblings().remove();
+		for(var i in data) {
+			elem = clone.clone().removeClass("uhide");
+			var addrName = data[i].consignee;
+			elem.find(".name").text(addrName);
+			elem.find(".tel").html(data[i].phoneNo);
+			elem.find(".address").text(data[i].area + data[i].detailAddress);
+			elem.find(".addressid").text(data[i].id);
+			if(data[i].ADDRESS_DEFAULT == "1") {
+				elem.find("#default").removeClass("uhide");
+			} else if(data[i].ADDRESS_DEFAULT == "0") {
+
+			}
+			elem.find(".addrDetail").on("click", function() {
+				if(CHOOSEADDR) {
+					localStorage.setItem("CHOOSEADDR", CHOOSEADDR);
+				}
+				var addressid = $(this).parent().find(".addressid").text();
+				localStorage.setItem("addressid", addressid);
+				if(CHOOSEADDR == "productOrder") {
+					localStorage.removeItem("CHOOSEADDR");
+					var payMethod = request("payMethod");
+					window.location.href = "productOrder.html?addressid=" + addressid + "&payMethod=" + payMethod;
+				}
+			});
+			elem.find(".editAddr").on("click", function() {
+				if(CHOOSEADDR) {
+					localStorage.setItem("CHOOSEADDR", CHOOSEADDR);
+				}
+				var addressid = $(this).parent().find(".addressid").text();
+				localStorage.setItem("addressid", addressid);
+				var payMethod = request("payMethod");
+				window.location.href = "personalAddressUp.html?payMethod=" + payMethod;
+			});
+			$("#list").append(elem);
+		};
+	};
+	//埋点
+	//	Trinity.init({
+	//		app_key: "2a6b0d9fb0bbee6d06d563cd2fd10de68735fea5",
+	//		url: point_URL,
+	//		device_id: localStorage.getItem("device_id"), //需要从android SKD Trinity.sharedInstance().getDeviceId() 或者ios的SDK[BudtrinityDeviceInfo udid]中获取该值
+	//		sdk_version: localStorage.getItem("sdk_version"),
+	//		app_version: app_version,
+	//		u_id: localStorage.getItem("userid"), //如果访问该页面时app已经登录过则需要赋值
+	//		channel: "0000000000"
+	//	});
+	//自定义事件
+	//	function eventBtn(ob) {
+	//		Trinity.add_event({
+	//			key: "page", //收货地址管理
+	//			"segmentation": { //设置自定义事件的键值对
+	//				"page_id": "personalAddress",
+	//				"page_name": "personalAddress.html"
+	//			}
+	//		});
+	//	}
+</script>

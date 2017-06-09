@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>药品搜索</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/ui-input.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			#hot {
+				padding-top: 3em;
+			}
+			#back{
+				padding: 13px 8px;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh">
+		<div class="up ub ub-ver" tabindex="0" id="content">
+			<!-- 页头 -->
+			<form id="header">
+				<div class="title">
+					<div id="back">
+						<div class="ub-img img70"></div>
+					</div>
+					<div class="ub ub-f1 bc2 pl3 ub-ac uc-a3 h20 lh20 ">
+						<div class="ub ub-f1 bc2 pl3 pr7 ub-ac uc-a3">
+							<div class="w30 h18 lh18 fs8 s_select">
+								<div class="s_choice">药品</div>
+								<div class="s_icon"></div>
+								<div class="s_content">
+									<div class="s_top"></div>
+									<div class="s_list">
+										<div class="s_item" s_item_id="1">药品</div>
+										<div class="s_splitline"></div>
+										<div class="s_item" s_item_id="2">药店</div>
+									</div>
+								</div>
+								<input type="hidden" name="s_choice" />
+							</div>
+							<div class="ub-f1 uinput">
+								<input type="text" id="txtSearch" class="fs8 h30 uo c14" placeholder="请输入药品名称" />
+							</div>
+						</div>
+					</div>
+					<div class="toSearch" style="opacity: 0;filter: alpha(opacity = 0);width: 0;height: 0;">
+						<input type="submit" value="" />
+					</div>
+					<div class="title-right1 ub ub-ac toSearch ">
+						<div class="fs10 c1">搜索</div>
+					</div>
+				</div>
+			</form>
+			<!--热搜-->
+			<div class="bc2 ubb" id="hot">
+				<div class="ubb pl8 h24 lh24">热搜</div>
+				<div id="hotlist" class="pt5 pl5 fs9">
+					<div class="bc10 h18 lh18 pl3 pr3 ml5 mb5" style="border-radius: 3px; float: left;" onclick='searchDrug("999感冒灵")'>999感冒灵</div>
+					<div class="bc10 h18 lh18 pl3 pr3 ml5 mb5" style="border-radius: 3px;float: left;" onclick='searchDrug("黄连上清片")'>黄连上清片</div>
+					<div class="bc10 h18 lh18 pl3 pr3 ml5 mb5" style="border-radius: 3px;float: left;" onclick='searchDrug("止咳")'>止咳</div>
+					<div class="bc10 h18 lh18 pl3 pr3 ml5 mb5" style="border-radius: 3px;float: left;" onclick='searchDrug("感冒")'>感冒</div>
+					<div class="bc10 h18 lh18 pl3 pr3 ml5 mb5" style="border-radius: 3px;float: left;" onclick='searchDrug("阿胶")'>阿胶</div>
+					<div class="bc10 h18 lh18 pl3 pr3 ml5 mb5" style="border-radius: 3px;float: left;" onclick='searchDrug("西洋参")'>西洋参</div>
+					<div class="bc10 h18 lh18 pl3 pr3 ml5 mb5" style="border-radius: 3px;float: left;" onclick='searchDrug("维生素")'>维生素</div>
+					<div class="bc10 h18 lh18 pl3 pr3 ml5 mb5" style="border-radius: 3px;float: left;" onclick='searchDrug("多潘立酮片")'>多潘立酮片</div>
+				</div>
+			</div>
+			<!--搜索历史-->
+			<div id="history" class="bc2 uhide">
+				<div class="ub h29 lh29 ubb pl8 pr5">
+					<div class=" ub-f1 fs9 fb">搜索历史</div>
+					<div class=" ub-f1 fs9 c3 tx-r clearAll">清空历史记录</div>
+				</div>
+				<section id="list">
+					<!--搜索历史列表-->
+					<div class="ub h29 lh29 ubb pl8 uhide">
+						<div class="fs8 c11 pl7 pname"></div>
+					</div>
+					<!---->
+				</section>
+			</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<!--<script src="../js/budtrinity-0.1.3.min.js"></script>-->
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	$(function() {
+		//根据团体颜色改变背景颜色
+	var insurecolor = localStorage.getItem("showColor");
+	$(".title").css("background-color",insurecolor);
+	
+		
+//		s_select(".s_select");
+		//搜索商品
+		$(".toSearch").click(function(event) {
+			event.preventDefault();
+			var pname = $.trim($("#txtSearch").val()).replace(/（/g, "(").replace(/）/g, ")");
+			if (pname.length > 50) {
+				toast("搜索的关键字不能超过50个字！");
+			} else if (pname != "") {
+				if (!valid5(pname, "药品名只能包含汉字、字母、数字和标点符号！")) {
+					$("#txtSearch").val("");
+					return;
+				}
+				localStorage.setItem("pname", pname); //传给下一个页面
+				//添加埋点
+//				eventBtn(1, pname);
+				//先得到用户之前搜索的记录
+				var history = window.localStorage.getItem("historyList");
+				if (history == null) history = "";
+				if (history.indexOf(pname + "") <= 0) {
+					if (history != "null" && history != "") {
+						history = history + "|" + pname;
+					} else {
+						history = "|" + pname;
+					}
+				} else {
+					if (history.indexOf("|" + pname) + ("|" + pname).length < history.length) {
+						history = history.replace("|" + pname + "|", "|");
+					} else {
+						history = history.replace("|" + pname, "");
+					}
+					if (history != "null") {
+						history = history + "|" + pname;
+					} else {
+						history = "|" + pname;
+					}
+				}
+				//存到用户的历史记录
+				localStorage.setItem("historyList", history);
+				//用户搜索商品，传搜索商品名
+				window.location.href = "productList.html";
+			} else {
+				toast("您没有搜索任何商品，请输入商品名！");
+			}
+		});
+		//判断用户是否搜索过商品
+		if (localStorage.getItem("historyList") == "null" || localStorage.getItem("historyList") == "" || localStorage.getItem("historyList") == null) {
+			$("#noHistory").removeClass("uhide");
+		} else {
+			$("#noHistory").addClass("uhide");
+			$("#history").removeClass("uhide");
+			var historyList = localStorage.getItem("historyList");
+			historyList = historyList.substring(1);
+			var hpname = new Array();
+			hpname = historyList.split("|");
+			if (hpname.length > 10) {
+				var index = historyList.indexOf("|");
+				localStorage.setItem("historyList", historyList.substring(index));
+				historyList = historyList.substring(index + 1);
+				hpname = historyList.split("|");
+			}
+			var elem, clone = $("#list>div:first");
+			clone.siblings().remove();
+			for (var i in hpname) {
+				elem = clone.clone().removeClass("uhide")
+				var hpname1 = hpname[i];
+				elem.find(".pname").attr("title", hpname1);
+				if (hpname1.length > 15) {
+					hpname1 = hpname1.substring(0, 15) + "...";
+				}
+				elem.find(".pname").text(hpname1);
+				$("#list").prepend(elem);
+				$(elem).on("click", function() {
+					var pname = $(this).find(".pname").attr("title");
+					localStorage.setItem("pname", pname);
+					var history = window.localStorage.getItem("historyList");
+					if (history.indexOf("|" + pname) + ("|" + pname).length < history.length) {
+						history = history.replace("|" + pname + "|", "|");
+					} else {
+						history = history.replace("|" + pname, "");
+					}
+					if (history != "null" && history != "") {
+						history = history + "|" + pname;
+					} else {
+						history = "|" + pname;
+					}
+					localStorage.setItem("historyList", history);
+					//添加埋点
+//					eventBtn(2, pname);
+					window.location.href = "productList.html";
+				});
+			};
+		}
+		//返回上一页
+		$("#back").on("click", function() {
+			window.location.href = "index1.html";
+		});
+		//清空
+		$(".clearAll").on("click", function() {
+			localStorage.setItem("historyList", null);
+			$("#history").addClass("uhide");
+			$("#noHistory").removeClass("uhide");
+		});
+	});
+
+	function searchDrug(name) {
+		var pname = name;
+		localStorage.setItem("pname", pname);
+		var history = window.localStorage.getItem("historyList");
+		if (history) {
+			if (history.indexOf("|" + pname) + ("|" + pname).length < history.length) {
+				history = history.replace("|" + pname + "|", "|");
+			} else {
+				history = history.replace("|" + pname, "");
+			}
+			if (history != "null" && history != "") {
+				history = history + "|" + pname;
+			} else {
+				history = "|" + pname;
+			}
+			localStorage.setItem("historyList", history);
+			//添加埋点
+//			eventBtn(2, pname);
+			window.location.href = "productList.html";
+		} else {
+			localStorage.setItem("pname", pname);
+			var history = "|"+pname;
+			localStorage.setItem("historyList", history);
+			window.location.href = "productList.html";
+		}
+	}
+	//埋点
+//	Trinity.init({
+//		app_key: "2a6b0d9fb0bbee6d06d563cd2fd10de68735fea5",
+//		url: point_URL,
+//		device_id: localStorage.getItem("device_id"), //需要从android SKD Trinity.sharedInstance().getDeviceId() 或者ios的SDK[BudtrinityDeviceInfo udid]中获取该值
+//		sdk_version: localStorage.getItem("sdk_version"),
+//		app_version: app_version,
+//		u_id: localStorage.getItem("userid"), //如果访问该页面时app已经登录过则需要赋值
+//		channel: "0000000000"
+//	});
+	//自定义事件
+//	function eventBtn(search_type, keyword) {
+//		Trinity.add_event({
+//			key: "search", //商品搜索
+//			"segmentation": { //设置自定义事件的键值对
+//				"page_id": "productSearch",
+//				"page_name": "productSearch.html",
+//				"search_type": search_type,
+//				"keyword": keyword,
+//				"search_result": "1"
+//			}
+//		});
+//	}
+</script>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>意见反馈</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/ui-input.css">
+		<link rel="stylesheet" href="../css/win.css">
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart>
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">意见反馈</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<div class="mt10 tx-c" style="text-align:center;">
+				<div class="ub mt10 h77 c2 bc2 uc-a2 ub-f1 ml5 mr5 uinput">
+					<textarea class="fs8" id="txtSuggest" maxlength="200" name="text" style="resize: none; box-sizing: border-box;outline: none;" placeholder="请输入产品意见，我们将不断优化体验"></textarea>
+				</div>
+				<div class="ub mt10 ml25 mr25 ub-f1 tx-c">
+					<div class="ub-f1"></div>
+					<div class="bc1 h25 lh25 fs10 c1 uc-a6 " id="tijiao" style="width:50%">提交意见</div>
+					<div class="ub-f1"></div>
+				</div>
+			</div>
+		</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<!--<script src="../js/budtrinity-0.1.3.min.js"></script>-->
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	//获取用户的id
+	var userid = localStorage.getItem("userid");
+	$(function() {
+		//关闭页面
+		$("#back").click(function() {
+			window.location.href = "PersonalCenter.html";
+		});
+		//提交意见反馈
+		$("#tijiao").click(function() {
+			var content = $.trim($("#txtSuggest").val()).replace(/"/g, "").replace(/'/g, "");
+			if (content) {
+				if (content.length < 10 || content.length > 200) {
+					toast("反馈意见在10 到 200 个字符之间！");
+					return;
+				}
+				if (!valid2(content, "反馈意见只能包含汉字、字母、数字和标点符号！")) {
+					$("#txtSuggest").val("");
+					return;
+				}
+				AddfeedBack(content, userid);
+			} else {
+				$("#txtSuggest").val("");
+				toast("反馈意见不能为空！");
+			}
+		});
+		//添加埋点
+//		eventBtn(this);
+	});
+	//获取地址列表
+	function AddfeedBack(content, userid) {
+		var enResult = strEnc("[{\"yyyCode\":\"100025\",\"content\":\"" + content + "\",\"user_id\":\"" + userid + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(productInfo) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == "1") {
+					alert("提交成功，感谢您的支持！", function() {
+						$("#txtSuggest").val("");
+						window.location.href = "PersonalCenter.html";
+					});
+				} else {
+					toast("提交失败！");
+				}
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//埋点
+//	Trinity.init({
+//		app_key: "2a6b0d9fb0bbee6d06d563cd2fd10de68735fea5",
+//		url: point_URL,
+//		device_id: localStorage.getItem("device_id"), //需要从android SKD Trinity.sharedInstance().getDeviceId() 或者ios的SDK[BudtrinityDeviceInfo udid]中获取该值
+//		sdk_version: localStorage.getItem("sdk_version"),
+//		app_version: app_version,
+//		u_id: localStorage.getItem("userid"), //如果访问该页面时app已经登录过则需要赋值
+//		channel: "0000000000"
+//	});
+	//自定义事件
+//	function eventBtn(ob) {
+//		Trinity.add_event({
+//			key: "page", //意见反馈
+//			"segmentation": { //设置自定义事件的键值对
+//				"page_id": "feedBack",
+//				"page_name": "feedBack.html"
+//			}
+//		});
+//	}
+</script>

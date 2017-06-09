@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>药物查询</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+	</head>
+
+	<body class="um-vp c-wh">
+		<div class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">药物查询</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<div class="bc2 ubb fs7 c11 pl5">
+				<div class="ub h20 lh20 pl5 pr5">
+					<div style="width:25%">药品通用名</div>
+					<div style="width:75%">苯磺酸氨氯地平</div>
+				</div>
+				<div class="ub h20 lh20 pl5 pr5">
+					<div style="width:25%">药品商品名</div>
+					<div style="width:75%">络活喜</div>
+				</div>
+
+				<div class="ub h20 lh20 pl5 pr5">
+					<div style="width:25%">参考零售价</div>
+					<div style="width:75%">30.70元</div>
+				</div>
+				<div class="ub h20 lh20 pl5 pr5">
+					<div style="width:25%">规格包装</div>
+					<div style="width:75%">5mg*7片/盒 铝塑泡罩</div>
+				</div>
+				<div class="ub h20 lh20 pl5 pr5">
+					<div style="width:25%">剂型名称</div>
+					<div style="width:75%">片剂</div>
+				</div>
+				<div class="ub h20 lh20 pl5 pr5">
+					<div style="width:25%">医保目录</div>
+					<div style="width:75%">乙类</div>
+				</div>
+				<div class="ub h20 lh20 pl5 pr5">
+					<div style="width:25%">生产厂家</div>
+					<div style="width:75%">辉瑞制药有限公司</div>
+				</div>
+			</div>
+			<div class="bc2 ubb fs7 c11 mt5 pl5">
+				<div class="ub h20 lh20 pl5 pr5">
+					<div style="width:25%">药品通用名</div>
+					<div style="width:75%">苯磺酸氨氯地平</div>
+				</div>
+				<div class="ub h20 lh20 pl5 pr5">
+					<div style="width:25%">药品商品名</div>
+					<div style="width:75%">兰迪</div>
+				</div>
+				<div class="ub h20 lh20 pl5 pr5">
+					<div style="width:25%">参考零售价</div>
+					<div style="width:75%">36.00元</div>
+				</div>
+				<div class="ub h20 lh20 pl5 pr5">
+					<div style="width:25%">规格包装</div>
+					<div style="width:75%">5mg*28片/盒 铝塑</div>
+				</div>
+				<div class="ub h20 lh20 pl5 pr5">
+					<div style="width:25%">剂型名称</div>
+					<div style="width:75%">片剂</div>
+				</div>
+				<div class="ub h20 lh20 pl5 pr5">
+					<div style="width:25%">医保目录</div>
+					<div style="width:75%">乙类</div>
+				</div>
+				<div class="ub h20 lh20 pl5 pr5">
+					<div style="width:25%">生产厂家</div>
+					<div style="width:75%">扬子江药业集团上海海尼药业有限公司</div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	$(function() {
+		var drugname = localStorage.getItem("drugname");
+		var drugaddress = localStorage.getItem("drugaddress");
+		$("#back").click(function() {
+			window.history.go(-1);
+		})
+	});
+</script>

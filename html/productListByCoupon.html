@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>优惠券商品列表页面</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			
+			#content {
+				padding-top: 3em;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart>
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" id="back" goback></div>
+					<div class="title-mid" id="couponName"></div>
+					<div class="title-right ">
+					</div>
+				</div>
+			</header>
+			<!-- 内容 -->
+			<div class="bc2" id="content">
+				<!--商品列表-->
+				<section id="list">
+					<!--1-->
+					<div class="ub pr5 ubb uhide">
+						<div class="ub ub-ac ub-img img tx-c" style="width:40%"></div>
+						<div class="ub-f5 pt4 " style="width:60%">
+							<div class="ub fs8 c19 pl4 pt3 lh15 h30 textoverflow">
+								<div class="name fs10 fb"></div>
+							</div>
+							<div class="ub ub-ac fs8 c4 pl4 h18 lh18">
+								<div>&yen;</div>
+								<div class="price"></div>
+								<div class="fs6 w30 h12 lh12 ub-ac tx-c ml4 mr4 otc">OTC</div>
+								<div class="fs6 pl2 pr2 h12 lh12 tx-c act mr4 uhide">秒杀</div>
+								<div class="fs6 pl2 pr2 h12 lh12 tx-c act1 mr4 uhide">包邮</div>
+								<div class="fs6 pl2 pr2 h12 lh12 tx-c act2 mr4 uhide">团购</div>
+								<!--<div class=" c20">&nbsp;&nbsp;运费：&yen;</div>
+								<div class="ship c20"></div>-->
+							</div>
+							<!--<div class="ub fs8 c2 pl4 h18 lh18">
+								<div>月成交：</div>
+								<div class="buycount"></div>
+								<div>笔&nbsp;|&nbsp;评价：</div>
+								<div class="comments"></div>
+							</div>-->
+							<!--<div class="ub pl4 pt2">
+								<div class="fs6 w30 h12 lh12 ub-ac tx-c mr4 otc">OTC</div>
+								<div class="fs6 pl2 pr2 h15 lh15 tx-c act mr4 uhide">秒杀</div>
+								<div class="fs6 pl2 pr2 h15 lh15 tx-c act1 mr4 uhide">包邮</div>
+								<div class="fs6 pl2 pr2 h15 lh15 tx-c act2 mr4 uhide">团购</div>
+							</div>-->
+							<div class="ub ub-ac">
+								<div class=" ub-f4 fs7 c20 pl4 pt5 pb5 suppliername"></div>
+							</div>
+						</div>
+						<div class="uhide">
+							<div class="DRUGCODE"></div>
+							<div class="DRUGSUPPLIERCODE"></div>
+						</div>
+					</div>
+					<!---->
+				</section>
+				<div class="uhide ub noProduct mt30 mb10">
+					<div class="ub-img noproduct ml35"></div>
+					<div class="ub-ac mt30 ml5">
+						<div class="fs10">很抱歉！</div>
+						<div class="fs8" id="aaa">没有为您找到相关商品。</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="gotop"></div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<!--<script src="../js/budtrinity-0.1.3.min.js"></script>-->
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	iP = {};
+	var userid = localStorage.getItem("userid");
+	//页面加载
+	$(function() {
+		goTop();
+		var plCName = localStorage.getItem('plCName');
+		var plCId = localStorage.getItem('plCId');
+		$("#couponName").text(plCName);
+		//获取商品列表
+		getProduct(plCId);
+		//返回上一页
+		$("#back").on("click", function() {
+			var uri = localStorage.getItem("plbcBackUrl");
+			localStorage.removeItem("plCName");
+			localStorage.removeItem("plCId");
+			localStorage.removeItem("plbcBackUrl");
+			window.location = uri;
+		});
+		//添加埋点
+//		eventBtn(this);
+	});
+	//获取商品列表方法
+	function getProduct(couponID) {
+		Loading(); //显示加载中
+		var json = strEnc("[{\"yyyCode\":\"100989\",\"couponID\":\"" + couponID + "\",\"promotionType\":\"\",\"pharmacyCode\":\"\",\"promotionID\":\"\",\"source\":\""+localStorage.getItem("yyySource")+"\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + json,
+			type: "GET",
+			timeout: 60000,
+			success: function(data) {
+				var productInfo = JSON.parse(data);
+				if (productInfo.success == "1") {
+					if (productInfo.data.length != 0) {
+						iP.append(productInfo.data[0].PharmacyInfo[0].GOODS, productInfo.data[0].PharmacyInfo[0].DRUG_SUPPLIER_CODE);
+					} else {
+						$("#sx").addClass("uhide");
+						$(".noProduct").removeClass("uhide");
+					}
+				} else {
+					$("#sx").addClass("uhide");
+					$(".noProduct").removeClass("uhide");
+				}
+				noLoading();
+			},
+			error:function(){
+				noLoading();
+				alert("网络连接错误", function() {
+					$(".noProduct").removeClass("uhide");
+					$("#aaa").text("网络连接不上，请检查网络");
+				});
+			}
+		});
+	}
+	//插入数据
+	iP.append = function(data, DRUG_SUPPLIER_CODE) {
+		var elem, clone = $("#list>div:first");
+		clone.siblings().remove();
+		for (var i in data) {
+			elem = clone.clone().removeClass("uhide");
+			elem.find(".name").text(data[i].NAME);
+			var price = "";
+			if (data[i].PROMOTION_PRICE) {
+				price = data[i].PROMOTION_PRICE;
+			} else {
+				price = data[i].DRUG_PRICE;
+			}
+			elem.find(".price").html(changeTwoDecimal_f(price));
+			elem.find(".ship").text(data[i].DRUG_SHIP);
+			elem.find(".buycount").text(data[i].BUY_COUNT);
+			elem.find(".comments").text(data[i].COMMENTS);
+			elem.find(".suppliername").text(data[i].DRUG_SUPPLIER_NAME);
+			elem.find(".DRUGCODE").text(data[i].DRUG_CODE);
+			elem.find(".DRUGSUPPLIERCODE").text(DRUG_SUPPLIER_CODE);
+			if (data[i].IS_OTC == 1) {
+				elem.find(".otc").removeClass("uhide").addClass("otcborder");
+			} else {
+				elem.find(".otc").addClass("uhide");
+			}
+			//判断是否参加活动
+			if (data[i].PROMOTION_TYPE.indexOf("seckill") != -1) //秒杀
+			{
+				elem.find(".act").removeClass("uhide");
+			}
+			if (data[i].PROMOTION_TYPE.indexOf("freedly") != -1) //包邮
+			{
+				elem.find(".act1").removeClass("uhide");
+			}
+			if (data[i].PROMOTION_TYPE.indexOf("teambuy") != -1) //团购
+			{
+				elem.find(".act2").removeClass("uhide");
+			}
+			var url = data[i].DRUG_IMG_URL;
+			url = "<img src='" + url + "' height='110px' width='110px'/>";
+			elem.find(".img").html(url);
+			$("#list").append(elem);
+			//点击商品时 到商品详细页面
+			elem.on("click", function() {
+				var DRUGCODE = $(this).find(".DRUGCODE").text(); //DRUGSUPPLIERCODE
+				var DRUGSUPPLIERCODE = $(this).find(".DRUGSUPPLIERCODE").text();
+				localStorage.setItem("DRUGCODE", DRUGCODE);
+				localStorage.setItem("DRUGSUPPLIERCODE", DRUGSUPPLIERCODE);
+				localStorage.setItem("pdBackPage", "productListByCoupon.html"); //从该页面到商品详情
+				window.location.href = "productDetail.html";
+			});
+		};
+	};
+//	Trinity.init({
+//		app_key: "2a6b0d9fb0bbee6d06d563cd2fd10de68735fea5",
+//		url: point_URL,
+//		device_id: localStorage.getItem("device_id"), //需要从android SKD Trinity.sharedInstance().getDeviceId() 或者ios的SDK[BudtrinityDeviceInfo udid]中获取该值
+//		sdk_version: localStorage.getItem("sdk_version"),
+//		app_version: app_version,
+//		u_id: localStorage.getItem("userid"), //如果访问该页面时app已经登录过则需要赋值
+//		channel: "0000000000"
+//	});
+	//自定义事件
+//	function eventBtn(ob) {
+//		Trinity.add_event({
+//			key: "page", //商品搜索列表
+//			"segmentation": { //设置自定义事件的键值对
+//				"page_id": "productListByCoupon",
+//				"page_name": "productListByCoupon.html"
+//			}
+//		});
+//	}
+</script>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>查看物流</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			#content {
+				padding-top: 3em;
+			}
+			.sItem {
+				border-left: 2px solid #38a3f5;
+				padding: 0 10px 10px;
+				position: relative;
+			}
+			.sItem>i {
+				width: 10px;
+				height: 10px;
+				-webkit-border-radius: 50%;
+				border-radius: 50%;
+				background: #38a3f5;
+				position: absolute;
+				left: -6px;
+				top: 0;
+			}
+			.siDate {
+				padding: 10px 0px 5px;
+				font-size: 12px;
+				color: #9a9a9a;
+				border-bottom: 1px solid #cfcfcf;
+				border-bottom: 1px solid #e5e5e5;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart>
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">查看物流</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<div id="content">
+				<div id="list" class="pl5 pr5 pt10 pb10">
+					<div class="sItem fs8 uhide">
+						<i></i>
+						<div class="content"></div>
+						<div class="siDate"></div>
+					</div>
+				</div>
+			</div>
+			<div class="uhide tx-c" id="nowl">暂无物流信息</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	iP = {};
+	$(function() {
+		var detailOrderNo = localStorage.getItem("orderid");
+		//var detailOrderNo ="9742015080616509341";
+		ProductWL(detailOrderNo);
+		$("#back").click(function() {
+			window.location.href = "AllOrder.html";
+		});
+	});
+
+	function ProductWL(detailOrderNo) {
+		Loading();
+		var enResult = strEnc("[{\"yyyCode\":\"100015\",\"detailOrderNo\":\"" + detailOrderNo + "\"}]","100001","",""); 
+		$.ajax({
+			url: GLOBAL_URL + "?json="+enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(productInfo) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == "1") {
+					if (productInfo.data.length != 0) {
+						iP.append(productInfo.data);
+					} else {
+						$("#nowl").removeClass("uhide");
+					}
+				} else {
+					alert("物流信息查询失败");
+					$("#nowl").removeClass("uhide");
+				}
+				noLoading();
+			},
+			error: function(err) {
+				noLoading();
+				alert("网络连接错误！");
+			}
+		});
+	}
+	iP.append = function(data) {
+		var elem, clone = $("#list>div:first");
+		clone.siblings().remove();
+		for (var i in data) {
+			elem = clone.clone().removeClass("uhide");
+			elem.find(".content").html(data[i].context);
+			elem.find(".siDate").html(data[i].time);
+			$("#list").append(elem);
+		};
+	};
+</script>

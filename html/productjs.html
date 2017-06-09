@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>结算</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			#content {
+				overflow-y: auto;
+				padding-bottom: 50px;
+			}
+			
+			.radio {
+				background-image: url(../images/img28.png);
+			}
+			
+			#page_error {
+				width: 100%;
+				top: 0;
+				left: 0;
+				width: 100%;
+				position: absolute;
+				border: 0;
+			}
+			
+			.nowifi {
+				background: url(../images/wifi.png) no-repeat center center;
+				background-size: 168px 121px;
+				height: 160px;
+			}
+			
+			#loadingPay,
+			.spinnerBg {
+				position: fixed;
+				width: 100%;
+				height: 100%;
+				top: 0;
+				left: 0;
+				z-index: 998;
+			}
+			
+			.spinnerBg {
+				background-color: #333;
+				filter: alpha(opacity=30);
+				opacity: 0.7;
+			}
+			
+			.spinner {
+				margin: -48px auto 0px;
+				width: 100%;
+				text-align: center;
+				position: relative;
+				top: 50%;
+				-webkit-transform: translateY(-50%);
+				transform: translateY(-50%);
+				color: #FFFFFF;
+				font-size: 18px;
+				z-index: 999;
+			}
+			
+			.spinner>div {
+				width: 12px;
+				height: 12px;
+				background-color: #FFFFFF;
+				-webkit-border-radius: 50%;
+				border-radius: 50%;
+				display: inline-block;
+				-webkit-animation: bouncedelay 1.4s infinite ease-in-out;
+				animation: bouncedelay 1.4s infinite ease-in-out;
+				-webkit-animation-fill-mode: both;
+				animation-fill-mode: both;
+			}
+			
+			.spinner .bounce1 {
+				-webkit-animation-delay: -0.32s;
+				animation-delay: -0.32s;
+			}
+			
+			.spinner .bounce2 {
+				-webkit-animation-delay: -0.16s;
+				animation-delay: -0.16s;
+			}
+			
+			@-webkit-keyframes bouncedelay {
+				0%,
+				80%,
+				100% {
+					-webkit-transform: scale(0.0)
+				}
+				40% {
+					-webkit-transform: scale(1.0)
+				}
+			}
+			
+			@keyframes bouncedelay {
+				0%,
+				80%,
+				100% {
+					transform: scale(0.0);
+					-webkit-transform: scale(0.0);
+				}
+				40% {
+					transform: scale(1.0);
+					-webkit-transform: scale(1.0);
+				}
+			}
+			
+			.switch {
+				width: 50px;
+				height: 30px;
+				margin-top: 9px;
+				background: url(../images/switch.png) no-repeat 0px 0px;
+			}
+			
+			.switch.checked {
+				background-position: 0px -30px;
+			}
+			
+			#sbPayPwd {
+				position: fixed;
+				width: 100%;
+				height: 100%;
+				background-color: rgba(0, 0, 0, .6);
+				z-index: 99;
+			}
+			
+			#sbPayCtn {
+				width: 300px;
+				height: 160px;
+				background-color: #FFFFFF;
+				margin: 160px auto auto;
+				-webkit-border-radius: 8px;
+				border-radius: 8px;
+			}
+			
+			.sbPayTop,
+			.sbPayBottom {
+				height: 44px;
+				line-height: 44px;
+				text-align: center;
+				font-size: 16px;
+			}
+			
+			.sbPayCenter {
+				height: 70px;
+				border-top: 1px solid #d0d1d6;
+				border-bottom: 1px solid #d0d1d6;
+				text-align: center;
+			}
+			/*.sbPayBtn{
+				float: left;
+				width: 150px;
+				height: 44px;
+				line-height: 44px;
+			}*/
+			
+			.subPayCfm {
+				background-color: #ff5000;
+				color: #FFFFFF;
+				border-bottom-right-radius: 8px;
+			}
+			
+			.sbPayInput {
+				border-collapse: collapse;
+				margin: 14px auto;
+			}
+			
+			.sbPayInput td {
+				width: 44px;
+				height: 40px;
+				position: relative;
+			}
+			
+			.sbPayInput td.active:after {
+				content: "";
+				position: absolute;
+				top: 17px;
+				left: 15px;
+				width: 10px;
+				height: 10px;
+				-webkit-border-radius: 50%;
+				border-radius: 50%;
+				background-color: #000000;
+			}
+			
+			#sbPayInputHid {
+				position: relative;
+				top: -56px;
+				left: 0;
+				padding: 0;
+				width: 271px;
+				height: 42px;
+				border: 0;
+				outline: none;
+				opacity: 0;
+				background-color: rgba(0, 0, 0, 0);
+				letter-spacing: 40px;
+				text-indent: 18px;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart>
+		<div class="nowifi uhide"></div>
+		<div class="img28 uhide"></div>
+		<div class="img29 uhide"></div>
+		<div id="page_0" class="up ub ub-ver" style="overflow: hidden;">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">支付订单</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<div id="content" class="content">
+				<div class="bc2">
+					<div class="ub h30 lh30 pl10 pr10 ubb">
+						<div class="ub-f1">收款方：</div>
+						<div class="ub-f1 tx-r c14" id="payee"></div>
+					</div>
+					<div class="ub h30 lh30 pl10 pr10 ubb">
+						<div class="ub-f1">订单总额：</div>
+						<div class="ub-f1 tx-r c14">
+							<span>&yen;</span>
+							<span id="countMoney"></span>
+						</div>
+					</div>
+					<div class="ub h30 lh30 pl10 pr10 ubb uhide" id="isBdzf">
+						<div class="ub-f1" id="showInsure"></div>
+						<div class="switch"></div>
+					</div>
+					<div class="ubb pb5 mt5 bc2 pl10 pr10 lh20 fs8 uhide bdzf">
+						<div class="ub">
+							<div class="ub-f1 c11" id="showInsure2"></div>
+							<div class="ub tx-r c3">
+								<div>&yen;</div>
+								<div id="bdpay"></div>
+							</div>
+						</div>
+						<div class="ub">
+							<div class="ub-f1 c11">个人支付：</div>
+							<div class="ub tx-r c3">
+								<div>&yen;</div>
+								<div id="grpay"></div>
+							</div>
+						</div>
+					</div>
+					<div class="ub h30 lh30 pl10 pr10 ubb uhide bdzf">
+						<div class="ub-f1">实付款</div>
+						<div class="ub-f1 tx-r c3">
+							<span>&yen;</span>
+							<span id="realpay"></span>
+						</div>
+					</div>
+				</div>
+				<div class="pl10 h24 lh24">支付方式：</div>
+				<!--<div class="ub h50 lh50 ubb ub-ac pl10 pr10 bc2 uhide" id="zf" onclick="choosePw(this)">
+					<div class="ub-img wdepay"></div>
+					<div class="fs8 c18 ml8 ub-f1">
+						<div>万达易支付</div>
+					</div>
+					<div>
+						<input type="radio" name="paytype" value="yzf">
+					</div>
+				</div>-->
+				<!--网页支付宝-->
+				<div class="ub h50 lh50 ubb ub-ac pl10 pr10 bc2 uhide" id="alipay_wap" onclick="choosePw(this)">
+					<div class="ub-img alipay"></div>
+					<div class="fs8 c18 ml8 ub-f1">
+						<div>网页支付宝</div>
+					</div>
+					<div class="ub ub-ac">
+						<label for="alipay_wap">
+							<div class="ub-img img29 alipay_wap"></div>
+						</label>
+						<input type="radio" name="paytype" class="uhide" value="alipay_wap" id="alipay_wap" checked>
+					</div>
+				</div>
+				<!---->
+				<!--<div class="ub h50 lh50 ubb ub-ac pl10 pr10 bc2 " id="alipay" onclick="choosePw(this)">-->
+				<div class="ub h50 lh50 ubb ub-ac pl10 pr10 bc2 " id="alipay">
+					<div class="ub-img alipay"></div>
+					<div class="fs8 c18 ml8 ub-f1">
+						<div>支付宝</div>
+					</div>
+					<div class="ub ub-ac">
+						<label for="zfb">
+							<div class="ub-img img28 zfb"></div>
+						</label>
+						<input type="radio" name="paytype" class="uhide" value="zfb" id="zfb" checked>
+					</div>
+				</div>
+				<!--<div class="ub h50 lh50 ubb ub-ac pl10 pr10 bc2" id="wxpay" onclick="choosePw(this)">
+					<div class="ub-img wxpay"></div>
+					<div class="fs8 c18 ml8 ub-f1">
+						<div>微信支付</div>
+					</div>
+					<div class="ub ub-ac">
+						<label for="wx2">
+							<div class="ub-img img28 wx2"></div>
+						</label>
+						<input type="radio" name="paytype" value="wx" class="uhide" class="uhide" id="wx2">
+					</div>
+				</div>-->
+				<div class="uhide" id="paytype"></div>
+				<div class="ub-f1 button3" id="pay">确认支付</div>
+			</div>
+		</div>
+		<!--
+        	作者：447518349@qq.com
+        	时间：2015-08-05
+        	描述：错误页面
+        -->
+		<div id="page_error" class="ub ub-ver uhide">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left"></div>
+					<div class="title-mid">出错啦</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<div class="tx-c ub-ac mt10 error" id="error">
+				<div class="ub">
+					<div class="ub-f1 nowifi"></div>
+				</div>
+				<div class="mt10 c14">
+					<div style="font-size: 16px;">网络请求失败</div>
+					<div class="mt5" style="color: #AAAAAA;font-size: 14px;">请检查您的网络</div>
+				</div>
+				<div class="ub">
+					<div class="ub-f1"></div>
+					<div class="ub-f1 bc1 w30 h29 lh29 fs10 mt10 c1 uc-a4 tx-c" id="reload">重新加载</div>
+					<div class="ub-f1"></div>
+				</div>
+			</div>
+		</div>
+		<div id="sbPayPwd" class="uhide">
+			<div id="sbPayCtn">
+				<div class="sbPayTop">支付密码</div>
+				<div class="sbPayCenter">
+					<table class="sbPayInput" border="1" bordercolor="#dfe0e6" cellpadding="0" cellspacing="0">
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</table>
+					<!--<input type="password" id="sbPayInputHid" name="sbPayInputHid" maxlength="6" oninput="pwdInputEft(this)" />-->
+					<input type=" 
+					 " id="sbPayInputHid" name="sbPayInputHid" maxlength="6" oninput="pwdInputEft(this)" />
+				</div>
+				<div class="sbPayBottom ub">
+					<div class="sbPayCancel ub-f1" onclick="toAllOrder()">取消</div>
+					<div class="subPayCfm ub-f1">确认</div>
+				</div>
+			</div>
+		</div>
+		<!--万达中心流水号-->
+		<input type="hidden" name="claimno" id="claimno" />
+		<input type="hidden" name="departmentCode" id="departmentCode" />
+		<input type="hidden" name="subPayId" id="subPayId" />
+		<input type="hidden" name="payId" id="payId" />
+		<!--运费-->
+		<input type="hidden" name="shipPrice" id="shipPrice" />
+		<div id="paytext"></div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/para.js"></script>
+		<script type="text/javascript" src="../js/huiDaoJsBridge.js"></script>
+		<!--<script src="http://www.huidao168.com/octopus_enterprise/js/huiDaoJsBridge.js"></script>-->
+		<script src="../js/des.js"></script>
+		<!--<script src="../js/budtrinity-0.1.3.min.js"></script>-->
+	</body>
+
+</html>
+<script>
+	//获取用户信息
+	var userid = localStorage.getItem("userid");
+	//获取药店的appId
+	var source = localStorage.getItem("yyySource");
+	var orderNo = request("orderNo");
+	var showText = localStorage.getItem("showWords");
+	var insurecolor = localStorage.getItem("showColor");
+	var key = "";
+	//是否可以点击支付按钮调用结算接口
+	var useableAccount = true;
+	$(function() {
+		//根据团体颜色改变背景颜色
+		$(".title").css("background-color", insurecolor == "" ? "#009cff" : insurecolor);
+		$("#showInsure").text(showText == "" ? "保单结算" : showText);
+		$("#showInsure2").text(showText == "" ? "保单结算" : showText + "：");
+		checkType();
+		$("#back").click(function() {
+			confirm("确定要放弃支付吗?", function() {
+				openYfyPage('toShowOrders'); //返回到员福云订单页面
+				//				window.location.href = "AllOrder.html";
+			});
+		});
+		getOrderDetail(orderNo, userid);
+		//添加埋点
+		//		eventBtn(this);
+	});
+	//密码控制
+	function pwdInputEft(dom) {
+		dom.value = dom.value.replace(/\D+/g, '');
+		var _length = dom.value.length;
+		if(_length > 6) {
+			return;
+		}
+		$(".sbPayInput td").removeClass("active");
+		for(var i = 0; i < _length; i++) {
+			$(".sbPayInput td").eq(i).addClass("active");
+		}
+	}
+	//支付宝
+	function payWithYFT_alipay_Click(appid, key, amount, orderno, subPayId) {
+		huiDaoJsBridge.payWithYFT({
+			appid: appid,
+			submerno: subPayId,
+			key: key,
+			channel: 'alipay',
+			amount: amount.toString(),
+			subject: $("#payee").text(),
+			body: '药品',
+			description: '药品购买',
+			orderno: orderno,
+			onResponse: function(res) {
+				var returnData = JSON.parse(res);
+				if(returnData.result == "success") {
+					loadingPay();
+					setTimeout('toSucessOrder()', 5000);
+					//window.location.href = "AllOrder.html";
+				} else {
+					if(!returnData.msg) {} else {
+						alert(returnData.msg, function() {
+							toAllOrder();
+						});
+					}
+				}
+			}
+		});
+	}
+	//微信支付
+	function payWithYFT_weixin_Click(appid, key, amount, orderno, subPayId) {
+		huiDaoJsBridge.payWithYFT({
+			appid: appid,
+			submerno: subPayId,
+			key: key,
+			channel: 'weixin',
+			amount: amount.toString(),
+			subject: $("#payee").text(),
+			body: '药品',
+			description: '药品购买',
+			orderno: orderno,
+			onResponse: function(res) {
+				//console.log('payWithYFT_weixin_Click res:' + res);
+				var returnData = JSON.parse(res);
+				if(returnData.result == "success") {
+					loadingPay();
+					setTimeout('toSucessOrder()', 5000);
+					//window.location.href = "AllOrder.html";
+				} else {
+					if(!returnData.msg) {} else {
+						alert(returnData.msg, function() {
+							toAllOrder();
+							//							window.location.href = "AllOrder.html";
+						});
+					}
+				}
+			}
+		});
+	}
+	//到所有订单页面
+	function toAllOrder() {
+		openYfyPage('toShowOrders'); //返回到员福云订单页面
+	}
+
+	function toSucessOrder() {
+		openYfyPage('toShowPaySuccess'); //返回到员福云订单待发货页面
+	}
+	//Loading paying
+	function loadingPay() {
+		var len = $("#loadingPay").length;
+		var load = '<div id="loadingPay">' +
+			'<div class="spinnerBg" len=' + len + '></div>' +
+			'<div class="spinner">' +
+			'订单正在处理中&nbsp;' +
+			'<div class="bounce1"></div>' +
+			'<div class="bounce2"></div>' +
+			'<div class="bounce3"></div>' +
+			'</div>' +
+			'</div>';
+		if(len > 0) {
+			var length = $("#loadingPay>.spinnerBg").attr("len");
+			$("#loadingPay>.spinnerBg").attr("len", Number(length) + 1);
+			return;
+		}
+		$("body").append(load);
+	}
+
+	function loadedPay() {
+		var len = $("#loadingPay>.spinnerBg").attr("len");
+		if(len > 0) {
+			$("#loadingPay>.spinnerBg").attr("len", Number(len) - 1);
+			return;
+		}
+		//	$("#loadingPay").remove();
+		setTimeout('$("#loadingPay").remove()', 500);
+	}
+	//判断订单是否支付
+	function isZF(payId, orderid, jsData, key, payee, amount, subPayId) {
+		Loading();
+		var enResult = strEnc("[{\"yyyCode\":\"100127\",\"payId\":\"" + payId + "\",\"subPayId\":\"" + subPayId + "\",\"orderid\":\"" + orderid + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			beforeSend: function() {}, //添加loading信息
+			success: function(productInfo, textStatus) {
+				var productInfo = JSON.parse(productInfo);
+				if(productInfo.success == "1") {
+					if(productInfo.message[0].success == "false") {
+						var paytype = $("#paytype").html(); //支付方式
+						if(paytype == "alipay") //支付宝
+						{
+							getkey(payId, key, amount, orderid, subPayId);
+						} else if(paytype == "weixin") //微信
+						{
+							getweixinkey(payId, key, amount, orderid, subPayId);
+						} else if(paytype == "wdepay") //易支付
+						{
+							pay(jsData);
+						} else if(paytype == "alipay_wap") {
+							pay(jsData);
+						}
+					} else if(productInfo.message[0].success) {
+						var status = productInfo.message[0].data.res;
+						if(status == "TRADE_SUCCESS" || status == "SUCCESS") {
+							alert("订单已支付，请勿重复支付");
+						} else {
+							var paytype = $("#paytype").html(); //支付方式
+							if(paytype == "alipay") //支付宝
+							{
+								getkey(payId, key, amount, orderid, payee, subPayId);
+							} else if(paytype == "weixin") //微信
+							{
+								getweixinkey(payId, key, amount, orderid, payee, subPayId);
+							} else if(paytype == "wdepay") //易支付
+							{
+								pay(jsData);
+							} else if(paytype == "alipay_wap") {
+								pay(jsData);
+							}
+						}
+					}
+				} else {
+					alert("网络超时");
+				}
+				noLoading();
+			}, //清掉loading信息
+			error: function(xmlHttpRequest, error) {
+				noLoading();
+				alert("网络连接错误！", function() {
+					$("#page_0").remove();
+					$("#page_error").removeClass("uhide");
+				});
+			}
+		});
+	}
+
+	function getweixinkey(appId, key, amount, orderid, subPayId) {
+		var enResult = strEnc("[{\"appId\":\"" + appId + "\",\"yyyCode\":\"100988\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			dataType: "html",
+			timeout: 60000,
+			beforeSend: function() {}, //添加loading信息
+			success: function(productInfo, textStatus) {
+				var productInfo = JSON.parse(productInfo);
+				if(productInfo.success == "1") {
+					key = productInfo.message;
+					payWithYFT_weixin_Click(appId, key, amount, orderid, subPayId);
+				}
+			}, //清掉loading信息
+			error: function(xmlHttpRequest, error) {
+				alert("网络连接错误！");
+			}
+		});
+	}
+
+	function getkey(appId, key, amount, orderid, subPayId) {
+		var enResult = strEnc("[{\"appId\":\"" + appId + "\",\"yyyCode\":\"100988\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			dataType: "html",
+			timeout: 60000,
+			beforeSend: function() {}, //添加loading信息
+			success: function(productInfo, textStatus) {
+				var productInfo = JSON.parse(productInfo);
+				if(productInfo.success == "1") {
+					key = productInfo.message;
+					payWithYFT_alipay_Click(appId, key, amount, orderid, subPayId);
+				}
+			}, //清掉loading信息
+			error: function(xmlHttpRequest, error) {
+				alert("网络连接错误！");
+			}
+		});
+	}
+
+	function pay(jsData) {
+		var enResult = strEnc("[" + jsData + "]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			dataType: "html",
+			timeout: 60000,
+			beforeSend: function() {}, //添加loading信息
+			success: function(productInfo, textStatus) {
+				localStorage.setItem("fpDetail", null);
+				//localStorage.setItem("ORDERTYPE",0);
+				$("#paytext").html(productInfo);
+			}, //清掉loading信息
+			error: function(xmlHttpRequest, error) {
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//选择支付方式
+	function choosePw(dom) {
+		$(dom).find("input")[0].checked = true;
+		$(dom).siblings().find("input")[0].checked = false;
+		checkType();
+	}
+
+	function checkType() {
+		var chkObj = document.getElementsByName("paytype");
+		console.log(chkObj);
+		var paytype;
+		for(var i = 0; i < chkObj.length; i++) {
+			if(chkObj[i].checked) {
+				if(chkObj[i].value == "zfb") //支付宝
+				{
+					$(".zfb").addClass("img29").removeClass("img28");
+					$(".wx2").addClass("img28").removeClass("img29");
+					paytype = "alipay";
+					$("#paytype").html(paytype);
+				} else if(chkObj[i].value == "wx") //微信
+				{
+					$(".wx2").addClass("img29").removeClass("img28");
+					$(".zfb").addClass("img28").removeClass("img29");
+					paytype = "weixin";
+					$("#paytype").html(paytype);
+				} else if(chkObj[i].value == "yzf") //易支付
+				{
+					paytype = "wdepay";
+					$("#paytype").html(paytype);
+				} else if(chkObj[i].value = "alipay_wap") { //网页支付宝
+					paytype = "alipay_wap";
+					$("#paytype").html(paytype);
+				}
+			}
+		}
+	}
+	//错误页面
+	$("#reload").click(function() {
+		Loading();
+		var userid = localStorage.getItem("userid");
+		var enResult = strEnc("[{\"yyyCode\":\"100047\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			beforeSend: function() {}, //添加loading信息
+			success: function() {
+				toAllOrder();
+				//				window.location.href = "AllOrder.html";
+			},
+			error: function() {
+				setTimeout("noLoading()", 1000);
+			}
+		});
+	});
+	//判断是否是商保 用户
+	function isShangbao(requestBody, orderCount) {
+		var userid = localStorage.getItem("userid");
+		var enResult = strEnc("[{\"yyyCode\":\"checkuser\",\"userId\":\"" + userid + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(data) {
+				data = strDec(data, "100001", "", "");
+				data = JSON.parse(data);
+				if(data.rtncode == "0") {
+					var isShangbaoNo = data.isShangbaoNo;
+					if(isShangbaoNo == "1") { //是商保
+						requestBody.commercialInsuranceNo = data.shangbaoNo; //商保唯一识编号
+						$("#isBdzf").removeClass("uhide");
+						//是否使用商保支付
+						$(".switch").click(function() {
+							var checked = $(this).hasClass("checked");
+							if(checked) {
+								$(this).removeClass("checked");
+								$(".bdzf").addClass("uhide");
+								$(".zfb").addClass("img29").removeClass("img28");
+							} else {
+								if($("#claimno").val()) {
+									$(".bdzf").removeClass("uhide");
+									var own = $("#realpay").text();
+									if(own > 0) {
+										$(".zfb").addClass("img29").removeClass("img28");
+									} else {
+										$(".zfb").addClass("img28").removeClass("img29");
+									}
+									$(this).addClass("checked");
+									toast("亲，注意使用"+showText+"支付时，若点击确定支付后再取消支付会冻结"+showText+"哦，但是取消订单后又会返还啦")
+								} else {
+									budget(requestBody);
+								}
+							}
+						});
+					}
+					//立即支付
+					$("#pay").click(function() {
+						var useShangbao = '0';
+						var payCnt = $("#countMoney").text();
+						var thirdPay = true; //是否调用第三方支付
+						if(isShangbaoNo == "1" && $("#isBdzf .switch").hasClass("checked")) {
+							useShangbao = '1';
+							requestBody.commercialInsuranceNo = data.shangbaoNo;
+							payCnt = $("#realpay").text();
+							if(payCnt == "0.00") {
+								thirdPay = false;
+								account(requestBody, payCnt, orderCount, useShangbao, thirdPay);
+								return;
+							}
+						}
+						account(requestBody, payCnt, orderCount, useShangbao, thirdPay);
+					});
+				} else {
+					alert("商保接口调用失败");
+				}
+			},
+			error: function() {
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//唤醒支付宝、微信支付
+	function callAppPay(price) {
+		var paytype = $("#paytype").html(); //支付方式
+		var amount = Math.round(parseFloat(price) * 100); //总金额
+		var orderid = request("orderNo");
+		var payee = $("#payee").text();
+		var payId = $("#payId").val();
+		var subPayId = $("#subPayId").val();
+		var jsData = "{\"yyyCode\":\"100033\",\"amount\":\"" + amount + "\",\"goods\":\"药品\",\"goodsDesc\":\"药品购买\",\"payee\":\"" + payee + "\",\"payType\":\"" + paytype + "\",\"orderNo\":\"" + orderid + "\",\"payId\":\"" + payId + "\",\"u\":\"" + userid + "\"}";
+		isZF(payId, orderid, jsData, key, payee, amount, subPayId); //payId, orderid, jsData, key, amount,subPayId
+	}
+	//根据订单号获取订单信息
+	function getOrderDetail(orderNo, userid) {
+		Loading();
+		var enResult = strEnc("[{\"yyyCode\":\"100102\",\"userId\":\"" + userid + "\",\"detailOrderNo\":\"" + orderNo + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(data) {
+				data = strDec(data, "100001", "", "");
+				data = JSON.parse(data);
+				if(data.success == "1") {
+					var shipPrice = data.data.ORDER.SHIPPING.SHIPPING_PRICE;
+					var invoiceAmount = (Number(data.data.ORDER.TOTAL_AMOUNT) - Number(shipPrice)).toFixed(2);
+					var requestBody = {
+						//						"commercialInsuranceNo": "",//商保唯一识编号
+						"hospitalId": "2000000001", //固定值：2000000001
+						"departmentCode": data.data.ORDER.STORE_CODE,
+						"departmentName": data.data.ORDER.STORE_NAME,
+						"billNo": orderNo, //生成的订单号
+						//						"billDate": "",//结算日期 YYYYMMDDHHMMSS
+						"detailCount": data.data.ORDER.ORDER_ITEMS.length + "", //费用明细条数
+						"invoiceAmount": (invoiceAmount * 100).toFixed(0) //费用明细总金额,不包含运费
+					};
+					var orderCount = {
+						"pharmacyCode": data.data.ORDER.STORE_CODE,
+						"shippingID": '-1', //快递
+						"isPresc": '0',
+						"source": localStorage.getItem("yyySource"),
+						"memberCouponID": ""
+					};
+					var goodsData = [];
+					for(var i in data.data.ORDER.ORDER_ITEMS) {
+						var gd = {};
+						gd.drugCode = data.data.ORDER.ORDER_ITEMS[i].DRUG_CODE;
+						gd.cartCount = data.data.ORDER.ORDER_ITEMS[i].QUANTITY;
+						goodsData.push(gd);
+					}
+					orderCount.goodsData = goodsData;
+					$("#payee").text(data.data.ORDER.STORE_NAME);
+					$("#countMoney").text(data.data.ORDER.TOTAL_AMOUNT);
+					$("#departmentCode").val(data.data.ORDER.STORE_CODE);
+					$("#subPayId").val(data.data.ORDER.DRUG_SUPPLIER_PAYSUB);
+					$("#payId").val(data.data.ORDER.DRUG_SUPPLIER_PAY);
+					$("#shipPrice").val(shipPrice);
+					localStorage.setItem("IS_ACTIVITY", data.data.ORDER.ACTIVITY.STATUS);
+					isShangbao(requestBody, orderCount);
+				} else {
+					alert(data.message);
+				}
+				noLoading();
+			}, //清掉loading信息
+			error: function() {
+				alert("网络连接错误！");
+				noLoading();
+			}
+		});
+	}
+	//预结算
+	function budget(requestBody) {
+		var userid = localStorage.getItem("userid");
+		var enResult = strEnc("[{\"yyyCode\":\"budget\",\"userId\":\"" + userid + "\",\"requestBody\":" + JSON.stringify(requestBody) + "}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(data) {
+				data = strDec(data, "100001", "", "");
+				data = JSON.parse(data);
+				if(data.rtncode == "0") {
+					var own = (Number(data.own) / 100 + Number($("#shipPrice").val())).toFixed(2);
+					if(own > 0) {
+						$(".zfb").addClass("img29").removeClass("img28");
+					} else {
+						$(".zfb").addClass("img28").removeClass("img29");
+					}
+					$("#claimno").val(data.claimno); //万达中心流水号
+					$("#bdpay").text((Number(data.payToHospital) / 100).toFixed(2)); //商保支付
+					$("#grpay, #realpay").text(own); //个人支付
+					$(".bdzf").removeClass("uhide");
+					$(".switch").addClass("checked");
+					toast("亲，注意使用"+showText+"支付时，若点击确定支付后再取消支付会冻结"+showText+"哦，但是取消订单后又会返还啦");
+				} else {
+					$(".switch").removeClass("checked");
+//					alert(data.retmsg);
+					alert("亲哒，网络请求超时，请稍后再试")
+				}
+			}, //清掉loading信息
+			error: function() {
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//结算
+	function account(requestBody, price, orderCount, useShangbao, thirdPay) {
+		Loading();
+		if(!useableAccount) {
+			noLoading();
+			return;
+		}
+		useableAccount = false;
+		var userid = localStorage.getItem("userid"),
+			IS_ACTIVITY = localStorage.getItem("IS_ACTIVITY");
+		var enResult = strEnc("[{\"yyyCode\":\"account\",\"userId\":\"" + userid + "\",\"useShangbao\":\"" + useShangbao + "\",\"requestBody\":" + JSON.stringify(requestBody) + ",\"orderCount\":" + JSON.stringify(orderCount) + ",\"IS_ACTIVITY\":\"" + IS_ACTIVITY + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(data) {
+				data = strDec(data, "100001", "", "");
+				data = JSON.parse(data);
+				if(data.rtncode == "0") {
+					var shangbaoPay = (Number(data.shangbaoPay) / 100).toFixed(2);
+					var oldShangbao = Number($("#bdpay").text()).toFixed(2);
+					if($("#isBdzf .switch").hasClass("checked") && shangbaoPay != oldShangbao) {
+						var own = (Number(data.ownPay) / 100 + Number($("#shipPrice").val())).toFixed(2);
+						$("#bdpay").text(shangbaoPay); //商保支付
+						$("#grpay, #realpay").text(own); //个人支付
+						if(own > 0 ){
+							$(".zfb").addClass("img29").removeClass("img28");
+						}else{
+							$(".zfb").addClass("img28").removeClass("img29");
+						}
+						alert1("用户"+showText+"金额发生变动，目前需"+showText+"支付："+shangbaoPay+"元，用户个人需支付："+own+"元", function() {
+							if(own > 0) {
+//								$(".zfb").addClass("img29").removeClass("img28");
+								callAppPay(own);
+							} else {
+//								$(".zfb").addClass("img28").removeClass("img29");
+								hasPwd(requestBody, orderCount, useShangbao, thirdPay);
+								
+								//								toSucessOrder();
+							}
+						});
+					} else {
+						if(thirdPay) {
+							callAppPay(price);
+						} else {
+							hasPwd(requestBody, orderCount, useShangbao, thirdPay);
+							//							toSucessOrder();
+						}
+					}
+				} else {
+					useableAccount = true;
+					alert(data.message);
+				}
+				noLoading();
+			}, //清掉loading信息
+			error: function() {
+				useableAccount = true;
+				noLoading();
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//确认结算
+	function confiaccount(requestBody, orderCount, useShangbao, thirdPay) {
+		Loading();
+		var userid = localStorage.getItem("userid");
+		var enResult = strEnc("[{\"yyyCode\":\"confiaccount\",\"userId\":\"" + userid + "\",\"useShangbao\":\"" + useShangbao + "\",\"requestBody\":" + JSON.stringify(requestBody) + ",\"orderCount\":" + JSON.stringify(orderCount) + "}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(data) {
+				data = JSON.parse(data);
+				if(data.rtncode == "0") {
+					toSucessOrder();
+				} else {
+					alert(data.message, function() {
+						toAllOrder();
+					});
+				}
+				noLoading();
+			}, //清掉loading信息
+			error: function() {
+				noLoading();
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//校验商保支付密码
+	function checkPw(payPassword, requestBody, orderCount, useShangbao, thirdPay) {
+		Loading();
+		var userid = localStorage.getItem("userid");
+		var enResult = strEnc("[{\"yyyCode\":\"checkPw\",\"userId\":\"" + userid + "\",\"payPassword\":\"" + payPassword + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(data) {
+				data = JSON.parse(data);
+				if(data.status == "1") {
+					confiaccount(requestBody, orderCount, useShangbao, thirdPay);
+				} else {
+					alert(data.message, function() {
+						$(".sbPayInput td").removeClass("active");
+						$("#sbPayInputHid").val("").focus();
+					});
+				}
+				noLoading();
+			}, //清掉loading信息
+			error: function() {
+				noLoading();
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//获取是否设置支付密码
+	function hasPwd(requestBody, orderCount, useShangbao, thirdPay) {
+		var userid = localStorage.getItem("userid");
+		var params = '[{"yyyCode":"getuser","userId":"' + userid + '","cloudId":"' + userid + '"}]';
+		var enResult = strEnc(params, "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(data) {
+				data = strDec(data, "100001", "", "");
+				data = JSON.parse(data);
+				if(data.status == "1") {
+					if(data.response.isPayPass == "1") {
+						$("#sbPayPwd").removeClass("uhide");
+						$(".subPayCfm").click(function(e) {
+							var v = $("#sbPayInputHid").val();
+							var l = v.length;
+							if(l < 6) {
+								toast("请输入完整的密码");
+								return;
+							}
+							checkPw(v, requestBody, orderCount, useShangbao, thirdPay);
+						});
+					} else {
+						openYfyPage('toSetPassword'); //设置商保支付密码
+						useableAccount = true;
+					}
+				} else {
+					alert(data.message);
+				}
+			}, //清掉loading信息
+			error: function() {
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//埋点
+	//	Trinity.init({
+	//		app_key: "2a6b0d9fb0bbee6d06d563cd2fd10de68735fea5",
+	//		url: point_URL,
+	//		device_id: localStorage.getItem("device_id"), //需要从android SKD Trinity.sharedInstance().getDeviceId() 或者ios的SDK[BudtrinityDeviceInfo udid]中获取该值
+	//		sdk_version: localStorage.getItem("sdk_version"),
+	//		app_version: app_version,
+	//		u_id: localStorage.getItem("userid"), //如果访问该页面时app已经登录过则需要赋值
+	//		channel: "0000000000"
+	//	});
+	//自定义事件
+	//	function eventBtn(ob) {
+	//		Trinity.add_event({
+	//			key: "page", //立即支付
+	//			"segmentation": { //设置自定义事件的键值对
+	//				"page_id": "productjs",
+	//				"page_name": "productjs.html",
+	//				"order_id": request("orderNo")
+	//			}
+	//		});
+	//	}
+</script>

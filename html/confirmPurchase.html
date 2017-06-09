@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>确认购买</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			#content {
+				padding-top: 3em;
+				width: 100%;
+				overflow-x: hidden;
+			}
+			.forbin{
+	cursor: not-allowed;
+	color:#fff;
+	background-color: #B0B0B0;
+	border-right:1px solid #EEEEEE;
+}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart>
+		<div id="page_0" class="up ub ub-ver" tabindex="0">
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" id="back" goback></div>
+					<div class="title-mid">确认购买</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<div id="content" class="content">
+				<div class="w_100 h3"></div>
+				<!-- 药品信息 -->
+				<div class="bc2">
+					<div class="ub ubb h75 ">
+						<div class="ub-img img ml5 " style="width:38%"></div>
+						<div class="uhide imgu"></div>
+						<div class="uhide shopcode"></div>
+						<div class="uhide IS_OTC"></div>
+						<div class="uhide PROMOTION_TYPE"></div>
+						<div style="width:62%">
+							<div id="drugName" class="fs9 fb pt5 fsp16 pr5"></div>
+							<div class="ub fs8 pt3 ub-ac">
+								<div class=" fb c4">&yen;<span id="drugPrice"></span></div>
+								<div class="fs6 w28 h12 lh12 ub-ac tx-c mr4 ml3 otc">OTC</div>
+								<div class="fs6 pl2 pr2 h15 lh15 tx-c mr4 act uhide">秒杀</div>
+								<div class="fs6 pl2 pr2 h15 lh15 tx-c mr4 act1 uhide">包邮</div>
+								<div class="fs6 pl2 pr2 h15 lh15 tx-c mr4 act2 uhide">团购</div>
+
+							</div>
+							<div class="ub pt5">
+								<div id="drugSuplierName" class="fs8"></div>
+							</div>
+						</div>
+						<div class="ub fs7 pt5 uhide">
+							<div class="uhide pl7">运费：<span id="drugShip"></span></div>
+							<div>月成交：<span id="buyCount"></span>笔</div>
+							<div class="pl4">|</div>
+							<div class="pl4">评价：<span id="comments"></span></div>
+						</div>
+					</div>
+				</div>
+				<!-- 用户操作 -->
+				<div class="bc2">
+					<div class="ub ubb h40 ub-ac pl10">
+						<div class="fs10">购买数量：</div>
+						<div class="ub mr10 pl1">
+							<div id="numreduce" class="fsp14 disabled">-</div>
+							<div>
+								<input id="numcount" type="text" value="1" class="cartCount" readonly min="1" max="20" />
+							</div>
+							<div id='numadd' class="fsp14">+</div>
+						</div>
+					</div>
+				</div>
+				<div class="ub ub-ac h35 lh35 mt10">
+					<div class="ub-f1"></div>
+					<div class="ub-f1 button3" id="buy">立即购买</div>
+					<div class="ub-f1"></div>
+				</div>
+				<script src="../js/jquery.js"></script>
+				<script src="../js/constant.js"></script>
+				<script src="../js/des.js"></script>
+				<!--<script src="../js/budtrinity-0.1.3.min.js"></script>-->
+				<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+			</div>
+		</div>
+	</body>
+
+</html>
+<script>
+	var userid = localStorage.getItem("userid");
+	var token = localStorage.getItem("token");
+	var source = localStorage.getItem("yyySource");
+	var insurecolor = localStorage.getItem("showColor");
+	$(function() {
+		$(".title").css("background-color", insurecolor == "" ? "#009cff" : insurecolor);
+		$("#back").click(function() {
+			history.back();
+			return false;
+		});
+		var num = new Number($('#numcount').val());
+		if(num <= 1) {
+			$("#numreduce").addClass('disabled');
+		}
+		//商品数量更改
+		$('#numadd').click(function() {
+			var num = new Number($('#numcount').val());
+			if(num < 20) {
+				if(num == 19) {
+					$('#numcount').val(num + 1);
+					$('#numadd').addClass('disabled');
+					$('#numreduce').removeClass('disabled');
+				} else {
+					$('#numcount').val(num + 1);
+					$('#numreduce').removeClass('disabled');
+				}
+			} else if(num = 20) {
+				$('#numadd').addClass('disabled');
+			}
+		});
+		//商品数量更改
+		$('#numreduce').click(function() {
+			var num = new Number($('#numcount').val());
+			if(num > 1) {
+				if(num == 2) {
+					$('#numcount').val(num - 1);
+					$('#numadd').removeClass('disabled');
+					$('#numreduce').addClass('disabled');
+				} else {
+					$('#numcount').val(num - 1);
+					$('#numadd').removeClass('disabled');
+				}
+			} else if(num == 1) {
+				$("#numreduce").addClass('disabled');
+			}
+		});
+		$('#numcount').bind('keyup', function(event) {
+			var num = new Number($('#numcount').val());
+			var drugStore = new Number($('#drugStoreHidden').val());
+			if(isNaN(num) || num == 0) {
+				$('#numcount').val(1);
+				$('#drugStore').val(drugStore);
+			} else {
+				if(num > drugStore) {
+					$('#numcount').val(drugStore + 1);
+					$('#drugStore').val(0);
+				} else {
+					$('#drugStore').val(drugStore - num + 1);
+				}
+			}
+		});
+		//获取商品详细信息
+		getProductDetail();
+		//返回
+		$("#return").click(function() {
+			window.location.href = "productDetail.html";
+		});
+		//点击立即购买按钮
+		$("#buy").click(function() {
+			getDoBy(localStorage.getItem("DRUGCODE"));
+
+		});
+		//添加埋点
+		//		eventBtn(this);
+	});
+
+	//获取商品详情
+	var DRUGCODE = localStorage.getItem("DRUGCODE");
+	var DRUGSUPPLIERCODE = localStorage.getItem("DRUGSUPPLIERCODE");
+	//判断商品是否可以购买
+	function getDoBy(DRUGCODE) {
+		var json = strEnc("[{\"yyyCode\":\"insureDrug\",\"groupCode\":\""+ localStorage.getItem("insureCode")+"\",\"drugCodes\":[\""+DRUGCODE+"\"]}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + json,
+			success: function(data) {
+				var shop = JSON.parse(data);
+				if(shop.drugCodes.length > 0) {
+					var cartCount = $.trim($("#numcount").val());
+					var DRUGCODE = localStorage.getItem("DRUGCODE");
+					var pname = $("#drugName").text();
+					var price = $("#drugPrice").text();
+					var ship = $("#drugShip").text();
+					var buycount = $("#numcount").text();
+					var comments = $("#comments").text();
+					var img = $(".imgu").text();
+					var shopName = $("#drugSuplierName").text();
+					var IS_OTC = $(".IS_OTC").text();
+					var PROMOTION_TYPE = $(".PROMOTION_TYPE").text();
+					var total = Number(price) * 100 * Number(cartCount);
+					goodsData = "[{'drugCode':'" + DRUGCODE + "','cartCount':'" + cartCount + "','total':'" + total + "','cartId':''}]";
+					goods = "[{'pname':'" + pname + "','pcount':'" + cartCount + "','price':'" + price + "','ship':'" + ship + "','buycount':'" + buycount + "','comments':'" + comments + "','shopName':'" + shopName + "','img':'" + img + "','IS_OTC':'" + IS_OTC + "','PROMOTION_TYPE':'" + PROMOTION_TYPE + "'}]";
+					localStorage.setItem("goodsData", goodsData);
+					localStorage.setItem("goods", goods);
+					localStorage.setItem("isDelCart", "0");
+					var shopcode = $(".shopcode").text();
+					//			getProductfree(shopcode, goodsData);
+					orderPrice(shopcode, goodsData);
+				} else {
+					$("#buy").addClass("forbin").removeClass("buynormal").unbind("click");
+					toast("商品已下架");
+				}
+			}
+		});
+	}
+	//获取商品详细信息方法
+	function getProductDetail() {
+		Loading(); //显示加载中
+		var json = strEnc("[{\"drugCode\":\"" + DRUGCODE + "\",\"userID\":\"" + userid + "\",\"pharmacyCode\":\"" + DRUGSUPPLIERCODE + "\",\"yyyCode\":\"100006\",\"source\":\"" + source + "\",\"u\":\"" + userid + "\",\"t\":\"" + token + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + json,
+			type: "GET",
+			timeout: 60000,
+			success: function(productInfo) {
+				var productInfo = JSON.parse(productInfo);
+				if(productInfo.success == "1") {
+					var name;
+					if(productInfo.data.NAME.length > 22) {
+						name = productInfo.data.NAME.substring(0, 22) + "...";
+					} else {
+						name = productInfo.data.NAME;
+					}
+					$("#drugName").text(name);
+					$("#_drugName").text(productInfo.data.NAME);
+					var price = "";
+					if(productInfo.data.PROMOTION_PRICE != "" && productInfo.data.DRUG_VIP_PRICE) //既有会员价又有活动价
+					{
+						if(productInfo.data.PROMOTION_PRICE >= productInfo.data.DRUG_VIP_PRICE) {
+							price = productInfo.data.DRUG_VIP_PRICE;
+						} else {
+							price = productInfo.data.PROMOTION_PRICE;
+						}
+					} else if(productInfo.data.PROMOTION_PRICE != "") //活动价
+					{
+						price = productInfo.data.PROMOTION_PRICE;
+					} else if(productInfo.data.DRUG_VIP_PRICE) //会员价
+					{
+						price = productInfo.data.DRUG_VIP_PRICE;
+					} else {
+						price = productInfo.data.DRUG_PRICE;
+					}
+					//					if (productInfo.data.PROMOTION_PRICE != "") {
+					//						price = productInfo.data.PROMOTION_PRICE;
+					//					} else {
+					//						if (productInfo.data.DRUG_VIP_PRICE) {
+					//							price = productInfo.data.DRUG_VIP_PRICE;
+					//						} else {
+					//							price = productInfo.data.DRUG_PRICE;
+					//						}
+					//					}
+					$("#drugPrice").text(changeTwoDecimal_f(price));
+					$("#drugShip").text(productInfo.data.DRUG_SHIP);
+					$("#numcount").text(productInfo.data.BUY_COUNT);
+					$("#comments").text(productInfo.data.COMMENTS);
+					$("#drugSuplierName").text(productInfo.data.DRUG_SUPPLIER_NAME);
+					$(".shopcode").text(productInfo.data.DRUG_SUPPLIER_CODE);
+					$(".imgu").text(productInfo.data.DRUG_IMG_URL[0] || defaultImg);
+					if(productInfo.data.IS_OTC == 1) {
+						$(".otc").removeClass("uhide").addClass("otcborder");
+					} else {
+						$(".otc").addClass("uhide");
+					}
+					$(".IS_OTC").text(productInfo.data.IS_OTC);
+					$(".PROMOTION_TYPE").text(productInfo.data.PROMOTION_TYPE);
+					//判断是否参加活动
+					if(productInfo.data.PROMOTION_TYPE.indexOf("seckill") > -1) //秒杀
+					{
+						$(".act").removeClass("uhide");
+					}
+					if(productInfo.data.PROMOTION_TYPE.indexOf("freedly") > -1) //包邮
+					{
+						$(".act1").removeClass("uhide");
+					}
+					if(productInfo.data.PROMOTION_TYPE.indexOf("teambuy") > -1) //团购
+					{
+						$(".act2").removeClass("uhide");
+					}
+					var url = productInfo.data.DRUG_IMG_URL[0] || defaultImg;
+					url = "<img src='" + url + "' height='100px' width='100px'/>";
+					$(".img").html(url);
+				} else {
+					alert(productInfo.message, function() {
+						if(productInfo.err_code == 274) {
+							var html = '<div class="tx-c lh20 c11">' +
+								productInfo.message +
+								'</div>';
+							$("#content").html(html);
+						}
+						window.location.href = "index1.html";
+					});
+				}
+				noLoading();
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+				noLoading();
+			}
+		});
+	}
+	//订单试算
+	function orderPrice(pharmacyCode, goodsData) {
+		var shippingID = '-1',
+			memberCouponID = "";
+		var dataCart = "{\"userID\":\"" + userid + "\",\"memberCouponID\":\"" + memberCouponID + "\",\"yyyCode\":\"100986\",\"shippingID\":\"" + shippingID + "\",\"source\":\"" + source + "\",\"pharmacyCode\":\"" + pharmacyCode + "\",\"goodsData\":" + goodsData + "}"; //shippingID配送方式
+		var enResult = strEnc("[" + dataCart + "]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(data) {
+				data = JSON.parse(data);
+				if(data.success == 1) {
+					var drugship = data.data.DRUG_SUPPLIER_SHIP;
+					localStorage.setItem("drugship", drugship);
+					//提交订单前 先把发票信息清空
+					localStorage.setItem("fpDetail", null);
+					localStorage.setItem("addressid", "");
+					localStorage.removeItem("prescNo");
+					window.location = "productOrder.html";
+				} else {
+					toast(data.message);
+				}
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//	//计算运费
+	//	function getProductfree(pharmacyCode, goodsData) {
+	//		var enResult = strEnc("[{\"yyyCode\":\"100010\",\"pharmacyCode\":\"" + pharmacyCode + "\",\"shippingID\":\"-1\",\"goodsData\":\"" + goodsData + "\"}]", "100001", "", "");
+	//		$.ajax({
+	//			url: GLOBAL_URL + "?json=" + enResult,
+	//			type: "GET",
+	//			timeout: 60000,
+	//			beforeSend: function() {}, //添加loading信息
+	//			success: function(productInfo) {
+	//				var productInfo = JSON.parse(productInfo);
+	//				if (productInfo.success == "1") {
+	//					var drugship = productInfo.data.DRUG_SUPPLIER_SHIP;
+	//					localStorage.setItem("drugship", drugship);
+	//					//提交订单前 先把发票信息清空
+	//					localStorage.setItem("fpDetail", null);
+	//					localStorage.setItem("addressid", "");
+	//					localStorage.removeItem("prescNo");
+	//					window.location = "productOrder.html";
+	//				} else {
+	//					alert(productInfo.message, function() {
+	//						if (productInfo.err_code == 274){
+	//							window.location.href = "allCart.html";
+	//						}
+	//					});
+	//				}
+	//			}, //清掉loading信息
+	//			error: function(err) {
+	//				alert("网络连接错误！");
+	//			}
+	//		});
+	//	}
+	//埋点
+	//	Trinity.init({
+	//		app_key: "2a6b0d9fb0bbee6d06d563cd2fd10de68735fea5",
+	//		url: point_URL,
+	//		device_id: localStorage.getItem("device_id"), //需要从android SKD Trinity.sharedInstance().getDeviceId() 或者ios的SDK[BudtrinityDeviceInfo udid]中获取该值
+	//		sdk_version: localStorage.getItem("sdk_version"),
+	//		app_version: app_version,
+	//		u_id: localStorage.getItem("userid"), //如果访问该页面时app已经登录过则需要赋值
+	//		channel: "0000000000"
+	//	});
+	//自定义事件
+	//	function eventBtn(ob) {
+	//		Trinity.add_event({
+	//			key: "page", //确认购买
+	//			"segmentation": { //设置自定义事件的键值对
+	//				"page_id": "comfirmPurchase",
+	//				"page_name": "comfirmPurchase.html"
+	//			}
+	//		});
+	//	}
+</script>

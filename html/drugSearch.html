@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>药物查询</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/ui-input.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			.splitline {
+				height: 0px;
+				width: 100%;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh">
+		<div class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">药物查询</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<div class="bc2">
+				<!---->
+				<div class="ub h30 lh30 pl10 pr10">
+					<div>药物名称：</div>
+					<input class="pl5" type="text" id="drugname" value="氨氯地平" readonly style="padding:8px; width:200px;border: 1px solid #CCC;">
+				</div>
+				<!--<div class="ubb splitline"></div>-->
+				<div class="ub h30 lh30 pl10 pr10">
+					<div>生产厂家：</div>
+					<input class="pl5" type="text" id="drugaddress" readonly style="padding:8px; width:200px;border: 1px solid #CCC;">
+				</div>
+				<!--<div class="ubb splitline"></div>-->
+				<div class="ub h30 lh30 ubb pl10 pr10 mt5">
+					<div class="ub-f2 bc1 w60 h25 lh25 fs10 ml10 c1 uc-a4 tx-c " id="search">搜索</div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	$(function() {
+		$("#search").click(function() {
+			var drugname = $.trim($("#drugname").val());
+			var drugaddress = $.trim($("#drugaddress").val());
+			if (drugname != '' || drugaddress != '') {
+				localStorage.setItem("drugname", drugname);
+				localStorage.setItem("drugaddress", drugaddress);
+				window.location.href = "drugSearchResult.html";
+			} else {
+				toast("药物名称或者上产厂家不能为空");
+			}
+		});
+		$("#back").click(function() {
+			window.history.go(-1);
+		})
+	});
+</script>

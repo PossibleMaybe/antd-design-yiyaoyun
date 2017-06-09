@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>商品评价</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			#content {
+				padding-top: 3em;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh">
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">商品评价</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<div id="content">
+				<div class="ub bc2 h30 lh30 ubb pl10">
+					<div>订单号：</div>
+					<div id="orderid"></div>
+				</div>
+				<div id="list">
+					<div class="bc2 ub pt2 pb5 pl6 pr8 h50 ub-ac ubb uhide">
+						<div class="ub-img img tx-c" style="width: 40%;"></div>
+						<div class="pt5" style="width: 60%;">
+							<div class="ub fs10 fb pl4 ">
+								<div class="name fsp16"></div>
+								<div class="uhide orderid"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div>
+					<input id="yp" name="yp" value="0" type="hidden">
+					<input id="fw" name="fw" value="0" type="hidden">
+					<input id="fh" name="fh" value="0" type="hidden">
+					<div class="bc2 pl10 pt10 pb10 ">
+						<div class="ub ub-ac lh30">
+							<span class="number">*</span>药品描述<span class="Select"> 
+        <a onClick="javascript:setProfix('star_');showStars(1,'yp');"
+         onClick="javascript:setProfix('star_');clearStars('yp');" 
+         href="javascript:setProfix('star_');setStars(1,'yp');">
+        <img id="star_1" title="差(1)" src="../images/img36.png"></a>
+        <a onClick="javascript:setProfix('star_');showStars(2,'yp');"
+         onClick="javascript:setProfix('star_');clearStars('yp');"
+           href="javascript:setProfix('star_');setStars(2,'yp');">
+        <img id="star_2" title="一般(2)" src="../images/img36.png"></a>    
+        <a onClick="javascript:setProfix('star_');showStars(3,'yp');" 
+           onClick="javascript:setProfix('star_');clearStars('yp');"
+            href="javascript:setProfix('star_');setStars(3,'yp');">
+        <img id="star_3" title="好(3)" src="../images/img36.png"></a>
+        <a onClick="javascript:setProfix('star_');showStars(4,'yp');" 
+            onClick="javascript:setProfix('star_');clearStars('yp');" 
+            href="javascript:setProfix('star_');setStars(4,'yp');">
+        <img id="star_4" title="很好(4)" src="../images/img36.png"></a>
+        <a onClick="javascript:setProfix('star_');showStars(5,'yp');"
+             onClick="javascript:setProfix('star_');clearStars('yp');" 
+             href="javascript:setProfix('star_');setStars(5,'yp');">
+        <img id="star_5" title="非常好(5)" src="../images/img36.png"></a></span>
+						</div>
+						<div class="ub ub-ac lh30">
+							<span class="number">*</span>服务态度<span class="Select"> 
+        <a onClick="javascript:setProfix('taste_');showStars(1,'fw');" 
+        onClick="javascript:setProfix('taste_');clearStars('fw');"
+         href="javascript:setProfix('taste_');setStars(1,'fw');">
+         <img id="taste_1" title="差(1)" src="../images/img36.png"></a>
+        <a onClick="javascript:setProfix('taste_');showStars(2,'fw');"
+         onClick="javascript:setProfix('taste_');clearStars('fw');" 
+         href="javascript:setProfix('taste_');setStars(2,'fw');">
+         <img id="taste_2" title="一般(2)" src="../images/img36.png"></a>
+        <a onClick="javascript:setProfix('taste_');showStars(3,'fw');" 
+        onClick="javascript:setProfix('taste_');clearStars('fw');" 
+        href="javascript:setProfix('taste_');setStars(3,'fw');">
+        <img id="taste_3" title="好(3)" src="../images/img36.png"></a>
+        <a onClick="javascript:setProfix('taste_');showStars(4,'fw');" 
+        onClick="javascript:setProfix('taste_');clearStars('fw');" 
+        href="javascript:setProfix('taste_');setStars(4,'fw');">
+        <img id="taste_4" title="很好(4)" src="../images/img36.png"></a>
+        <a onClick="javascript:setProfix('taste_');showStars(5,'fw');" 
+        onClick="javascript:setProfix('taste_');clearStars('fw');" 
+        href="javascript:setProfix('taste_');setStars(5,'fw');">
+        <img id="taste_5" title="非常好(5)" src="../images/img36.png"></a> </span>
+						</div>
+						<div class="ub ub-ac lh30">
+							<span class="number">*</span>发货速度<span class="Select"> 
+        <a onClick="javascript:setProfix('environment_');showStars(1,'fh');" 
+        onClick="javascript:setProfix('environment_');clearStars('fh');"
+         href="javascript:setProfix('environment_');setStars(1,'fh');">
+        <img id="environment_1" title="差(1)" src="../images/img36.png"></a>
+        <a onClick="javascript:setProfix('environment_');showStars(2,'fh');" 
+        onClick="javascript:setProfix('environment_');clearStars('fh');"
+         href="javascript:setProfix('environment_');setStars(2,'fh');">
+         <img id="environment_2" title="一般(2)" src="../images/img36.png"></a>
+         <a onClick="javascript:setProfix('environment_');showStars(3,'fh');" 
+         onClick="javascript:setProfix('environment_');clearStars('fh');"
+          href="javascript:setProfix('environment_');setStars(3,'fh');">
+         <img id="environment_3" title="好(3)" src="../images/img36.png"></a>
+         <a onClick="javascript:setProfix('environment_');showStars(4,'fh');" 
+         onClick="javascript:setProfix('environment_');clearStars('fh');"
+          href="javascript:setProfix('environment_');setStars(4,'fh');">
+         <img id="environment_4" title="很好(4)" src="../images/img36.png"></a>
+         <a onClick="javascript:setProfix('environment_');showStars(5,'fh');" 
+         onClick="javascript:setProfix('environment_');clearStars('fh');" 
+         href="javascript:setProfix('environment_');setStars(5,'fh');">
+         <img id="environment_5" title="非常好(5)" src="../images/img36.png"></a> </span>
+						</div>
+					</div>
+					<div class="ub ubt bc2 pt10 h40">
+						<div class="ub-f1"></div>
+						<div class="ub-f1 bc3 w60 h25 lh25 fs10  c1 uc-a4 tx-c " id="comments">立即评价</div>
+						<div class="ub-f1"></div>
+					</div>
+				</div>
+			</div>
+			<script src="../js/jquery.js"></script>
+			<script src="../js/star.js"></script>
+			<script src="../js/constant.js"></script>
+			<script src="../js/des.js"></script>
+	</body>
+
+</html>
+<script>
+
+
+	//获取用户信息
+	iP = {};
+	var userid = localStorage.getItem("userid");
+	var orderid = localStorage.getItem("orderid");
+	$(function() {
+		
+		//根据团体颜色改变背景颜色
+	var insurecolor = localStorage.getItem("showColor");
+	$(".title").css("background-color",insurecolor);
+	
+		
+		
+		$("#orderid,.orderid").text(orderid);
+		getOrderDetail(orderid, userid);
+		//关闭页面
+		$("#back").click(function() {
+			window.history.go(-1);
+		});
+		//商品评价
+		$("#comments").click(function() {
+			var drug = $.trim($("#yp").val());
+			var pharmacy = $.trim($("#fw").val());
+			var shipment = $.trim($("#fh").val());
+			var detailOrderNo = orderid;
+			if (drug == 0 || pharmacy == 0 || shipment == 0) {
+				toast("请对所有评价项进行评分!");
+			} else {
+				AddfeedBack(drug, pharmacy, shipment, detailOrderNo, userid);
+			}
+		});
+	});
+	//根据订单号获取订单信息
+	function getOrderDetail(orderid, userid) {
+		Loading();
+		var enResult = strEnc("[{\"yyyCode\":\"100102\",\"userId\":\"" + userid + "\",\"detailOrderNo\":\"" + orderid + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(productInfo, textStatus) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == "1") {
+					iP.append(productInfo.data.ORDER.ORDER_ITEMS);
+				}
+				noLoading();
+			}, //清掉loading信息
+			error: function(xmlHttpRequest, error) {
+				alert("网络连接错误！");
+				$(".noProduct").removeClass("uhide");
+				noLoading();
+			}
+		});
+	}
+	iP.append = function(data) {
+		var elem, clone = $("#list>div:first");
+		for (var i in data) {
+			elem = clone.clone().removeClass("uhide");
+			elem.find(".name").text(data[i].NAME);
+			var url = data[i].THUMBNAIL_PIC;
+			url = "<img src='" + url + "' height='80px' width='80px'/>";
+			elem.find(".img").html(url);
+			$("#list").append(elem);
+		};
+	};
+	//评价
+	function AddfeedBack(drug, pharmacy, shipment, detailOrderNo, userid) {
+		var enResult = strEnc("[{\"yyyCode\":\"100017\",\"drug\":\"" + drug + "\",\"pharmacy\":\"" + pharmacy + "\",\"shipment\":\"" + shipment + "\",\"detailOrderNo\":\"" + detailOrderNo + "\",\"userID\":\"" + userid + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(productInfo, textStatus) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == "1") {
+					alert("评价成功", function(){
+						window.location.href = "AllOrder.html";
+					});
+				} else {
+					alert(productInfo.message);
+				}
+			}, //清掉loading信息
+			error: function(xmlHttpRequest, error) {
+				alert("网络连接错误！");
+			}
+		});
+	}
+</script>

@@ -1,0 +1,103 @@
+.title{
+    display: -webkit-box !important;
+    height:3.0em;
+    /*background-color:#009cff;*/
+    -webkit-box-align:center;
+}
+.title-left{
+    width:3em;  
+    height: 3em;
+}
+.title-mid{
+    -webkit-box-flex: 1;
+    text-align:center;
+	font-size: 19px;
+    color:#fff;
+}
+.title-right{
+    width:3em;
+	height:3em; 
+	line-height: 3em;
+	text-align: center;
+}
+.title-right1{
+   	width:2.7em;
+	height:1.75em;
+	background-repeat: no-repeat;
+	display: -webkit-box;
+	-webkit-box-pack:center;
+	-webkit-box-align:center;
+}
+[golist]{
+    background-image: url("../images/img24.png");
+    background-size: 1.1em 1.1em;
+}
+[goback]{
+    /*background: url(../images/img11.png) no-repeat center center;
+	background-size:30% 50%;*/
+    background: url(../images/back.png) no-repeat center center;
+	background-size: 40%;
+}
+[close]{
+	background: url(../images/img19.png) no-repeat center center;
+    background-size: 1.2em 1.2em;
+}
+[more]{
+	background: url(../images/img20.png) no-repeat center center;
+    background-size:  1.31em 0.28em;
+}
+[delete]{
+	background: url(../images/img51.png) no-repeat center center;
+    background-size:  22px 25px;
+}
+[finish]{
+    text-align: right;
+    color:#fff
+}
+#yfyCart{
+	background: url(../images/cart1.png) no-repeat center center;
+    background-size:  27px 27px;
+    position: relative;
+}
+.yfyCartCount{
+	width: 16px;
+	height: 16px;
+	line-height: 16px;
+	font-size: 12px;
+	background-color: #FFFFFF;
+	color: #ff7300;
+	-webkit-border-radius: 50%;
+	border-radius: 50%;
+	position: absolute;
+	top: 8px;
+	right: 6px;
+}
+/* 内容 */
+.content{
+    -webkit-box-flex:1;
+    height:100%;
+}
+#menumask{
+	height:100%;
+	width:100%;
+	display:none;
+	position:fixed;
+	left:0px;
+	top:0px;
+	z-index:99;
+}
+#moremenu{
+	height:150px;
+	width:120px;
+	float:right;
+	margin-right:0px;
+	margin-top:50px;
+}
+#menuicon{
+	width:0px;
+	height:0px;
+	border:20px solid rgba(0,0,0,0);
+	border-bottom-color:#FF7200;
+	margin-left:80px;
+	margin-top:-40px;
+}

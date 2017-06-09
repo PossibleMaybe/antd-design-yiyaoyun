@@ -1,0 +1,404 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+
+	<head>
+		<title>全部订单</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			
+			#content {
+				padding-top: 3em;
+			}
+			
+			.tab_div {
+				width: 100%;
+				overflow: auto;
+				padding-top: 10px;
+				padding-bottom: 10px;
+			}
+			
+			.tab_div li {
+				float: left;
+			}
+			
+			.precTips {
+				color: #fff;
+				padding: 0px 3px;
+				margin-right: 5px;
+				border-radius: 3px;
+				font-size: 12px;
+				background: #ff0000;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ng-controller="getList">
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid fs10">全部订单</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<div id="content" class="ubb h25 lh25 bc2 pl10 ">
+				<div class="">我的订单</div>
+			</div>
+			<div class="ub bc2 fs7 tx-c ubb" id="menuCtn">
+				<div class="ub-f1 ub-ac pt11 pb11 testbutton1 curMenu" ng-click="findOrder('')" tt="10">
+					<div class="ub-img img54 h32" style="display:block; margin:0 auto;"></div>
+					<div class="img55 uhide"></div>
+					<div class="mt5" id="alltext">全部订单</div>
+					<div class="uhide" id="testtext">10</div>
+				</div>
+				<div class="ub-f1 ub-ac pt11 pb11 testbutton1" ng-click="findOrder('0')" tt="0">
+					<div class="ub-img img56 h32" style="display:block; margin:0 auto;"></div>
+					<div class="img57 uhide"></div>
+					<div class="mt5" id="fktext">待付款</div>
+				</div>
+				<div class="ub-f1 ub-ac pt11 pb11 testbutton1" ng-click="findOrder('1')" tt="1">
+					<div class="ub-img img58 h32" style="display:block; margin:0 auto;"></div>
+					<div class="img59 uhide"></div>
+					<div class="mt5" id="fhtext">待发货</div>
+				</div>
+				<div class="ub-f1 ub-ac pt11 pb11 testbutton1" ng-click="findOrder('2')" tt="2">
+					<div class="ub-img img60 h32" style="display:block; margin:0 auto;"></div>
+					<div class="img61 uhide"></div>
+					<div class="mt5" id="shtext">待收货</div>
+				</div>
+				<div class="ub-f1 ub-ac pt11 pb11 testbutton1" ng-click="findOrder('4')" tt="4">
+					<div class="ub-img img62 h32" style="display:block; margin:0 auto;"></div>
+					<div class="img63 uhide"></div>
+					<div class="mt5" id="pjtext">待评价</div>
+				</div>
+			</div>
+			<div id="plist" ng-repeat="i in list" class="mt5" ng-cloak>
+				<div class="bc2 testbutton">
+					<div class="ub h22 lh22 ubb ubt pl10 pr10" ng-click="toShop(i.DRUG_SUPPLIER_CODE)">
+						<div class="ub ub-f1 fs8">
+							<span class="precTips" ng-if="i.DETAIL_ORDER_IS_PRESCS==1">处方</span>
+							<div class="shopname" ng-cloak>{{i.DRUG_SUPPLIER_NAME}}</div>
+							<div style="width: 30px;background: url(../images/img26.png) no-repeat center;background-size: 24%;"></div>
+						</div>
+						<div class="ub fs7 c22 ">
+							<span ng-if="i.DETAIL_ORDER_STATUS=='0'" ng-cloak>等待付款</span>
+							<span ng-if="i.DETAIL_ORDER_STATUS=='1'" ng-cloak>等待发货</span>
+							<span ng-if="i.DETAIL_ORDER_STATUS=='2'" ng-cloak>等待收货</span>
+							<span ng-if="i.DETAIL_ORDER_STATUS=='3'" ng-cloak>交易成功</span>
+							<span ng-if="i.DETAIL_ORDER_STATUS=='4' || i.DETAIL_ORDER_STATUS=='10' ||i.DETAIL_ORDER_STATUS=='12' || i.DETAIL_ORDER_STATUS=='14'" ng-cloak>未评价</span>
+							<span ng-if="i.DETAIL_ORDER_STATUS=='5' || i.DETAIL_ORDER_STATUS=='11' ||i.DETAIL_ORDER_STATUS=='13' || i.DETAIL_ORDER_STATUS=='15'" ng-cloak>已评价</span>
+							<span ng-if="i.DETAIL_ORDER_STATUS=='7' ||i.DETAIL_ORDER_STATUS=='8' || i.DETAIL_ORDER_STATUS=='9' " ng-cloak>退货中</span>
+						</div>
+					</div>
+				</div>
+				<div class="bc2 ub pl10 pr10" ng-click="toDetail(i.DETAIL_ORDER_NO)">
+					<div id="tab_div" class="ub-f1 tab_div ">
+						<ul class="list_link" style="width: 558px;">
+							<li style=" margin-left: 5px; border: 1px solid #EEEEEE; border-radius: 5px;" ng-repeat="prodetail in i.ITEMS" ng-cloak>
+								<img ng-src="{{prodetail.DRUG_IMG_URL || defaultImg}}" height="60" width="60" />
+							</li>
+						</ul>
+					</div>
+					<div class="ub ub-ac fs8 ml5">
+						<div>共</div>
+						<div ng-cloak>{{i.DETAIL_ORDER_COUNT}}</div>
+						<div>件</div>
+					</div>
+				</div>
+				<div class="bc2 ub h34 lh34 ubb ubt pl10 pr10 fs7  ub-ac">
+					<div class="ub-f1 ub" style=" font-size: 12px;">
+						<div class="ub">
+							<div ng-cloak>订单总额：</div>
+							<div ng-cloak>&yen;{{i.DETAIL_ORDER_TOTAL}}</div>
+						</div>
+					</div>
+					<div class="ub">
+						<div class="h20 lh20 w55 tx-c c7 uba7 ml7 wl" ng-if="i.DETAIL_ORDER_STATUS=='2'" ng-click="wl(i.DETAIL_ORDER_NO)" ng-cloak>查看物流</div>
+						<div class="h20 lh20 w55 tx-c c7 uba7 ml7 sh" ng-if="i.DETAIL_ORDER_STATUS=='2'" ng-click="sh(i.DETAIL_ORDER_NO)" ng-cloak>确认收货</div>
+						<div class="h20 lh20 w55 tx-c c7 uba7 ml7 pj" ng-if="i.DETAIL_ORDER_STATUS=='3' || i.DETAIL_ORDER_STATUS=='4' || i.DETAIL_ORDER_STATUS=='10' ||i.DETAIL_ORDER_STATUS=='12' || i.DETAIL_ORDER_STATUS=='14'" ng-click="pj(i.DETAIL_ORDER_NO)" ng-cloak>晒单评价</div>
+						<div class="h20 lh20 w55 tx-c c7 uba7 ml7 ljfk" ng-if="i.DETAIL_ORDER_STATUS=='0'" ng-click="zf(i.DETAIL_ORDER_NO,i.DRUG_SUPPLIER_NAME,i.DRUG_SUPPLIER_CODE)" ng-cloak>立即支付</div>
+					</div>
+				</div>
+			</div>
+			<div class="ub ub-f1 bc2 noProduct mt5 pt5 ubt uhide" id="nop">
+				<div class="ub-img noproduct ml35"></div>
+				<div class="uhide noproduct"></div>
+				<div class="ub-ac mt30 ml5">
+					<div class="fs10">很抱歉！</div>
+					<div class="fs8" id="aaa">没有为您找到相关商品订单。</div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<!--<script src="../js/budtrinity-0.1.3.min.js"></script>-->
+		<script type="text/javascript" src="../js/angular.min.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	iP = {};
+	var userid = localStorage.getItem("userid");
+	var source = localStorage.getItem("yyySource");
+	getPreList(userid, source, "");
+	//页面加载
+	$(function() {
+		//返回上一页
+		$("#back").click(function() {
+			localStorage.removeItem("ORDERTYPE");
+			window.location.href = "PersonalCenter.html";
+		});
+		//订单筛选
+		$("#menuCtn>div").click(function() {
+			var _s = $(this);
+			var tt = _s.attr("tt");
+			$("#testtext").text(tt);
+			_s.addClass("curMenu").siblings().removeClass("curMenu");
+		});
+		//添加埋点
+//		eventBtn(this);
+	});
+	//获取订单列表
+	function getPreList(userid, source, status) {
+		var app = angular.module('myApp', []);
+		app.controller('getList', function($http, $scope) {
+			$scope.orderType = '0'; //0未审核，1待购买，2被拒绝，3已购买，不传为所有
+			$scope.findOrder = function(sts) {
+				$scope.list = [];
+				$scope.orderType = sts;
+				$scope.curStus = '';
+				getList($http, $scope, userid, source, sts);
+			};
+			getList($http, $scope, userid, source, status);
+		});
+	}
+
+	function getList($http, $scope, userid, source, status) {
+		Loading();
+		var param = strEnc("[{\"userID\":\"" + userid + "\",\"source\":\"" + source + "\",\"prescs\":\"0\",\"pharmacyCode\":\"\",\"detailOrderStatus\":\"" + status + "\",\"yyyCode\":\"100101\",\"u\":\"" + userid + "\"}]", "100001", "", "");
+		$http({
+				method: 'GET',
+				url: GLOBAL_URL,
+				cache: true, //开启缓存
+				params: {
+					'json': param
+				}
+			})
+			.success(function(data) {
+				if (data.success) {
+					if (data.data.length > 0) {
+						$("#nop").addClass("uhide");
+						//订单列表
+						$scope.list = data.data;
+						$scope.defaultImg = defaultImg;
+						$scope.toDetail = function(id) {
+							localStorage.setItem("orderid", id);
+							window.location.href = "productOrderDetail.html";
+						};
+						$scope.toShop = function(code) {
+							localStorage.setItem("DRUGSUPPLIERCODE", code);
+							window.location.href = "shop.html";
+						};
+						//查看物流
+						$scope.wl = function(id) {
+							localStorage.setItem("orderid", id);
+							window.location.href = "productWL.html";
+						};
+						//晒单评价
+						$scope.pj = function(id) {
+							localStorage.setItem("orderid", id);
+							window.location.href = "productPJ.html";
+						};
+						//确认收货
+						$scope.sh = function(id) {
+							confirm('确定要收货吗?', function() {
+								SH(id, userid);
+							});
+						};
+						var ljzf = false;
+						//立即支付
+						$scope.zf = function(id, hisName, code) {
+							if (ljzf) return;
+							ljzf = true;
+							localStorage.setItem("orderid", id);
+							localStorage.setItem("hisName", hisName);
+							getOrderDetail(id, userid, code);
+						};
+					} else {
+						$("#nop").removeClass("uhide");
+					}
+				} else {
+					alert(data.message);
+				}
+				noLoading();
+			})
+			.error(function() {
+				noLoading();
+				alert("网络连接错误！");
+			});
+	}
+	//确认收货
+	function SH(orderid, userid) {
+		var enResult = strEnc("[{\"yyyCode\":\"100016\",\"detailOrderNo\":\"" + orderid + "\",\"userID\":\"" + userid + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(productInfo) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == "1") {
+					var testText = $("#testtext").text();
+					location.reload();
+				}
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+				$("#orderlist").html("");
+				$(".noProduct").removeClass("uhide");
+				$("#aaa").text("网络连接不上，请检查网络");
+			}
+		});
+	}
+	//查看物流
+	function WL(orderid, userid) {
+		var enResult = strEnc("[{\"yyyCode\":\"100015\",\"detailOrderNo\":\"" + orderid + "\",\"userID\":\"" + userid + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(productInfo) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == "1") {
+					alert(productInfo.data);
+				}
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+				$("#orderlist").html("");
+				$(".noProduct").removeClass("uhide");
+				$("#aaa").text("网络连接不上，请检查网络");
+			}
+		});
+	}
+	//根据订单号获取订单信息
+	function getOrderDetail(orderid, userid, code) {
+		var enResult = strEnc("[{\"yyyCode\":\"100032\",\"userId\":\"" + userid + "\",\"detailOrderNo\":\"" + orderid + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(productInfo) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == "1") {
+					localStorage.setItem("allPrice", "");
+					var totalmoney = productInfo.data.ORDER.TOTAL_AMOUNT;
+					localStorage.setItem("allPrice", totalmoney);
+					var payId = productInfo.data.ORDER.DRUG_SUPPLIER_PAY;
+					localStorage.setItem("payId", payId);
+					var subPayId = productInfo.data.ORDER.DRUG_SUPPLIER_PAYSUB;
+					localStorage.setItem("subPayId", subPayId);
+					var hisName = productInfo.data.ORDER.STORE_NAME;
+					localStorage.setItem("hisName", hisName);
+					isZF(payId, orderid, code, totalmoney, hisName, subPayId);
+				}
+				ljzf = false;
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+				$("#orderlist").html("");
+				$(".noProduct").removeClass("uhide");
+				$("#aaa").text("网络连接不上，请检查网络");
+			}
+		});
+	}
+	//判断订单是否支付
+	function isZF(payId, orderid, code, totalmoney, hisName, subPayId) {
+		var enResult = strEnc("[{\"yyyCode\":\"100127\",\"payId\":\"" + payId + "\",\"subPayId\":\"" + subPayId + "\",\"orderid\":\"" + orderid + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(productInfo) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == "1") {
+					if (productInfo.message[0].success == "false") {
+						var uri = "?allPrice=" + totalmoney +
+							"&hisName=" + hisName +
+							"&orderid=" + orderid +
+							"&payId=" + payId +
+							"&subPayId=" + subPayId +
+							"&userid=" + userid +
+							"&source=" + source;
+						window.location.href = "productjs.html" + uri;
+					} else if (productInfo.message[0].success) {
+						var status = productInfo.message[0].data.res;
+						if (status == "TRADE_SUCCESS" || status == "SUCCESS") {
+							ljzf = false;
+							alert("订单已支付，请勿重复支付");
+						} else {
+							var uri = "?allPrice=" + totalmoney +
+								"&hisName=" + hisName +
+								"&orderid=" + orderid +
+								"&payId=" + payId +
+								"&subPayId=" + subPayId +
+								"&userid=" + userid +
+								"&source=" + source;
+							window.location.href = "productjs.html" + uri;
+						}
+					}
+				} else {
+					alert("网络超时");
+				}
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+				$("#orderlist").html("");
+				$(".noProduct").removeClass("uhide");
+				$("#aaa").text("网络连接不上，请检查网络");
+			}
+		});
+	}
+	//点击药店名称进入店铺首页
+	//	function toShop(dom) {
+	//		var _s = $(dom);
+	//		var c = $(dom).find(".DRUGSUPPLIERCODE").text();
+	//		localStorage.setItem("DRUGSUPPLIERCODE", c);
+	//		window.location.href = "shop.html";
+	//	}
+	//埋点
+//	Trinity.init({
+//		app_key: "2a6b0d9fb0bbee6d06d563cd2fd10de68735fea5",
+//		url: point_URL,
+//		device_id: localStorage.getItem("device_id"), //需要从android SKD Trinity.sharedInstance().getDeviceId() 或者ios的SDK[BudtrinityDeviceInfo udid]中获取该值
+//		sdk_version: localStorage.getItem("sdk_version"),
+//		app_version: app_version,
+//		u_id: localStorage.getItem("userid"), //如果访问该页面时app已经登录过则需要赋值
+//		channel: "0000000000"
+//	});
+	//自定义事件
+//	function eventBtn(ob) {
+//		Trinity.add_event({
+//			key: "page", //全部订单
+//			"segmentation": { //设置自定义事件的键值对
+//				"page_id": "AllOrder",
+//				"page_name": "AllOrder.html"
+//			}
+//		});
+//	}
+</script>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>商品列表页面</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<link rel="stylesheet" href="../css/ui-input.css" />
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<style>
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+				padding: 0px;
+			}
+			
+			#content {
+				padding-top: 3em;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh">
+		<div class="up ub ub-ver">
+			<!-- 页头 -->
+			<div class="title bc13" id="header">
+				<div id="back" class="ml5 mr5">
+					<div class="ub-img img70"></div>
+				</div>
+				<div class="ub ub-f1 bc2 pl3 ub-ac uc-a3 h20 lh20">
+					<div class="ub ub-f1 bc2 pl5 pr7 ub-ac uc-a7 h18">
+						<div class="ub-img img1"></div>
+						<div class="ub-f1 uinput">
+							<input id="txtSearch" class="fs8 h30 uo" placeholder="" />
+						</div>
+					</div>
+				</div>
+				<div class=" toSearch" style="opacity: 0;filter: alpha(opacity = 0);width: 0;height: 0;">
+					<input type="submit" value="" />
+				</div>
+				<div class="title-right1 ub ub-ac toSearch ">
+					<div class="fs10 c1">搜索</div>
+				</div>
+			</div>
+			<!-- 内容 -->
+			<div class="bc2" id="content">
+				<!--药店列表-->
+				<section id="list">
+					<div class="ub ubb h30 lh30 uhide">
+						<div class="ml20 pharmacyLogo"></div>
+						<div class="name"></div>
+						<div class="uhide">
+							<div class="SHOPCODE"></div>
+						</div>
+					</div>
+				</section>
+				<div class="uhide ub noProduct mt10 mb10">
+					<div class="ub-img noproduct ml35"></div>
+					<div class="ub-ac mt30 ml5">
+						<div class="fs10">很抱歉！</div>
+						<div class="fs8">没有为您找到相关药店。</div>
+					</div>
+				</div>
+				<div class="uhide totalcount">
+					<span id="totalcount"></span>
+				</div>
+			</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/para.js"></script>
+		<script src="../js/des.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	iP = {};
+	//页面加载
+	$(function() {
+		//根据团体颜色改变头部背景颜色
+		var insurecolor = localStorage.getItem("showColor");
+		$(".title").css("background-color",insurecolor);
+		
+		var name = localStorage.getItem("shopname");
+		if (!name) {
+			name = "";
+		};
+		$("#txtSearch").val(name);
+		getShop(name);
+		//返回上一页
+		$("#back").on("click", function() {
+			window.location = "productSearchByYD.html";
+		});
+		//到按药店搜索页面
+		$("#txtSearch").click(function() {
+			window.location = "productSearchByYD.html";
+		});
+	});
+	//获取药店列表方法
+	function getShop(name) {
+		Loading(); //显示加载中
+		var json = strEnc("[{\"pharmacyName\":\"" + name + "\",\"yyyCode\":\"100041\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + json,
+			success: function(data) {
+				var shop = JSON.parse(data);
+				if (shop.success == "1") {
+					if (shop.data.length != 0) {
+						$(".noProduct").addClass("uhide");
+						iP.append(shop.data);
+						loadPage = true;
+					} else {
+						$("#list>div:first").siblings().remove();
+						$(".noProduct").removeClass("uhide");
+						$("#sx").removeClass("uhide");
+					}
+				} else {
+					$("#list>div:first").siblings().remove();
+					$(".noProduct").removeClass("uhide");
+				}
+				noLoading();
+			},
+			error: function() {
+				noLoading();
+			}
+		});
+	}
+	//插入数据
+	iP.append = function(data) {
+		var elem, clone = $("#list>div:first");
+		clone.siblings().remove();
+		for (var i in data) {
+			elem = clone.clone().removeClass("uhide");
+			var name = "";
+			var title = data[i].PharmacyName;
+			if (title.length > 13) {
+				name = title.substring(0, 13) + "...";
+			} else {
+				name = title;
+			}
+			elem.find(".name").text(name);
+			elem.find(".SHOPCODE").text(data[i].PharmacyCode);
+			var img = "<img src='" + data[i].PharmacyLogo + "' style='width:30px;height:30px;margin:9px 20px 9px 0px;'/>";
+			//var img = "<img src='../images/img52.png' style='width:30px;height:30px;margin:9px 20px 9px 0px;'/>";
+			elem.find(".pharmacyLogo").html(img);
+			$("#list").append(elem);
+			//点击药店名称时 到药店页面
+			elem.on("click", function() {
+				var SHOPCODE = $(this).find(".SHOPCODE").text();
+				localStorage.setItem("DRUGSUPPLIERCODE", SHOPCODE);
+				window.location.href = "shop.html";
+			});
+		};
+	};
+	//搜索商品
+	$(".toSearch").click(function(event) {
+		event.preventDefault();
+		var pname = $.trim($("#txtSearch").val());
+		if (pname.length >= 50) {
+			toast("搜索的关键字不能超过50个字！");
+		} else {
+			localStorage.setItem("pname", pname); //传给下一个页面
+			//用户搜索商品，传搜索商品名
+			window.location.href = "shopList.html";
+		}
+	});
+</script>

@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>联系卖家</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta http-equiv="pragma" content="no-cache">
+		<meta http-equiv="cache-control" content="no-cache">
+		<meta http-equiv="expires" content="0">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/ui-input.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<link rel="stylesheet" href="../css/scrollbar.css" />
+		<style>
+			body{
+				height: 100%;
+				background-color: #EEE;
+			}
+			#loading{
+				top: 48px;
+				left: 0px;
+			}
+			#content>ul{
+				clear: both;
+			}
+			#header {
+				width: 100%;
+				z-index: 99;
+			}
+			#container{
+				width: 100%;
+				height: 100%;
+			}
+			#wrap {
+				width: 100%;
+				overflow-y: auto;
+				background-color: #EEE;
+			}
+			#sendMsg{
+				width: 100%;
+				min-height: 3em;
+				position: fixed;
+				bottom: 0;
+				left: 0;
+				background-color: #FFF;
+			}
+			textarea#message{
+				resize: none;
+			}
+			.send {
+				padding: 2px 15px;
+				color: #ffffff;
+				background-color: #38a3f5;
+				-webkit-border-radius: .4em;
+				border-radius: .4em;
+			}
+			.leftMsg, .rightMsg{
+				/*width: 100%;*/
+				width: 80%;
+				position: relative;
+				clear: both;
+				margin: 5px 10px;
+				min-height: 37px;
+			}
+			.leftMsg{
+				float: left;
+			}
+			.rightMsg{
+				float: right;
+			}
+			.productMsg{
+				clear: both;
+				width: 90%;
+				margin: 10px auto;
+				border: 1px solid #CCCCCC;
+				padding: 0px 0px 10px;
+				-webkit-border-radius: 5px;
+				border-radius: 5px;
+			}
+			.leftMsgImg, .rightMsgImg{
+				width: 32px;
+				height: 32px;
+				-webkit-border-radius: 50%;
+				border-radius: 50%;
+				position: absolute;
+				top: 6px;
+			}
+			.leftMsgImg{
+				/*background: url(../images/3.png) no-repeat center;*/
+				left: 0px;
+				background-size: 100%;
+			}
+			.rightMsgImg{
+				/*background: url(../images/img33.png) no-repeat center;*/
+				background: url(../images/user_male.png) no-repeat center;
+				right: 0px;
+				background-size: 100%;
+			}
+			.leftMsgContent, .rightMsgContent{
+				font-size: 14px;
+				max-width: 80%;
+				-webkit-border-radius: 5px;
+				border-radius: 5px;
+				position: relative;
+				word-wrap: break-word;
+				padding: 5px 10px;
+			}
+			.leftMsgContent img, .rightMsgContent img{
+				vertical-align: middle;
+			}
+			.leftMsgContent{
+				background-color: #FFFFFF;
+				margin: 10px 0px 0px 40px;
+				text-align: left;
+				float: left;
+			}
+			.rightMsgContent{
+				background-color: #b2e281;
+				margin: 10px 40px 0px 0px;
+				float: right;
+			}
+			.leftMsgContent a, .rightMsgContent a{
+				color: #333333;
+				text-decoration: none;
+			}
+			/*聊天框三角*/
+			.leftMsgContent:before, .rightMsgContent:after{
+				content: " ";
+				width: 0px;
+				height: 0px;
+				top: 5px;
+				position: absolute;
+			    border-top:0px solid transparent;
+			    border-bottom:10px solid transparent; 
+			}
+			.leftMsgContent:before{
+				left: -6px;
+			    border-right:6px solid #FFFFFF; 
+			}
+			.rightMsgContent:after{
+				right: -6px;
+			    border-left: 6px solid #b2e281;
+			}
+			/*消息状态  read/unread */
+			.leftMsgState, .rightMsgState{
+				display: none;
+				width: 30px;
+				height: 18px;
+				line-height: 18px;
+				top: 5px;
+				position: absolute;
+				font-size: 12px;
+				background-color: #cfcfcf;
+				text-align: center;
+				-webkit-border-radius: 6px;
+				border-radius: 6px;
+			}
+			.leftMsgState{
+				right: -32px;
+			}
+			.rightMsgState{
+				left: -32px;
+			}
+			/*消息时间*/
+			.leftMsgTime, .rightMsgTime{
+				
+			}
+			/*分割线*/
+			/*.msgSplitLine{
+				width: 100%;
+				height: 0px;
+				border-top: 1px solid #CCCCCC;
+				clear: both;
+			}*/
+			/*未读消息*/
+			/*#unreadMsgCount{
+				width: 100%;
+				background-color: #f4f4f4;
+				position: fixed;
+				top: 48px;
+				z-index: 2;
+				text-align: center;
+				font-size: 12px;
+				display: none;
+			}*/
+			/*发送消息*/
+			.chat_toolbar {
+				padding: 3px 10px 5px 6px;
+				-webkit-box-sizing: border-box;
+				box-sizing: border-box;
+				-webkit-box-orient: horizontal;
+				box-orient: horizontal;
+				display: -webkit-box;
+				display: box;
+				width: 100%;
+			}
+			#add_face_btn {
+			    border: 0;
+			    background: 0;
+			    width: 38px;
+			}
+			.btn_img {
+				position: absolute;
+				top: 0;
+				left: 0;
+				margin: 8px 5px 10px;
+			    width: 32px;
+			    height: 32px;
+			    display: block;
+			    background: url(../images/chat_bottombar_icon_face.png) no-repeat center center;
+			    background-size: 100%;
+			}
+			.chat_textarea {
+			    display: block;
+			    -webkit-border-radius: 5px;
+			    border-radius: 5px;
+			    padding: 5px 8px;
+			    height: 32px;
+			    line-height: 22px;
+			    font-size: 16px;
+			    resize: none;
+			    -webkit-box-flex: 1;
+			    box-flex: 1;
+			    margin: 5px 10px 5px 38px;
+			    color: #333;
+			    background: #f9f9f9;
+			    width: 100%;
+			    box-sizing: border-box;
+			    border: 1px solid #cccccc;
+			    /*overflow: hidden;*/
+			   	outline: none;
+			}
+			.btn {
+			    width: 56px;
+			    padding: 6px 10px;
+			    margin: 6px auto;
+			    font-size: 14px;
+			    vertical-align: middle;
+			    background: #396b9e;
+			    background: -webkit-gradient(linear,left top,left bottom,from(#5f9cc5),to(#396b9e));
+			    background: -webkit-linear-gradient(top,#5f9cc5,#396b9e);
+			    background: linear-gradient(top,#5f9cc5,#396b9e);
+			    -webkit-text-shadow: 0 1px 1px #194b7e;
+			    text-shadow: 0 1px 1px #194b7e;
+			    /*display: block;*/
+			    position: relative;
+			    border: none;
+			    -webkit-border-radius: 5px;
+			    border-radius: 5px;
+			    outline: none;
+			}
+			.btn_text {
+			    max-width: 100px;
+			    height: 20px;
+			    line-height: 20px;
+			    display: block;
+			    color: #fff;
+			    line-height: 100%;
+			    text-align: center;
+			    text-overflow: ellipsis;
+			    overflow: hidden;
+			    white-space: nowrap;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart>
+		<div id="container" class="">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback="" id="back"></div>
+					<div class="title-mid"></div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<div id="contentHid" style="display: none;">
+				<li class="leftMsg">
+					<div class="leftMsgImg"></div>
+					<div class="leftMsgContent">
+						<div class="leftMsgState"></div>
+					</div>
+				</li>
+				<li class="rightMsg">
+					<div class="rightMsgImg"></div>
+					<div class="rightMsgContent">
+						<div class="rightMsgState"></div>
+					</div>
+				</li>
+			</div>
+			<!--<div id="unreadMsgCount">
+				您有<span class="unreadMsgCount"></span>条未读消息
+			</div>-->
+			<div id="wrap">
+				<div id="pullDown" style="display: none;">
+					<span class="pullDownIcon"></span><span class="pullDownLabel" id="pullDownLabel">下拉加载更多消息记录...</span>
+				</div>
+				<div id="content">
+					<li class="productMsg bc2 uhide">
+						<div class="ub pl6 pr6">
+							<div class="ub-img img" style="width:40%"></div>
+							<div class="pt8" style="width:60%">
+								<div class="ub fs8 fb pl4 pt2" style="height: 38px;line-height: 19px;overflow: hidden;">
+									<div class="name fsp14"></div>
+								</div>
+								<div class="ub fs8 pl4 pt2">
+									<div class="fs8 c4">&yen;</div>
+									<div class="fs8 c4 price"></div>
+								</div>
+								<div class="fs8 pl4 pt2 shopname"></div>
+							</div>
+						</div>
+						<div style="text-align: center;font-size: 14px;">
+							<div class="sendProductLink" style="width: 100px;border: 1px solid #38a3f5;margin: 0px auto 0px;position: relative;">发送商品链接</div>
+						</div>
+					</li>
+				</div>
+			</div>
+			<div id="sendMsg">
+				<form id="sendMsgForm">
+					<span class="btn_img"></span>
+				    <div class="chat_toolbar" id="chat_toolbar">
+					    <textarea id="chat_textarea" name="chat_textarea" class="input_white chat_textarea"></textarea>
+					    <button id="send_chat_btn" class="btn send_chat_btn">
+					        <span class="btn_text">发送</span>
+					    </button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<script src="../plugin/qqface/jquery-1.7.2.min.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<script src="../js/para.js"></script>
+		<script src="https://121.41.227.164/socket.io/socket.io.js"></script>
+		<script src="https://121.41.227.164/static/js/IMcloud.min.dev.js"></script>
+		<script type="text/javascript" src="../plugin/qqface/jquery.qqFace.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+//	var appKey = 'yyappdemo',
+//		appSecret = 'secret',
+//		targetAppKey = 'ydappdemo';
+	var uid, IMtoken,
+		avatar = '';	//用户头像url
+	var userid = localStorage.getItem("userid");
+	var pid = request("dc") || '',	//药品Id
+		//处理记录消息位置造成的问题, 传入参数 s('#')
+		bizId = request("sc", "#") || localStorage.getItem("DRUGSUPPLIERCODE");	//药店Id
+	var perPage = '20';		//每次加载消息记录数量
+	var curLocation = 0;	//当前聊天消息位置
+	var areaId = '22';		//当前区域，22上海，2268青岛
+	var productLink = '商品链接';
+	$(function(){
+		Loading();
+		var shopname = decodeURI(request("shopname"));
+		$(".title-mid").text(shopname);
+		resizePage();
+		$(window).resize(resizePage);
+		//发送表情
+		$('.btn_img').qqFace({
+			assign: 'chat_textarea', //给那个控件赋值
+			path: '../plugin/qqface/face/',	//表情存放的路径
+			callback: 'resizePage()'
+		});
+		
+		//Get User IM token from IMcloud
+		//获取用户IM token
+		getToken(userid);
+//		getUnreadCount();
+		//获取药店信息，设置聊天头像
+		getShopById(bizId);
+		//返回上一页
+		$("#back").click(function(){
+//			if(pid){
+//				window.location.href = "productDetail.html";
+//			} else {
+//				window.location.href = "messageList.html";
+//			}
+			window.location.href = "index1.html";
+		});
+		//添加埋点
+//       eventBtn(this);
+	});
+	//替换表情
+	function replace_em(str){
+		str = str.replace(/\</g,'&lt;');
+		str = str.replace(/\>/g,'&gt;');
+		str = str.replace(/\n/g,'<br/>');
+		str = str.replace(/\[em_([0-9]*)\]/g,'<img src="../plugin/qqface/face/$1.gif" border="0" />');
+		return str;
+	}
+	//表情框弹出，重新计算页面布局
+	function resizePage(){
+		var h1 = $("#sendMsg").height();
+		var h2 = $("#header").height();
+		var h3 = $(window).height();
+		var h = h3 - h2 - h1;
+		$("#wrap").css("height", h + "px");
+		showLatestMsg();
+//		$("#wrap").css("padding-bottom", h1 + "px");
+	}
+	//获取用户IM token
+	function getToken(userid){
+		var str = '[{"yyyCode":"100108","userId":"' + userid + '"}]';
+		var enResult = strEnc(str, "100001", "", "");
+		var uri = GLOBAL_URL + "?json=" + enResult;
+		$.get(uri)
+			.success(function(data){
+				data = JSON.parse(data);
+				if(data.uid){
+					uid = data.uid;
+					IMtoken = data.IMtoken;
+					
+					//创建聊天进程
+					var im = initIMcloud();
+					//显示要咨询的商品信息
+					if(pid){
+						showProductMsg();
+						showLatestMsg();
+					}
+					//下滑加载更多消息
+					pullDownLoad("wrap");
+					$(".send_chat_btn").click(function(e){
+						e.preventDefault();
+						var display = $("#facebox").css("display");
+						var msg = $.trim($("#chat_textarea").val());
+						msg = msg.replace(/</g, "&lt").replace(/>/g, "&gt");
+						var exts = extsObject('text', bizId);
+						if(msg){
+							if (!valid6(msg, "消息只能包含中文、字母、数字和标点符号！")) {
+								$("#chat_textarea").val("");
+								return;
+							}
+							if(display == "block"){
+								
+							} else {
+								$("#chat_textarea").focus();
+							}
+							sendMsg(msg, im, exts);
+						} else {
+							toast("请输入聊天内容");
+						}
+					});
+					//发送药品链接
+					$(".sendProductLink").unbind("click").bind("click", function(e){
+						e.preventDefault();
+						var exts = extsObject('url', bizId, pid);
+						sendMsg(productLink, im, exts);
+					});
+				} else {
+//					alert("status:" + data.status + "&error:" + data.error);
+				}
+			})
+			.error(function(){
+				alert("网络连接错误");
+			});
+	}
+	//Client Side (Web)
+	//创建聊天进程
+	function initIMcloud(){
+		var im = new IMcloud();
+		var opts = {};
+		opts.username = userid;//user display name
+//		opts.bizId = bizId; //your shop id, if connect as customer service user
+		opts.avatar = avatar;//url to avatar of user
+		//set 'onXM' before im.init()
+		//实时接收消息并处理
+		opts.onXM = function(msg) {
+			//handle xm message
+			if(bizId != msg.bizId){
+				return;
+			}
+			var leftElem = $("#contentHid>.leftMsg:first");
+			var left = leftElem.clone();
+			var msgId = '["'+msg.msgId+'"]';
+			$(".leftMsgContent", left).html(replace_em(msg.msg));
+			$("#content").append(left);
+			showLatestMsg();
+			//标记为已读
+			markAsRead(msgId);
+//			console.log(JSON.stringify(msg));
+		}
+		//Set event handler to opts object before IM client initialization if needed
+		opts.onConnect = function() {
+//			console.log('Connected to IM Server');
+			//load some infomation like message history or pending
+			//获取历史消息记录
+			getHistoryMsg(perPage, '', '1');
+//			getUnreadCount();
+		}
+		opts.onDisconnect = function() {
+			localStorage.removeItem("msgLoaded_" + bizId);
+//			alert("聊天进程已中断，请重试", function(){
+////				location.reload();
+//			});
+//			console.log('Disconnect to IM Server');
+		}
+		opts.onError = function(err) {
+//			alert("创建聊天进程失败，请重试");
+//			alert(err);
+//			console.log(err);
+		}
+//		im.init("http://42.121.121.213:4000", appKey, opts);
+		im.init(imcloud_url + ":4000", appKey, opts);
+		im.connect(IMtoken, "online");
+		
+		return im;
+	}
+	//发送聊天信息
+	function sendMsg(message, im, exts){
+		//send xm message
+		//c2b,  As a c end user, do not set opts.bizId as above
+		var msg = {};
+		msg.targetType = 'b'; 		//must
+		msg.toApp = targetAppKey; 	//must, target appkey
+		msg.bizId = bizId; 			//must, target bissness id or shop id
+		msg.msg = message; 			//must
+		msg.ext = exts; 				//optional
+		if (im.isConnected()) {
+			im.sendXMsg(msg);
+			var rightElem = $("#contentHid>.rightMsg:first");
+			var right = rightElem.clone();
+			message = replace_em(message);
+			$(".rightMsgContent", right).html(message);
+			$("#content").append(right);
+			showLatestMsg();
+			$("#chat_textarea").val("");
+		} else {
+			toast("聊天进程中断，请返回重试", 3);
+//			alert("聊天进程已中断，请重试", function(){
+//				location.reload();
+//			});
+		}
+	}
+	//Load Message History
+	//获取历史记录
+	function getHistoryMsg(perPage, lastMsgId, isToBottom){
+//		Loading();
+		var userMsg = {};
+		userMsg.yyyCode = '100111';	//传入yyyCode
+		/*以下三个参数由后台传入*/
+//		userMsg.type = 'xm';		//yes	currently, ‘xm’ should be set
+//		userMsg.role = 'c';			//yes	for c end user, ‘c’ should be set
+//		userMsg.targetAppKey = targetAppKey;	//yes	target app key which c end user talk to
+		userMsg.bizId = bizId;			//yes	target biz id or shop id which c end user talk to
+		userMsg.appUid = userid ;		//yes	c end user id in local app
+		userMsg.lastMsgId = lastMsgId;		//no	the last loaded message id
+		userMsg.perPage = perPage;		//no	message count per page, default 10
+		
+		var str = '[' + JSON.stringify(userMsg) + ']';
+		var enResult = strEnc(str, "100001", "", "");
+		var uri = GLOBAL_URL + "?json=" + enResult;
+		//result sorted by message timestamp from newest to oldest
+		$.ajax({
+			type: "GET",
+			url: uri,
+			timeout: 60000,
+			success: function(data){
+				noLoading();
+				data = JSON.parse(data);
+				if(data.result){
+					data = data.result;
+					if(data.length > 0){
+						showMessage(data, data.length, isToBottom);
+						localStorage.setItem("msgLoaded_" + bizId, "0");
+					} else {
+						//数据已加载完毕
+						localStorage.setItem("msgLoaded_" + bizId, "1");
+					}
+				}
+			},
+			error: function(){
+				noLoading();
+				alert("网络连接错误！");
+			}
+			
+		});
+	}
+	//显示消息记录
+	function showMessage(data, length, isToBottom){
+		if(isToBottom == '0'){
+			$("#content>:first").attr("id", "list"+curLocation);
+		}
+		var left, right;
+//		var leftElem = $("#contentHid>.leftMsg:first");
+//		var rightElem = $("#contentHid>.rightMsg:first");
+		var contentHtml = '';						
+		var unreaMsgId = '[';
+		var j = perPage - 1;
+		if(length < perPage){
+			j = length - 1;
+			localStorage.setItem("msgLoaded_" + bizId, "1");
+		}
+		localStorage.setItem("lastMsgId_" + bizId,data[j].msgId);
+		for(var i in data){
+//			left = leftElem.clone(),
+//			right = rightElem.clone();
+			if(data[i].targetType == 'c'){
+				left = '<li class="leftMsg">' +
+							'<div class="leftMsgImg"></div>' +
+							'<div class="leftMsgContent">' +
+//								'<div class="leftMsgTime">' +
+//									msTodate1(data[i].ts) +
+//								'</div>' +
+								replace_em(data[i].msg.replace(/</g,"&lt").replace(/>/g, "&gt")) +
+							'</div>' +
+						'</li>';
+//				$(".leftMsgContent", left).append(data[i].msg);
+//				msTodate(data[i].ts);
+				contentHtml = left + contentHtml;
+//				$("#content").prepend(left);
+				if(data[i].state == "unread"){
+					unreaMsgId = unreaMsgId + '"' + data[i].msgId + '",';
+				}
+			} else {
+				right = '<li class="rightMsg">' +
+							'<div class="rightMsgImg"></div>' +
+							'<div class="rightMsgContent">' +
+//								'<div class="rightMsgTime">' +
+//									msTodate1(data[i].ts) +
+//								'</div>' +
+								replace_em(data[i].msg.replace(/</g,"&lt").replace(/>/g, "&gt")) +
+							'</div>' +
+						'</li>';
+//				$(".rightMsgContent", right).append(data[i].msg);
+				contentHtml = right + contentHtml;
+//				$("#content").prepend(right);
+//				if(data[i].state == "unread"){
+//					$(".rightMsgState", right).text("未读");
+//					$(".rightMsgState", right).show();
+//				} else {
+//					$(".rightMsgState", right).text("已读");
+//					$(".rightMsgState", right).show();
+//				}
+			}
+		}
+		contentHtml = "<ul>" + contentHtml + "</ul>";
+		$("#content").prepend(contentHtml);
+		//标记消息为已读状态
+		if(unreaMsgId.length > 1){
+			unreaMsgId = unreaMsgId.substring(0, unreaMsgId.length - 1);
+		}
+		unreaMsgId += ']';
+		markAsRead(unreaMsgId);
+		//滚动到页面底部，显示最新消息
+		if(isToBottom == '1'){
+			setTimeout('showLatestMsg()', 100);
+		} else {
+			location.href = "#list" + curLocation;
+//			$("body").scrollTop($("body").scrollTop()-96);
+			curLocation++;
+		}
+	}
+	//Get unread message count
+	//未读消息条数
+	function getUnreadCount(){
+		//targetAppKey	yes	target app key which c end user talk to
+		//appUid	yes	c end user id in local app
+		//bizId	yes	target biz id or shop id which c end user talk to
+		var str = '[{"yyyCode":"100112","appUid":"' + userid + '","bizId":"' + bizId + '"}]';
+		var enResult = strEnc(str, "100001", "", "");
+		var uri = GLOBAL_URL + "?json=" + enResult;
+		$.get(uri)
+			.success(function(data){
+				data = JSON.parse(data);
+				if(data.count && data.count > 0){
+					$(".unreadMsgCount").text(data.count);
+					$("#unreadMsgCount").show();
+				}
+			});
+	}
+	//Mark msg(s) as read (only for c end user)
+	//标记消息为已读状态
+	function markAsRead(msgIds){
+		var str = '[{"yyyCode":"100113","appUid":"' + userid + '","msgIds":' + msgIds + '}]';
+		var enResult = strEnc(str, "100001", "", "");
+		var uri = GLOBAL_URL + "?json=" + enResult;
+		$.ajax({
+			type: "POST",
+			url: uri,
+			success: function(data){
+//				data = JSON.parse(data);
+			},
+			error: function(error){
+//				alert(error);
+			}
+		});
+	}
+	//显示最新消息
+	function showLatestMsg(){
+//		$("body").scrollTop($("body").height() + 9999);
+		var h = $("#wrap").height() + 9999
+		$("#wrap").scrollTop(h);
+	}
+	//显示要咨询的商品信息
+	function showProductMsg(){
+		var contactMsg = localStorage.getItem("contactMsg");
+		if(pid && contactMsg){
+			contactMsg = JSON.parse(contactMsg);
+			var pd = $("#content>.productMsg:first");
+			var img = '<img src="'+contactMsg.img+'" width="110" height="110"/>';
+			$(".img", pd).html(img);
+			$(".name", pd).html(contactMsg.name);
+			$(".shopname", pd).html(contactMsg.shopName);
+			$(".price", pd).html(contactMsg.price);
+//			$(".img", pd).html(contactMsg.);
+			pd.removeClass("uhide");
+		}
+	}
+	//根据药店id获取药店信息，LOGO & NAME
+	function getShopById(bizId){
+		var str = '[{"yyyCode":"100117","pharmacyCode":"' + bizId + '"}]';
+		var enResult = strEnc(str, "100001", "", "");
+		var uri = GLOBAL_URL + "?json=" + enResult;
+		$.ajax({
+			type: "GET",
+			url: uri,
+			success: function(data){
+				data = JSON.parse(data);
+				if(data.success == '1'){
+					var pharmacyLogo = data.data.PharmacyLogo;
+					var msg = data.data.WelcomeMessage;
+					//显示药店默认提示消息
+					showShopTips(msg);
+					$(".title-mid").text(data.data.PharmacyName);
+					$("style").append('.leftMsgImg{background:url('+pharmacyLogo+') no-repeat center center;background-size:100%;}');
+					// $("style").append('.rightMsgImg{background:url('+pharmacyLogo+') no-repeat center center;}');
+				}
+			},
+			error: function(error){
+//				alert(error);
+			}
+		});
+	}
+	//消息扩展
+	function extsObject(ext, bizId, pid){
+		var exts = {};
+		exts.ext = ext;		//发送数据类型，text、url、pic
+		exts.bizId = bizId;
+		if(pid){
+			exts.pid = pid;
+			exts.areaId = areaId;
+		}
+		return exts;
+	}
+	//显示药店默认提示消息
+	function showShopTips(msg){
+		if(!msg){
+//			msg = "您好，欢迎咨询";
+			return;
+		}
+		var leftElem = $("#contentHid>.leftMsg:first");
+		var left = leftElem.clone();
+		$(".leftMsgContent", left).html(replace_em(msg));
+		$("#content").append(left);
+		showLatestMsg();
+	}
+	//下滑加载更多消息
+	var pullDown = document.getElementById("pullDown");
+	var	pullDownLabel = document.getElementById("pullDownLabel");
+	var	pullDowmMsg = pullDownLabel.innerHTML;
+	//第一步：下拉过程
+	function pullDownStep1(dist) { // dist 下滑的距离，用以拉长背景模拟拉伸效果
+		pullDownLabel.innerHTML = pullDowmMsg;
+		pullDown.removeAttribute("class");
+//		pullDown.style.height = (parseInt("40px") - dist) + "px";
+		pullDown.style.height = "40px";
+		pullDown.style.display = "block";
+	}
+	//第二步：下拉，松开
+	function pullDownStep2() {
+		pullDownLabel.innerHTML = "正在加载..";
+		pullDown.setAttribute("class", "loading");
+		pullDown.style.height = "40px";
+		pullDown.style.display = "block";
+	}
+	//第三步：加载完成，回归之前状态
+	function pullDownStep3() {
+		pullDown.style.display = "none";
+	}
+	//第四步：所有消息加载完成
+	function pullDownStep4() {
+		pullDownLabel.innerHTML = "所有信息已加载完成。";
+		pullDown.removeAttribute("class");
+		pullDown.style.height = "40px";
+		pullDown.style.display = "block";
+	}
+	//下拉加载
+	function pullDownLoad(contentId) {
+		var _start = 0,
+			_end = 0,
+			_content = document.getElementById(contentId);
+		_content.addEventListener('touchmove', function() {
+			var yn = ynAddEvent();
+			if (!yn) return;
+			_content.addEventListener("touchstart", touchStart, false);
+			_content.addEventListener("touchmove", touchMove, false);
+//			_content.addEventListener("touchend", touchEnd, false);
+		}, false);
+		function touchStart(event) {
+			var yn = ynAddEvent();
+			if (!yn) return;
+			var touch = event.targetTouches[0];
+			_start = touch.pageY;
+		}
+		function touchMove(event) {
+			var yn = ynAddEvent();
+			if (!yn) return;
+			var touch = event.targetTouches[0];
+			_end = (_start - touch.pageY);
+			if (_end < 0) {
+				pullDownStep1(_end);
+				touchEnd(event);
+			}
+		}
+		function touchEnd(event) {
+			var yn = ynAddEvent();
+			if (!yn) return;
+			//获取历史消息记录
+			var lastMsgId = localStorage.getItem("lastMsgId_" + bizId);
+			var msgLoaded = localStorage.getItem("msgLoaded_" + bizId);
+			if(lastMsgId && msgLoaded == '0'){
+				pullDownStep2();
+				localStorage.removeItem("lastMsgId_" + bizId);
+				getHistoryMsg(perPage, lastMsgId, '0');
+			} else if(msgLoaded == '1'){
+				pullDownStep4();
+			} else if(msgLoaded == 'null' || msgLoaded == null) {
+				alert("聊天进程已中断，请重试");
+			}
+			setTimeout(pullDownStep3, 500);
+		}
+		function ynAddEvent() {
+			var st = $("#wrap").scrollTop();
+//			var st = $("body").scrollTop();
+//			var st = $(pullDown).scrollTop();
+			if (st <= 0) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+	//埋点
+//	Trinity.init({
+//		app_key: "2a6b0d9fb0bbee6d06d563cd2fd10de68735fea5",
+//		url: point_URL,
+//		device_id: localStorage.getItem("device_id"), //需要从android SKD Trinity.sharedInstance().getDeviceId() 或者ios的SDK[BudtrinityDeviceInfo udid]中获取该值
+//		sdk_version: localStorage.getItem("sdk_version"),
+//		app_version: app_version,
+//		u_id: localStorage.getItem("userid"), //如果访问该页面时app已经登录过则需要赋值
+//		channel: "0000000000"
+//	});
+	//埋点自定义事件
+//	function eventBtn(ob) {
+//		Trinity.add_event({
+//			key: "page", //联系卖家
+//			"segmentation": { //设置自定义事件的键值对
+//				"page_id": "imCloud",
+//				"page_name": "imCloud.html"
+//			}
+//		});
+//	}
+</script>

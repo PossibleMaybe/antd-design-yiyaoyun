@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>用户登录</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/ui-input.css">
+		<link rel="stylesheet" href="../css/win.css">
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart>
+		<div id="page_0" class="up ub ub-ver">
+			<div class="pl10 pr10 pb10 bc2">
+				<div class="fs13  tx-c mt20">医药云用户登录</div>
+				<div class="">
+					<div class="ubaa  uc-a10 ml21 mr21 pt6 pb6 pr10 pl10 ub ub-ac mt21">
+						<div class="ub-img img72"></div>
+						<div class="uinput ub-f1 ml5">
+							<input class="cont fs12" maxlength="11" placeholder="用户名" id="userName" />
+						</div>
+					</div>
+					<div class="ubaa  uc-a10 ml21 mr21 pt6 pb6 pr10 pl10 ub ub-ac mt10">
+						<div class="ub-img img73"></div>
+						<div class="uinput ub-f1 ml5">
+							<input class="cont fs12" type="password" placeholder="密码" id="password" />
+						</div>
+					</div>
+					<div class="ub ub-ac ub-pc ml21 mr21 bc1 mt10 uc-a10 p7" id="logIn">
+						<div class="fs12 c1">登录</div>
+					</div>
+				</div>
+				<div class="c4 mt10">
+					备注：为了配合测试的方便，做了登录的页面。用户名和密码是不需要验证的。用户名您只需输入您的手机号即可。
+				</div>
+			</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+	<script>
+		$(function() {
+			var json ="{\"name\":\"heshenglan\",\"pwd\":\"123456\"}";
+		    var data = JSON.parse(json);
+		    if("name" in data){
+		    	alert("1");
+		    }else{
+		    	alert("2");
+		    }
+			var userid ="8a81c3394dfb9711014e2421e52e0092";
+			localStorage.setItem("yyySource","smy");
+			if (!userid) {} else if (userid == "431126199212123215") {} else {
+				$("#userName").val(userid);
+			}
+			//用户登录
+			$("#logIn").click(function() {
+//				localStorage.setItem("token","2f2a112e-f6fa-4416-903d-69f72d40ffb0");
+//				localStorage.setItem("userid", "8a81c3384f11881c014f165d03830003");
+//				localStorage.setItem("userid", $("#userName").val());
+				localStorage.setItem("userid", "ff8080814eaa0c2f014ed7431e1200f8");
+				localStorage.setItem("yyySource", "yfy");
+				window.location.href = "index1.html";
+//				var userName = $.trim($("#userName").val());
+//				var pn =  /^([0-9]{11})$/;
+//				if (userName != "") {
+//					if (pn.test(userName)) {
+//						localStorage.setItem("userid", userName);
+//					
+//					} else {
+//						alert("手机号码为11位数字");
+//					}
+//				} else {
+//					alert("用户名不能为空！");
+//				}
+			});
+		});
+	</script>
+
+</html>

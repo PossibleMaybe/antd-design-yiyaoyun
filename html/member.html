@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>会员卡绑定</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/ui-input.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			input {
+				border: none;
+				outline: none;
+				font-size: 16px;
+				padding: 5px;
+				height: 30px;
+				line-height: 30px;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart>
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">会员卡绑定</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<div class="mt10 tx-c uhide" id="member">
+				<div class="ub bc2 ubb pr10">
+					<div class="ub-f1 bc2 h30 lh30 pl5 tx-l">
+						<input type="text" id="cardid" style="height:36px; line-height:36px; " placeholder="请输入您的卡号">
+					</div>
+					<div class="ub ub-ac tx-r pr10" id="sm">
+						<img src="../images/sao.png" width="24px" height="24px">
+					</div>
+				</div>
+				<div class="ub mt10 tx-c">
+					<div style="width: 10%;"></div>
+					<div class="ub-f1 bc1 h25 lh25 fs10 c1 uc-a3 " id="tijiao">确认绑定</div>
+					<div style="width: 10%;"></div>
+				</div>
+			</div>
+			<div id="cc" class="ml5 mt5"></div>
+		</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<script type="text/javascript" src="../js/huiDaoJsBridge.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	//获取用户的id
+	var userid = localStorage.getItem("userid");
+	$(function() {
+		ismember(userid);
+		//关闭页面
+		$("#back").click(function() {
+			window.location.href = "PersonalCenter.html";
+		});
+		//绑定会员
+		$("#tijiao").click(function() {
+			var cardID = $.trim($("#cardid").val());
+			if (cardID != "") {
+				becomemember(userid, cardID);
+			} else {
+				toast("请输入会员卡号");
+			}
+		});
+		//扫码识别
+		$("#sm").click(function() {
+			sm();
+		})
+	});
+	//绑定会员
+	function becomemember(userid, cardId) {
+		var enResult = strEnc("[{\"yyyCode\":\"100985\",\"userID\":\"" + userid + "\",\"vipCard\":\"" + cardId + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(productInfo) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == "1") {
+					alert("绑定成功", function() {
+						window.location.href = "index1.html";
+					})
+				} else {
+					alert(productInfo.message, function() {
+						$("#cardid").val("");
+					});
+				}
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//判断是否是会员
+	function ismember(userid) {
+		var enResult = strEnc("[{\"yyyCode\":\"100981\",\"userID\":\"" + userid + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(productInfo) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == 1) {
+					if (productInfo.data.VIP_LEVEL == 1) {
+						$("#member").addClass("uhide");
+						$("#cc").html("您已是会员，会员号：" + productInfo.data.VIP_CARD_NO)
+					}
+					else
+					{
+						$("#member").removeClass("uhide");
+					}
+				} else {
+					toast(productInfo.message);
+				}
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+			}
+		});
+	}
+
+	function sm() {
+		huiDaoJsBridge.getBarcode({
+			onResponse: function(res) {
+				console.log('getBarcode res:' + res);
+				var returnData = JSON.parse(res);
+				if (returnData.msg == "success" || returnData.msg=="扫描成功") {
+					var barcode = returnData.barcode;
+					$("#cardid").val(barcode);
+				} else {
+					toast(returnData.msg);
+				}
+			}
+		});
+	}
+</script>

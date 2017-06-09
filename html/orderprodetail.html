@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>订单详情</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			
+			#content {
+				padding-top: 3em;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart>
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">确认订单</div>
+					<div class="title-right" >
+					</div>
+				</div>
+			</header>
+			<div id="content" class="content" style='width:100%; overflow-x:hidden; overflow-y:auto'>
+				<section id="list">
+					<div class="bc2 uhide">
+						<div class="ub pt2 pb2 pl6 pr8 ubb ">
+							<div class="ub-img img" style="width:40%"></div>
+							<div class="pt4" style="width:60%">
+								<div class="ub fb pl4">
+									<div class="name fs8 h30 lh15 textoverflow"></div>
+								</div>
+								<div class="ub fs8 pl4">
+									<div class="c4">&yen;</div>
+									<div class="c4 price"></div>
+									&nbsp;&nbsp; 
+								</div>
+								<div class="ub fs8 pl4 pt3">
+									<div>数量：</div>
+									<div class="cartcount"></div>
+									<div>件</div>
+								</div>
+								<div class="ub pt2 pl4">
+									<div class="fs6 w30 h12 lh12 ub-ac tx-c mr4 otc">OTC</div>
+									<div class="fs6 pl2 pr2 h15 lh15 tx-c mr4 act uhide">秒杀</div>
+									<div class="fs6 pl2 pr2 h15 lh15 tx-c mr4 act1 uhide">包邮</div>
+									<div class="fs6 pl2 pr2 h15 lh15 tx-c mr4 act2 uhide">团购</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+			</div>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/para.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+	</body>
+
+</html>
+<script>
+	//配送方式
+	var ty = request("ty");
+	var addressid = localStorage.getItem("ADDRESSID");
+	if (ty) {
+		localStorage.setItem("TY", ty);
+	}
+	//判断是否是从立即购买页面过来
+	var isDelCart = localStorage.getItem("isDelCart");
+	var ISADDRLOADED = true; //收货地址是否加载完成
+	iP = {};
+	//页面加载
+	$(function() {
+		//根据团体颜色改变背景颜色
+		var insurecolor = localStorage.getItem("showColor");
+		$(".title").css("background-color", insurecolor == "" ? "#009cff" : insurecolor);
+		
+		$("#back").click(function() {
+			var payMethod=request("payMethod");
+			window.location.href = "productOrder.html?ty=" + ty + "&addressid=" + addressid+"&payMethod="+payMethod;
+		});
+		//获取购物车提取的订单
+		getOrder();
+	});
+	var goods = localStorage.getItem("goods");
+	//从购物车获取订单列表
+	function getOrder() {
+		goods = goods.replace(/\'/g, "\"");
+		goods = JSON.parse(goods);
+		iP.append(goods);
+	}
+
+	function getOrder1() {
+		iP.append(goods);
+	}
+	//插入数据
+	iP.append = function(data) {
+		var countmoney = "0";
+		var elem, clone = $("#list>div:first");
+		clone.siblings().remove();
+		for (var i in data) {
+			elem = clone.clone().removeClass("uhide");
+			elem.find(".name").text(data[i].pname);
+			elem.find(".cartcount").text(data[i].pcount);
+			elem.find(".ship").text(parseFloat(data[i].ship).toFixed(2));
+			elem.find(".price").text(parseFloat(data[i].price).toFixed(2));
+			if (data[i].IS_OTC == 1) {
+				elem.find(".otc").removeClass("uhide").addClass("otcborder");
+			} else {
+				elem.find(".otc").addClass("uhide");
+			}
+			//判断是否参加活动
+			if (data[i].PROMOTION_TYPE.indexOf("seckill") > -1) //秒杀
+			{
+				elem.find(".act").removeClass("uhide");
+			}
+			if (data[i].PROMOTION_TYPE.indexOf("freedly") > -1) //包邮
+			{
+				elem.find(".act1").removeClass("uhide");
+			}
+			if (data[i].PROMOTION_TYPE.indexOf("teambuy") > -1) //团购
+			{
+				elem.find(".act2").removeClass("uhide");
+			}
+			var url = data[i].img;
+			url = "<img src='" + url + "' height='100px' width='100px'/>";
+			elem.find(".img").html(url);
+			$("#list").append(elem);
+		};
+		
+	};
+</script>

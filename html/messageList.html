@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>消息中心</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/ui-input.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			body{
+				height: 100%;
+			}
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			#list {
+				width: 100%;
+				padding-top: 3em;
+				position: -ms-device-fixed;
+			}
+			.unreadMsgCount{
+				position: absolute;
+				top: 0px;
+				right: 3px;
+				color: #fff;
+				background-color: #FF0000;
+				-webkit-border-radius: 50%;
+				border-radius: 50%;
+				width: 25px;
+				font-size: 12px;
+				z-index: 1;
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!-- 页头 -->
+		<header id="header" class="header">
+			<div class="title">
+				<div class="title-left" goback="" id="back"></div>
+				<div class="title-mid">消息中心</div>
+				<div class="title-right"></div>
+			</div>
+		</header>
+		<ul id="listHid" style="display: none;">
+			<li class="ub pr5 bc2">
+				<div class="ub ub-ac pl5 tx-c" style="width:22%">
+					<img src="../images/img3.png" height='60px' width='60px' />
+				</div>
+				<div class="pt8 pb8 ubb" style="width:78%">
+					<div class="ub pt3 h15 lh15">
+						<div class="bc8 w22 h12 lh12 mt4  fs6 c1 tx-c">店铺</div>
+						<div class="fs8 c4 pl3 shopName"></div>
+					</div>
+					<div class="ub fs8 c2 pt2 h15 lh15">
+						<div class="textoverflow mr25">谢谢关注本店！</div>
+						<div class="unreadMsgCount" style="display: none;"></div>
+					</div>
+				</div>
+			</li>
+		</ul>
+		<ul id="list"></ul>
+		<div id="noMsg" class="tx-c uhide">
+			暂无消息
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/des.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script type="text/javascript">
+//	var appKey = 'yyappdemo',
+//		appSecret = 'secret',
+//		targetAppKey = 'ydappdemo';
+	var userid = localStorage.getItem("userid");
+	$(function(){
+		$("#back").click(function(){
+			window.location.href = "PersonalCenter.html";
+		});
+		getMsgList();
+	});
+	//Load bizIds who have been talked to (For C End)
+	//获取用户消息列表
+	function getMsgList(){
+		var str = '[{"yyyCode":"100116","appUid":"' + userid + '"}]';
+		var enResult = strEnc(str, "100001", "", "");
+		var uri = GLOBAL_URL + "?json=" + enResult;
+		$.ajax({
+			type: "GET",
+			url: uri,
+			success: function(data){
+				data = JSON.parse(data);
+				if(data.bizIds){
+					data = data.bizIds;
+					if(data.length > 0){
+						for(var i in data){
+							getShopById(data[i], i);
+						}
+					}
+				} else {
+					$("#noMsg").removeClass("uhide");
+				}
+			},
+			error: function(error){
+//				alert(error);
+			}
+		});
+	}
+	//Get unread message count
+	//未读消息条数
+	function getUnreadCount(bizId, msgList, index){
+		//targetAppKey	yes	target app key which c end user talk to
+		//appUid	yes	c end user id in local app
+		//bizId	yes	target biz id or shop id which c end user talk to
+		var str = '[{"yyyCode":"100112","appUid":"' + userid + '","bizId":"' + bizId + '"}]';
+		var enResult = strEnc(str, "100001", "", "");
+		var uri = GLOBAL_URL + "?json=" + enResult;
+		$.get(uri)
+			.success(function(data){
+				data = JSON.parse(data);
+				if(data.count && data.count > 0){
+					var count = data.count;
+					count = count > 99 ? 99 : count;
+					$(".unreadMsgCount", msgList[index]).text(count);
+					$(".unreadMsgCount", msgList[index]).css("display", "block");
+				}
+				//绑定消息列表单击事件
+				msgList[index].attr('onclick', 'toImCloud(this)');
+				$("#list").append(msgList[index]);
+			});
+	}
+	//根据药店id获取药店信息，LOGO & NAME
+	function getShopById(bizId, index){
+		var str = '[{"yyyCode":"100117","pharmacyCode":"' + bizId + '"}]';
+		var enResult = strEnc(str, "100001", "", "");
+		var uri = GLOBAL_URL + "?json=" + enResult;
+		$.ajax({
+			type: "GET",
+			url: uri,
+			success: function(data){
+				data = JSON.parse(data);
+				if(data.success == '1'){
+					data = data.data;
+					showMsgList(data, bizId, index);
+				}
+			},
+			error: function(error){
+//				alert(error);
+			}
+		});
+	}
+	var msgList = new Array();
+	//显示消息列表
+	function showMsgList(data, bizId, index){
+		var list = $("#listHid>li:first").clone();
+		$("img", list).attr("src", data.PharmacyLogo);
+		$(".shopName", list).text(data.PharmacyName);
+		list.attr("bizId", bizId);
+		msgList[index] = list;
+		getUnreadCount(bizId, msgList, index);
+//		$("#list").append(msgList[index]);
+//		$("#list").append(list);
+//		console.log(msgList);
+	}
+	//绑定消息列表单击事件
+	function toImCloud(dom){
+		var sc = $(dom).attr("bizId");
+		var shopname = $(".shopName", $(dom)).text();
+		window.location.href = "imCloud.html?shopname="+shopname+"&sc="+sc;
+	}
+</script>

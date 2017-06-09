@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>进度查询</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<style>
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			
+			#content {
+				padding-top: 3em;
+			}
+			
+			.sItem {
+				border-left: 2px solid #38a3f5;
+				padding: 0 10px 10px;
+				position: relative;
+			}
+			
+			.sItem>i {
+				width: 10px;
+				height: 10px;
+				-webkit-border-radius: 50%;
+				border-radius: 50%;
+				background: #38a3f5;
+				position: absolute;
+				left: -6px;
+				top: 0;
+			}
+			
+			.smTn, .smTn1 {
+				padding: 3px 15px;
+				color: #ffffff;
+				background-color: #38a3f5;
+				-webkit-border-radius: .4em;
+				border-radius: .4em;
+			}
+			
+			.input1 {
+				width: 100%;
+				height: 100%;
+				display: block;
+				border: 0px;
+				outline: 0px;
+			}
+			
+			.backway1 {
+				margin: 0px 18px 0px 0px;
+			}
+			
+			.siContent, .siPerson {
+				word-break: break-all;
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh">
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid fs10">进度查询</div>
+					<div class="title-right"></div>
+				</div>
+			</header>
+			<div class="content" id="content" style='width:100%;overflow-x:hidden;overflow-y:auto;'>
+				<div class="pl5 pr5 bc2 ubb mb5">
+					<div class="h25 lh25 ubb">问题描述</div>
+					<div class="problemDescrible lh20 fs9"></div>
+				</div>
+				<div class="pl5 pr5 bc2 ubb pb5">
+					<div class="h25 lh25">审核进度</div>
+					<div id="supplyProcessHid" class="uhide">
+						<div class="sItem fs8">
+							<i></i>
+							<div class="siDate"></div>
+							<div class="siContent"></div>
+							<div class="">
+								<span>经办：</span>
+								<span class="siPerson"></span>
+							</div>
+						</div>
+					</div>
+					<div id="supplyProcess"></div>
+					<div id="noData" class="fs8 c3 uhide">很抱歉！暂未查询到退货进度。</div>
+				</div>
+				<div class="pl5 pr5 bc2 ubb mt5 uhide" id="transWay">
+					<div class="h25 lh25">商品返回方式</div>
+					<div class="ub fs8 c25 pb5">
+						<div class="backway backway1 button" way="zt">送货至自提点</div>
+						<div class="backway backway2 button" way="kd">快递</div>
+					</div>
+				</div>
+				<div id="transAddress" class="pl5 pr5 bc2 ubb pb5 uhide">
+					<div class="tips c14 fs8 lh20">商品退回地址信息</div>
+					<div class="tips c14 fs7 lh15">
+						<span>联系人：</span>
+						<span id="taName"></span>
+					</div>
+					<div class="tips c14 fs7 lh15">
+						<span>联系电话：</span>
+						<span id="taTel"></span>
+					</div>
+					<div class="tips c14 fs7 lh15">
+						<span>地址：</span>
+						<span id="taAddr"></span>
+					</div>
+				</div>
+				<div id="transNo" class="pl5 pr5 bc2 ubb pb5 uhide">
+					<div class="tips c14 fs8 h20 lh20">您选择的退货方式为快递运输，请选择物流公司：</div>
+					<div class="fs7 ub ub-f1 ub-ac c2 uc-a2 bc2 h24 lh24" need id="transCompany" style="border:1px solid #cccccc;">
+						<div class="fs9 c2 ub-f1 pl5" show></div>
+						<div class="h24 lh24 bc9 ubl2 ub ub-ac w16">
+							<div class="img47 ub-img mr3 ml3" img></div>
+						</div>
+						<select name="company"></select>
+					</div>
+					<div class="tips c14 fs8 h20 lh20">请输入快递单号：</div>
+					<input type="text" name="transNo" class="input" />
+					<span class="smTn ml5">确定</span>
+				</div>
+				<div id="transNo1" class="pl5 pr5 bc2 pb5 uhide">
+					<div class="tips c14 fs8 lh20 ubb pb5">您选择的退货方式为送货至自提点，请您尽快将商品送还至自提点。点击确定提交。</div>
+					<div class="tx-c mt5">
+						<span class="smTn1" id="smTn1">确定</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/constant.js"></script>
+		<script type="text/javascript" src="../js/para.js"></script>
+		<script type="text/javascript" src="../js/des.js"></script>
+	</body>
+
+</html>
+<script>
+	iP = {};
+	iP2 = {};
+	var transCompanyHtml = null;
+	//获取进度信息
+	function getProcessDetail(userid, detailOrderNo) {
+		Loading();
+		var enResult = strEnc("[{\"userId\":\"" + userid + "\",\"yyyCode\":\"100107\",\"detailOrderNo\":\"" + detailOrderNo + "\"}]", "100001", "", "");
+		var uri = GLOBAL_URL + "?json=" + enResult;
+		$.ajax({
+			url: uri,
+			timeout: 60000,
+			success: function(data) {
+				var data = JSON.parse(data);
+				if (data.success == "1") {
+					data = data.data;
+					$(".problemDescrible").html(data.REASON);
+					if (data.REFUND.length > 0 && data.REFUND[0].log.length > 0) {
+						$("#noData").addClass("uhide");
+						if (data.REFUND[0].status == "3") {
+							getTransCompany();
+							//1申请等待卖家审核，3卖家同意，5卖家拒绝，12等待卖家收货，4完成
+							$("#taName").text(data.NAME + "");
+							$("#taTel").text(data.TELEPHONE + "");
+							$("#taAddr").text(data.AREA.replace(/\//g, " ") + " " + data.ADDR);
+							$("#transWay, #transAddress").removeClass("uhide");
+							$("#smTn1").attr("addrId", data.ADDRESS_ID);
+							//选择退货方式
+							chooseBackWay();
+						}
+						iP.append(data.REFUND[0].log);
+					} else {
+						$("#noData").removeClass("uhide");
+					}
+				} else {
+					$(".problemDescrible").text("无");
+					$("#noData").removeClass("uhide");
+				}
+				noLoading();
+			},
+			error: function() {
+				noLoading();
+				$(".problemDescrible").text("无");
+				$("#noData").removeClass("uhide");
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//插入数据
+	iP.append = function(data) {
+		var elem, clone = $("#supplyProcessHid>div:first");
+		$("#supplyProcess").html("");
+		for (var i in data) {
+			elem = clone.clone();
+			var time = data[i].alttime * 1000;
+			time = msTodate(time);
+			elem.find(".siDate").text(time);
+			elem.find(".siContent").html(data[i].log_text);
+			elem.find(".siPerson").text(data[i].role);
+			$("#supplyProcess").append(elem);
+		};
+	};
+	//获取物流公司接口
+	function getTransCompany() {
+		var enResult = strEnc("[{\"yyyCode\":\"100105\"}]", "100001", "", "");
+		var uri = GLOBAL_URL + "?json=" + enResult;
+		$.ajax({
+			url: uri,
+			timeout: 60000,
+			success: function(data) {
+				var data = JSON.parse(data);
+				if (data.success == "1") {
+					$("#ztaddress select").empty();
+					for (var i in data.data) {
+						var option = $('<option></option>');
+						//物流公司
+						option.val(data.data[i].CORP_ID);
+						option.text(data.data[i].NAME);
+						$("#transCompany select").append(option);
+						iP2.setOption($("#transCompany"), data.data[0].CORP_ID);
+					}
+					$("#transCompany").on("change", iP2.chooseSelect);
+				}
+			},
+			error: function() {
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//快递运输，提交物流单号
+	function smTransNo(userid, detailOrderNo, corpId, corpName, deliveryNo, addressId) {
+		var str = '[{"yyyCode":"100104","userId":"' + userid + '","detailOrderNo":"' + detailOrderNo + '","corpId":"' + corpId + '","corpName":"' + corpName + '","deliveryNo":"' + deliveryNo + '","addressId":"' + addressId + '"}]';
+		var enResult = strEnc(str, "100001", "", "");
+		var uri = GLOBAL_URL + "?json=" + enResult;
+		$.ajax({
+			url: uri,
+			timeout: 60000,
+			success: function(data) {
+				var data = JSON.parse(data);
+				if (data.success == "1") {
+					location.reload();
+				} else {
+					alert(data.message);
+				}
+			},
+			error: function() {
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//选择物流公司select
+	iP2.chooseSelect = function() {
+		var that = $(this).find("select");
+		iP2.setOption(that.parents("[need]"), that.val());
+	};
+	iP2.setOption = function(elem, code) {
+		var select = elem.find("select");
+		select.val(code);
+		//		localStorage.setItem("code", code);
+		var codeName = select.find("option:selected").text();
+		if (codeName == "其他") {
+			transCompanyHtml = $("#transCompany").html();
+			$("#transCompany").html('<input type="text" name="company" onblur="selectCompany();" class="input1" placeholder="请输入快递公司" />');
+			setTimeout('$("[name=company]").focus()', 200);
+		}
+		elem.find("[show]").text(codeName);
+		elem.attr("need", code);
+	};
+
+	function selectCompany() {
+		if ($("[name=company]").val() == "") {
+			$("#transCompany").html(transCompanyHtml);
+			iP2.setOption($("#transCompany"), $("[name=company]>option:first").val());
+		}
+	}
+	//选择退货方式
+	function chooseBackWay() {
+		$(".backway").click(function() {
+			$(this).addClass("active")
+				.siblings().removeClass("active");
+			var way = $(this).attr("way");
+			if (way == "kd") {
+				$("#transNo1").addClass("uhide");
+				$("#transNo").removeClass("uhide");
+			} else {
+				$("#transNo").addClass("uhide");
+				$("#transNo1").removeClass("uhide");
+			}
+		});
+	}
+	$(function() {
+		var userid = localStorage.getItem("userid");
+		var detailOrderNo = localStorage.getItem("orderid");
+		getProcessDetail(userid, detailOrderNo);
+		$("#back").click(function() {
+			var back = request("back");
+			if (back == "1") {
+				window.location.href = "productBackList.html";
+			} else {
+				window.location.href = "productOrderDetail.html";
+			}
+		});
+		//getTransCompany();
+		$(".smTn").click(function() {
+			var userid = localStorage.getItem("userid");
+			var detailOrderNo = localStorage.getItem("orderid");
+			var corpId = $("#transCompany").attr("need");
+			var corpName = $("[name=company]").val();
+			var deliveryNo = $.trim($("[name=transNo]").val());
+			var addressId = '';
+			if (!deliveryNo) {
+				toast("请输入快递单号！");
+				return;
+			} else if (!valid7(deliveryNo, '请输入正确的快递单号(字母和数字组成)')) {
+				return;
+			}
+			smTransNo(userid, detailOrderNo, corpId, corpName, deliveryNo, addressId);
+		});
+		$(".smTn1").click(function() {
+			var userid = localStorage.getItem("userid");
+			var detailOrderNo = localStorage.getItem("orderid");
+			var addressId = $(this).attr("addrId");
+			smTransNo(userid, detailOrderNo, '0', '', '', addressId);
+		});
+	});
+</script>

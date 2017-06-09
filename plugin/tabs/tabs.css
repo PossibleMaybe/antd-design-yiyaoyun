@@ -1,0 +1,30 @@
+@CHARSET "UTF-8";
+
+ul.tab_title {
+	/*height: 30px;*/
+	list-style-type: none;
+	border-bottom: 1px solid #ddd;
+	display: -webkit-box;
+	display: box;
+	background-color: #ffffff;
+	/*clear: both;*/
+}
+.tab_title>li {
+	/*width: 110px;*/
+	/*height: 30px;
+	line-height: 30px;*/
+	text-align: center;
+	-webkit-box-flex: 1;
+	-box-flex: 1;
+	overflow: hidden;
+	/*float: left;*/
+}
+li.tabs_current_tab{
+	/*width: 108px;*/
+	/*height: 28px;
+	line-height: 28px;*/
+	/*border-top: 2px solid #ff6600;
+	border-left: solid 1px #ddd;
+	border-right: solid 1px #ddd;*/
+	color: #009cff;
+}

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+	<head>
+		<title>医药商城活动</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<meta http-equiv="pragma" content="no-cache">
+		<meta http-equiv="cache-control" content="no-cache">
+		<meta http-equiv="expires" content="0">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<link rel="stylesheet" href="../css/swiper.min.css">
+		<link rel="stylesheet" href="../css/salesPromotion.css">
+		<style>
+			#header{width: 100%;position: fixed;top: 0px;left: 0px;z-index: 99;}
+			#content{padding-top: 3em;}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart ng-controller="getList">
+		<header id="header" class="header">
+			<div class="title">
+				<div class="title-left" goback="" id="back"></div>
+				<div class="title-mid">医药商城活动</div>
+				<div class="title-right" id="yfyCart" onclick="openYfyPage('toShowShopcart')">
+					<div class="yfyCartCount uhide">0</div>
+				</div>
+			</div>
+		</header>
+		<div id="content" style=" width:100%; overflow-x:hidden; overflow-y:auto;">
+			<ul id="activeList">
+				<li class="alItem" ng-repeat="i in list" ng-cloak>
+					<div class="aliThemeText ubt" ng-if="i.PromotionBanner.length == 0">
+						<div class="alittLeft">
+							<div class="leftText vAlign">{{i.PromotionName}}</div>
+						</div>
+						<div class="alittRight">
+							<div class="vAlign">
+								<div ng-if="i.PromotionType=='seckill'">
+									<!--活动规则：全场药店指定药品，均可享受活动优惠。<br/>-->
+									限时秒杀：{{i.PromotionStartTime}} ~ {{i.PromotionEndTime}}
+								</div>
+								<div ng-if="i.PromotionType=='freedly'">
+									<!--活动规则：全场药店指定药品，均可享受活动优惠。<br/>-->
+									包邮：{{i.PromotionStartTime}} ~ {{i.PromotionEndTime}}
+								</div>
+								<div ng-if="i.PromotionType=='teambuy'&&i.PromotionTeambuyType=='fullset'">
+									团购规则：满{{i.PromotionTeambuyReduct[0] | number}}元减{{i.PromotionTeambuyReduct[1] | number}}元<br/>
+									<!--活动时间：{{i.PromotionStartTime | limitTo: 10 | date: 'yyyy-MM-dd'}} ~ {{i.PromotionEndTime | limitTo: 10 | date: 'yyyy-MM-dd'}}-->
+									活动时间：{{i.PromotionStartTime}} ~ {{i.PromotionEndTime}}
+								</div>
+								<div ng-if="i.PromotionType=='teambuy'&&i.PromotionTeambuyType=='fullpart'">
+									团购规则：满{{i.PromotionTeambuyReduct[0] | number}}件减{{i.PromotionTeambuyReduct[1] | number}}元<br/>
+									<!--活动时间：{{i.PromotionStartTime | limitTo: 10 | date: 'yyyy-MM-dd'}} ~ {{i.PromotionEndTime | limitTo: 10 | date: 'yyyy-MM-dd'}}-->
+									活动时间：{{i.PromotionStartTime}} ~ {{i.PromotionEndTime}}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="aliTheme" ng-if="i.PromotionBanner.length == 1">
+						<img ng-src="{{i.PromotionBanner[0]}}" width="100%" height="60" />
+					</div>
+					<div class="aliTheme swiperList{{$index}}" swiper="swiperList{{$index}}" ng-if="i.PromotionBanner.length > 1">
+						<div class="swiper-wrapper">
+							<div class="swiper-slide" ng-repeat="img in i.PromotionBanner track by $index">
+								<!--<img ng-src="{{i.PromotionBanner[$index]}}" width="100%" height="60" />-->
+								<img ng-src="{{img}}" width="100%" height="60" />
+							</div>
+						</div>
+						<div class="pagination{{$index}}"></div>
+					</div>
+					<ul class="shopList">
+						<li class="slItem bc2 swiper-container" ng-repeat="j in i.PharmacyInfo" ng-cloak>
+							<div class="sliShopName" ng-class="$index%3==0?'blcss0':($index%3==1?'blcss1':'blcss2')">
+								{{j.DRUG_SUPPLIER_NAME}}
+							</div>
+							<ul class="productList swiper-wrapper">
+								<li class="plItem swiper-slide" ng-repeat="g in j.GOODS" ng-click="toDetail(j.DRUG_SUPPLIER_CODE, g.DRUG_CODE)"  dsc="{{j.DRUG_SUPPLIER_CODE}}" dc="{{g.DRUG_CODE}}" ng-cloak>
+									<div class="pliImg" onclick="toPD(this)">
+										<img ng-src="{{g.DRUG_IMG_URL}}" style="width: 60px;height: 60px;margin: 5px 30px;" />
+									</div>
+									<div class="pliName" onclick="toPD(this)"><!--{{g.DRUG_NAME}}-->{{g.NAME}}</div>
+									<div class="pliBottom">
+										<div class="price">{{g.PROMOTION_PRICE || g.DRUG_PRICE | currency: '&yen;'}}</div>
+										<div ng-if="g.IS_OTC!='0'" class="addToCart" onclick="addToChart(this)"></div>
+									</div>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<div id="noSP" class="uhide tx-c">暂无活动</div>
+		</div>
+
+		<script src="../js/jquery.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="../js/huiDaoJsBridge.js"></script>
+		<script src="../js/des.js"></script>
+		<script src="../js/para.js"></script>
+		<script src="../js/angular.min.js"></script>
+		<script src="../js/swiper.min.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	getAllpromotion();
+	getCartCount();
+	$(function() {
+		$("#back").click(function() {
+			window.location.href = "index1.html";
+		});
+//		$("#toCart").click(function(){
+//			window.location.href = "allCart.html?from=huodong";
+//		});
+	});
+	//获取所有活动列表
+	function getAllpromotion() {
+		Loading();
+		var promotionType = '',
+			pharmacyCode = '',
+			promotionID = '',
+			couponID = '';
+		var param = '[{"yyyCode":"100989", "promotionType":"' + promotionType + '", "pharmacyCode":"' + pharmacyCode + '", "promotionID":"' + promotionID + '", "couponID":"' + couponID + '","source":"'+localStorage.getItem("yyySource")+'"}]';
+		param = strEnc(param, '100001', '', '');
+		var app = angular.module('myApp', []);
+		app.controller('getList', function($http, $scope) {
+			$http({
+				method: 'GET',
+				url: GLOBAL_URL,
+				params: {
+					'json': param
+				}
+			})
+			.success(function(data) {
+				$scope.list = data.data;
+				if(data.data.length > 0){
+					setTimeout('initMySwiper()', 300);
+				} else {
+					$("#noSP").removeClass("uhide");
+				}
+				noLoading();
+			}).error(function() {
+				noLoading();
+				alert("网络连接错误！");
+			});
+		});
+	}
+	//加入购物车
+	function addToChart(dom){
+		var _p = $(dom).parent().parent();
+		var userid = localStorage.getItem("userid");
+		//药店编码
+		var DRUGSUPPLIERCODE = _p.attr("dsc");
+		//药品编码
+		var DRUGCODE = _p.attr("dc");
+		var enResult = strEnc("[{\"userId\":\"" + userid + "\",\"pharmacyCode\":\"" + DRUGSUPPLIERCODE + "\",\"goodsCode\":\"" + DRUGCODE + "\",\"goodsNum\":1,\"yyyCode\":\"shoppingcart\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(data) {
+				data = JSON.parse(data);
+				toast(data.message);
+				if(data.response.cartCount){
+					$(".yfyCartCount").text(data.response.cartCount).removeClass("uhide");
+					openYfyPage('ShopTotalCart(' + data.response.cartCount + ')');
+				}
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//加入购物车动画
+	function addTCAmimate(dom) {
+		var _s = $(dom).parent().parent();
+		var cart = _s.find(".addToCart");
+		var img = _s.find("img");
+		var aniImg = $(img).clone();
+		var left = $(img).offset().left,
+			top = $(img).offset().top;
+//		var targetTop = $(cart).offset().top + 10,
+//			targetLeft = $(cart).offset().left + 11 - 30;
+		var targetTop = $(cart).offset().top + $(cart).height() / 2,
+			targetLeft = $(cart).offset().left + ($(cart).width() - $(img).width()) / 2;
+		$(aniImg).css({
+			"position": "absolute",
+			"width": "60px",
+			"height": "60px",
+			"left": left,
+			"top": top,
+			"z-index": 98
+		});
+		$("body").append(aniImg);
+		$(aniImg).animate({
+			width: 0,
+			height: 0,
+			top: targetTop,
+			left: targetLeft
+		}, 500, "swing", function() {
+			$(aniImg).remove();
+		});
+	}
+	//初始化商品滑动插件
+	function initMySwiper(){
+		var mySwiper = new Swiper('.swiper-container', {
+			//			loop: true,//
+			//在loop模式下使用slidesPerview:'auto',还需使用该参数设置所要用到的loop个数
+			//大小为总数量
+			//			loopedSlides: 1,
+			//普通模式：slide滑动时只滑动一格，并自动贴合wrapper;设置为true则变为free模式，slide会根据惯性滑动且不会贴合
+			freeMode: true,
+			//free模式动量。free模式下，若设置为false则关闭动量，释放slide之后立即停止不会滑动
+			freeModeMomentum: true,
+			slidesPerView: 'auto',
+		});
+		var swiperList = $("[swiper^=swiperList]");
+		for(var i=0;i<swiperList.length;i++){
+			j = swiperList.eq(i).attr("swiper").replace('swiperList', '');
+			pn = '.pagination' + j;
+			new Swiper('.swiperList' + j,{
+				pagination: pn,
+				paginationClickable: true,
+//				autoplay: 5000,
+				loop: true,
+				autoplayDisableOnInteraction: false,
+			});
+		}
+	}
+	//到商品详情
+	function toPD(dom){
+		var _p = $(dom).parent();
+		//药店编码
+		var DRUGSUPPLIERCODE = _p.attr("dsc");
+		//药品编码
+		var DRUGCODE = _p.attr("dc");
+		localStorage.setItem("DRUGCODE", DRUGCODE);
+		localStorage.setItem("DRUGSUPPLIERCODE", DRUGSUPPLIERCODE);
+		localStorage.setItem("pdBackPage", "salesPromotion.html"); //从该页面到商品详情
+		window.location.href = "productDetail.html";
+	}
+	//获取员福云购物车数量
+	function getCartCount(){
+		var userid = localStorage.getItem("userid");
+		var params = '[{"yyyCode":"getuser","userId":"' + userid + '","cloudId":"' + userid + '"}]';
+		var enResult = strEnc(params, "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(data) {
+				data = strDec(data, "100001", "", "");
+				data = JSON.parse(data);
+				if (data.status == "1") {
+					if(data.response.cartCount != '0'){
+						$(".yfyCartCount").text(data.response.cartCount).removeClass("uhide");
+					}
+				} else {
+					
+				}
+			}, //清掉loading信息
+			error: function() {
+				alert("网络连接错误！");
+			}
+		});
+	}
+</script>

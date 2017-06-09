@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>在线医药</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/constant.js"></script>
+		<script type="text/javascript" src="../js/huiDaoJsBridge.js"></script>
+		<script src="../js/des.js"></script>
+	</head>
+
+	<body>
+
+		<script>
+			Loading();
+			var userid = "";
+			var source = "";
+			var device_id = ""; //设备编号
+			var sdk_version = ""; //sdk版本号
+			var insureCode = ""; //团体编码
+			//埋点
+			//	device_id = "867214232210b4ef";
+			//	localStorage.setItem("device_id", device_id);
+			sdk_version = app_version;
+			localStorage.setItem("sdk_version", sdk_version);
+			//获取用户信息
+			huiDaoJsBridge.getUserInfo({
+				onResponse: function(res) {
+					var userData = decodeURI(res);
+					userData = JSON.parse(userData);
+					userid = userData.userid;
+					device_id = userData.device_id;
+					source = userData.source;
+					if ("insureCode" in userData) {
+						insureCode = userData.insureCode;
+					} else {
+						insureCode = "000000";
+					}
+					localStorage.setItem("yyySource", source);
+					localStorage.setItem("userid", userid);
+					localStorage.setItem("device_id", device_id);
+					localStorage.setItem("insureCode", insureCode);
+					insureConfig(insureCode, function() {
+						var page = userData.page || "index1";
+						var uri = page + ".html?sourcefrom=yfy";
+						if (page == "productDetail") {
+							localStorage.setItem("DRUGCODE", userData.drugCode);
+							localStorage.setItem("DRUGSUPPLIERCODE", userData.pharmacyCode);
+						} else if (page == "productOrder") {
+							localStorage.setItem("DRUGSUPPLIERCODE", userData.pharmacyCode);
+							var gsd = userData.goodsData;
+							var goodsData = "[";
+							var goods = "[";
+							for (var i = 0; i < gsd.length; i++) {
+								var drugCode = gsd[i].drugCode;
+								var pcount = gsd[i].cartCount;
+								var total = Number(gsd[i].price) * 100 * Number(pcount);
+								goodsData += "{'drugCode':'" + drugCode + "','cartCount':'" + pcount + "','total':'" + total + "','cartId':'" + gsd[i].cartId + "'},";
+								goods += "{'pname':'" + gsd[i].name + "','pcount':'" + pcount + "','price':'" + gsd[i].price + "','img':'" + gsd[i].proimg + "','PROMOTION_TYPE':'','IS_OTC':''},"
+							}
+							goodsData = goodsData.substring(0, goodsData.length - 1);
+							goodsData += "]";
+							goods = goods.substring(0, goods.length - 1);
+							goods += "]";
+							localStorage.setItem("goodsData", goodsData);
+							localStorage.setItem("goods", goods);
+						} else if (page == "productjs") {
+							uri += "&orderNo=" + userData.orderNo;
+						} else if (page == "shopAllProduct") {
+							localStorage.setItem("DRUGSUPPLIERCODE", userData.pharmacyCode);
+						}
+						window.location.href = uri;
+					});
+				}
+			});
+
+			function insureConfig(insureCode, callback) {
+//				Loading();
+				var enResult = strEnc("[{\"yyyCode\":\"insure\",\"groupCode\":\"" + insureCode + "\"}]", "100001", "", "");
+				$.ajax({
+					url: GLOBAL_URL + "?json=" + enResult,
+					type: "GET",
+					timeout: 60000,
+					success: function(data) {
+						data = JSON.parse(data);
+						console.log(data);
+						//根据团体改变背景色
+						var color = data.insure.showColor;
+						$(".bc13").css("background-color", color);
+						if (data.status == "0") {
+							localStorage.setItem("showColor", data.insure.showColor);
+							localStorage.setItem("showWords", data.insure.showWords);
+							callback();
+						}
+						noLoading();
+					}, //清掉loading信息
+					error: function() {
+						noLoading();
+						alert("网络连接错误！");
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

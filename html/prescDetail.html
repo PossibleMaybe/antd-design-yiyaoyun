@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+	<head>
+		<title>处方详情</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../css/ui-box.css">
+		<link rel="stylesheet" href="../css/ui-base.css">
+		<link rel="stylesheet" href="../css/ui-img.css">
+		<link rel="stylesheet" href="../css/ui-color.css">
+		<link rel="stylesheet" href="../css/win.css">
+		<link rel="stylesheet" href="../css/scale.css">
+		<style>
+			.po_status.active {
+				color: #38a3f5;
+				border-bottom: 2px solid #38A3F5;
+			}
+			
+			#content {
+				padding-bottom: 60px;
+				padding-top: 3em;
+			}
+			
+			#header {
+				width: 100%;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 99;
+			}
+			
+			#picDetail {
+				width: 100%;
+			}
+			
+			#picDetail>img {
+				width: 100%;
+				max-width: 100%;
+				/* max-height: 100%; */
+			}
+		</style>
+	</head>
+
+	<body class="um-vp c-wh" ontouchstart="" ng-controller="getMsg">
+		<div id="page_0" class="up ub ub-ver">
+			<!-- 页头 -->
+			<header id="header" class="header">
+				<div class="title">
+					<div class="title-left" goback id="back"></div>
+					<div class="title-mid">处方详情</div>
+					<div class="title-right" id="more" more>
+					</div>
+				</div>
+			</header>
+			<div id="content">
+				<!--处方信息-->
+				<div class="ub bc2 fs9 h24 lh24 ubb pl10 pr10">
+					<div class="ub ub-f1">
+						<div>编号：</div>
+						<div ng-cloak>{{presc.PRESCS_ID}}</div>
+					</div>
+					<div class="c4" ng-cloak>
+						<span ng-if="presc.PRESCS_STATUS=='0'">未审核</span>
+						<span ng-if="presc.PRESCS_STATUS=='1'">待购买</span>
+						<span ng-if="presc.PRESCS_STATUS=='2'">被拒绝</span>
+						<span ng-if="presc.PRESCS_STATUS=='3'">已购买</span>
+					</div>
+				</div>
+				<div class=" mt5 ubb ubt bc2 fs9 ">
+					<div class="ub h18 lh18 pl10 pr10">
+						<div>联系电话：</div>
+						<div ng-cloak>{{presc.PRESCS_MOBILE}}</div>
+					</div>
+					<div class="ub lh18 pl10 pr10">
+						<div>备注信息：</div>
+						<div ng-cloak class="ub-f1" style=" word-wrap:break-word; word-break:break-all; ">{{presc.PRESCS_COMMENT}}</div>
+					</div>
+					<div class="ub-f1 bc2 pl10 pr10 tx-c ">
+						<div id="picDetail">
+							<img ng-src="{{presc.PRESCS_IMG}}" ng-cloak onclick="touchScale(this)" />
+						</div>
+					</div>
+				</div>
+				<!--病人信息-->
+				<div class="mt5 bc2 fs8 pl10 pr10 lh18 ubb ubt" ng-if="presc.PRESCS_STATUS=='1'" ng-cloak>
+					<div class="ub">
+						<div class="ub-f1">患者姓名：{{prescs.PATIENT_NAME}}</div>
+						<div class="ub-f1">性别：{{prescs.SEX}}</div>
+					</div>
+					<div>处方日期：{{prescs.PRESC_DATE}}</div>
+					<div>医院名称：{{prescs.HOSPITAL_NAME}}</div>
+				</div>
+				<!--药店列表-->
+				<ul ng-if="presc.PRESCS_STATUS=='1'">
+					<li class="ubb mt5 bc2" ng-repeat="i in list | filter : {DRUG_SUPPLIER_STATUS : '1'}" ng-cloak>
+						<div class="ub pl5 pr5 h24 lh24 ubb fs9">
+							<div ng-class="$index==0?'ck checked':'ck'" onclick="checkRadio(this)" drugsuppliercode="{{i.DRUG_SUPPLIER_CODE}}" drugs="{{i.GOODS}}" shopname="{{i.DRUG_SUPPLIER_NAME}}"></div>
+							<div class="ub-f1 ">{{i.DRUG_SUPPLIER_NAME}}</div>
+							<div>
+								<span ng-if="i.DRUG_SUPPLIER_STATUS=='0'">未审核</span>
+								<span ng-if="i.DRUG_SUPPLIER_STATUS=='1'">通过</span>
+								<span ng-if="i.DRUG_SUPPLIER_STATUS=='2'">拒绝</span>
+							</div>
+						</div>
+						<div class="ub ubb pl10 pr5" ng-repeat="drugs in i.GOODS">
+							<div style="width: 30%">
+								<img ng-src="{{drugs.DRUG_IMG_URL}}" ng-cloak height="70" width="70" />
+							</div>
+							<div class="fs8 lh18 pl5 pr5" style="width: 68%;">
+								<div class="ub">
+									<div class="name h30 lh15 textoverflow ">{{drugs.DRUG_NAME}}</div>
+								</div>
+								<div>&yen;{{drugs.DRUG_PRICE}}&nbsp;&nbsp;规格：{{drugs.DRUG_SPEC}}</div>
+								<div>购买数量:{{drugs.CART_COUNT}}</div>
+							</div>
+						</div>
+						<div class="ub h24 lh24 fs9 pl10 pr10">
+							<div class="ub-f1"></div>
+							<div ng-cloak>药品总价：&yen;{{i.DRUG_SUPPLIER_PRICE}}</div>
+						</div>
+					</li>
+				</ul>
+				<!--药店拒绝-->
+				<ul ng-if="presc.PRESCS_STATUS=='2'">
+					<li class="ubb mt5 bc2" ng-repeat="i in list" ng-cloak>
+						<div class="ub pl5 pr5 h24 lh24 ubb fs9">
+							<!--<div ng-class="$index==0?'ck checked':'ck'" onclick="checkRadio(this)" drugsuppliercode="{{i.DRUG_SUPPLIER_CODE}}" drugs="{{i.GOODS}}" shopname="{{i.DRUG_SUPPLIER_NAME}}"></div>-->
+							<div class="ub-f1">{{i.DRUG_SUPPLIER_NAME}}</div>
+							<div>
+								<span ng-if="i.DRUG_SUPPLIER_STATUS=='0'">未审核</span>
+								<span ng-if="i.DRUG_SUPPLIER_STATUS=='1'">通过</span>
+								<span ng-if="i.DRUG_SUPPLIER_STATUS=='2'">拒绝</span>
+							</div>
+						</div>
+						<div class="pl5 pr5 fs9 lh20">拒绝理由：{{i.DRUG_SUPPLIER_REASON}}</div>
+					</li>
+				</ul>
+			</div>
+			<footer class="bc1 h30 lh30 ubt tx-c c1 uhide" id="buy" style="position:fixed;bottom:0;width:100%;z-index:97;">
+				立即购买
+			</footer>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/angular.min.js"></script>
+		<script type="text/javascript" src="../js/des.js"></script>
+		<script type="text/javascript" src="../js/para.js"></script>
+		<script src="../js/constant.js"></script>
+		<script type="text/javascript" src="../js/scale.js"></script>
+		<script type="text/javascript" src="https://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500337502" cid="500337508"></script>
+	</body>
+
+</html>
+<script>
+	var userid = localStorage.getItem("userid"); //用户id
+	var prescNo = localStorage.getItem("perscNo"); //处方编号
+	getprescDetail(prescNo, userid); //获取处方详情
+	$(function() {
+		//返回上一页
+		$("#back").click(function() {
+			window.location.href = "allpresc.html";
+		});
+		//单选框事件
+		$(".ck").click(function() {
+			var _s = $(this);
+			$(".ck").removeClass("checked");
+			_s.toggleClass("checked");
+		});
+		$("#buy").click(function() {
+			var drugsuppliercode = $(".ck.checked").attr("drugsuppliercode");
+			var drugs = eval($(".ck.checked").attr("drugs"));
+			var goodsData = "[";
+			var goods = "[";
+			angular.forEach(drugs, function(data) {
+				var pname = data.DRUG_NAME; //商品名称
+				var pcount = data.CART_COUNT; //购买数量
+				var price = data.DRUG_PRICE; //商品价格
+				var drugcode = data.DRUG_CODE; //商品编码
+				var ship = data.DRUG_SHIP; //运费
+				var buycount = data.BUY_COUNT; //月销量
+				var comments = data.COMMENTS; //评论
+				var shopName = $(".ck.checked").attr("shopname"); //药店名称
+				var img = data.DRUG_IMG_URL; //图片地址
+				var IS_OTC = data.IS_OTC; //是否处方药
+				var PROMOTION_TYPE = data.PROMOTION_TYPE; //活动类型
+				goodsData += "{'drugCode':'" + drugcode + "','cartCount':'" + pcount + "'},";
+				goods += "{'pname':'" + pname + "','pcount':'" + pcount + "','price':'" + price + "','ship':'" + ship + "','buycount':'" + buycount + "','comments':'" + comments + "','shopName':'" + shopName + "','img':'" + img + "','IS_OTC':'" + IS_OTC + "','PROMOTION_TYPE':'" + PROMOTION_TYPE + "'},"
+			});
+			goodsData = goodsData.substring(0, goodsData.length - 1);
+			goodsData += "]";
+			goods = goods.substring(0, goods.length - 1);
+			goods += "]";
+			localStorage.setItem("goodsData", goodsData);
+			localStorage.setItem("goods", goods);
+			localStorage.setItem("isDelCart", "0");
+			localStorage.setItem("DRUGSUPPLIERCODE", drugsuppliercode);
+			if (goodsData != "]") {
+				getProductfree(drugsuppliercode, goodsData);
+			} else {
+				toast("您没有选中任何商品！");
+			}
+		});
+		ShowMore();
+	});
+
+	function getprescDetail(prescNo, userid) {
+		Loading();
+		var param = strEnc("[{\"yyyCode\":\"100982\",\"userID\":\"" + userid + "\",\"prescsID\":\"" + prescNo + "\"}]", "100001", "", "");
+		var app = angular.module('myApp', []);
+		app.controller('getMsg', function($http, $scope) {
+			$http({
+					method: 'GET',
+					url: GLOBAL_URL,
+					params: {
+						'json': param
+					}
+				})
+				.success(function(data) {
+					if (data.success == 1) {
+						$scope.presc = data.data; //处方信息
+						var test = document.documentElement.clientWidth - 40;
+						if (data.data.DRUG_SUPPLIER.length > 0) {
+							$scope.list = data.data.DRUG_SUPPLIER; //商品列表
+							$scope.prescs = data.data.DRUG_SUPPLIER[0].PRESCS; //患者信息
+							if (data.data.PRESCS_STATUS == 1) {
+								$("#buy").removeClass("uhide");
+							}
+						}
+					} else {
+						alert(data.message);
+					}
+					noLoading();
+				})
+				.error(function() {
+					noLoading();
+					alert("网络连接错误！");
+				});
+		});
+	}
+
+	function getProductfree(pharmacyCode, goodsData) {
+		var enResult = strEnc("[{\"yyyCode\":\"100010\",\"pharmacyCode\":\"" + pharmacyCode + "\",\"shippingID\":\"-1\",\"source\":\""+localStorage.getItem("yyySource")+"\",\"isPresc\":\"1\",\"goodsData\":\"" + goodsData + "\"}]", "100001", "", "");
+		$.ajax({
+			url: GLOBAL_URL + "?json=" + enResult,
+			type: "GET",
+			timeout: 60000,
+			success: function(productInfo) {
+				var productInfo = JSON.parse(productInfo);
+				if (productInfo.success == "1") {
+					var drugship = productInfo.data.DRUG_SUPPLIER_SHIP;
+					localStorage.setItem("drugship", drugship);
+//					localStorage.removeItem("isDelCart");
+					//提交订单前 先把发票信息清空
+					localStorage.setItem("fpDetail", null);
+					localStorage.setItem("addressid", "");
+					localStorage.setItem("frompresc", "prescDetail.html");
+					localStorage.setItem("prescNo",prescNo)
+					window.location = "productOrder.html";
+				} else {
+					alert(productInfo.message);
+				}
+			}, //清掉loading信息
+			error: function(err) {
+				alert("网络连接错误！");
+			}
+		});
+	}
+	//单选框事件
+	function checkRadio(dom) {
+		$(".ck").removeClass("checked");
+		$(dom).addClass("checked");
+	}
+</script>

@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="460a9943-d108-4559-90c5-713a6c40e727" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/html/AllOrder.html" afterPath="$PROJECT_DIR$/html/AllOrder.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/html/allCart.html" afterPath="$PROJECT_DIR$/html/allCart.html" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -24,24 +23,24 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="allCart.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="allCart.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/html/allCart.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="92">
-              <caret line="14" column="25" lean-forward="false" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
+              <caret line="14" column="27" lean-forward="false" selection-start-line="14" selection-start-column="27" selection-end-line="14" selection-end-column="27" />
               <folding>
-                <marker date="1497051426175" expanded="true" signature="24216:24237" ph="..." />
-                <marker date="1497051426175" expanded="true" signature="24300:24446" ph="..." />
-                <marker date="1497051426175" expanded="true" signature="24695:24797" ph="..." />
-                <marker date="1497051426175" expanded="true" signature="24869:24913" ph="..." />
-                <marker date="1497051426175" expanded="true" signature="24927:24936" ph="..." />
-                <marker date="1497051426175" expanded="true" signature="24938:24943" ph="¥" />
+                <marker date="1497052183855" expanded="true" signature="24249:24270" ph="..." />
+                <marker date="1497052183855" expanded="true" signature="24333:24479" ph="..." />
+                <marker date="1497052183855" expanded="true" signature="24728:24830" ph="..." />
+                <marker date="1497052183855" expanded="true" signature="24902:24946" ph="..." />
+                <marker date="1497052183855" expanded="true" signature="24960:24969" ph="..." />
+                <marker date="1497052183855" expanded="true" signature="24971:24976" ph="¥" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AllOrder.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="AllOrder.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/html/AllOrder.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="374">
@@ -112,8 +111,8 @@
         <option value="$PROJECT_DIR$/html/login.html" />
         <option value="$PROJECT_DIR$/test.html" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/html/allCart.html" />
         <option value="$PROJECT_DIR$/html/AllOrder.html" />
+        <option value="$PROJECT_DIR$/html/allCart.html" />
       </list>
     </option>
   </component>
@@ -279,12 +278,12 @@
       <workItem from="1491009632068" duration="9824000" />
       <workItem from="1492087622807" duration="2608000" />
       <workItem from="1497050109537" duration="106000" />
-      <workItem from="1497051380047" duration="67000" />
+      <workItem from="1497051380047" duration="696000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="108787000" />
+    <option name="totallyTimeSpent" value="109416000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="0" />
@@ -560,26 +559,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/html/allCart.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="92">
-          <caret line="14" column="25" lean-forward="false" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
-          <folding>
-            <marker date="1497051426175" expanded="true" signature="24216:24237" ph="..." />
-            <marker date="1497051426175" expanded="true" signature="24300:24446" ph="..." />
-            <marker date="1497051426175" expanded="true" signature="24695:24797" ph="..." />
-            <marker date="1497051426175" expanded="true" signature="24869:24913" ph="..." />
-            <marker date="1497051426175" expanded="true" signature="24927:24936" ph="..." />
-            <marker date="1497051426175" expanded="true" signature="24938:24943" ph="¥" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/html/AllOrder.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
           <caret line="17" column="24" lean-forward="false" selection-start-line="17" selection-start-column="24" selection-end-line="17" selection-end-column="24" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/html/allCart.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="92">
+          <caret line="14" column="27" lean-forward="false" selection-start-line="14" selection-start-column="27" selection-end-line="14" selection-end-column="27" />
+          <folding>
+            <marker date="1497052183855" expanded="true" signature="24249:24270" ph="..." />
+            <marker date="1497052183855" expanded="true" signature="24333:24479" ph="..." />
+            <marker date="1497052183855" expanded="true" signature="24728:24830" ph="..." />
+            <marker date="1497052183855" expanded="true" signature="24902:24946" ph="..." />
+            <marker date="1497052183855" expanded="true" signature="24960:24969" ph="..." />
+            <marker date="1497052183855" expanded="true" signature="24971:24976" ph="¥" />
+          </folding>
         </state>
       </provider>
     </entry>
